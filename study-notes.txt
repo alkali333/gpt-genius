@@ -1,0 +1,20 @@
+UseQuery has isPending, isError, and data. 
+It takes a querykey, and any function that returns a promise. 
+Once the promise is resolved, the data is available in data. 
+
+
+UseMutation - we use this when we want to mutate data on the server
+(create, edit, delete). It is similar to useQuery but has a UseMutation
+function that returns a promise. IT has mutate function, onsuccess, on isError
+
+It's a bit harder than other react stuff because we use server actions, 
+we can directly use server actions within our react code, because they 
+return a promise - it is mindboggling to be able to use server actions 
+in client code! 
+
+
+const { mutate, isPending, data } = useMutation
+
+mutate is the function to be called, data is the resulting data
+useMutation has side effects like onSuccess, onError so we do 
+updates to the ui or whatever
