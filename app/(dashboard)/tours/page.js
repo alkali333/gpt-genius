@@ -3,14 +3,14 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import ListTours from "../../components/ListTours";
+import ToursPage from "../../components/ToursPage";
 
 const Tours = () => {
   const queryClient = new QueryClient();
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ListTours />
+      <ToursPage />
     </HydrationBoundary>
   );
 };

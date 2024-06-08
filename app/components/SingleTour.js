@@ -28,7 +28,7 @@ const SingleTour = ({ id }) => {
     mutationFn: deleteTourById,
     onSuccess: (deletedTour) => {
       toast.success("Tour deleted");
-      queryClient.invalidateQueries({ queryKey: ["gettours"] });
+      queryClient.invalidateQueries({ queryKey: ["gettours", "getTourById"] });
       router.push("/tours");
     },
     onError: () => {

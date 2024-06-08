@@ -107,14 +107,38 @@ export const createNewTour = async (tour) => {
   });
 };
 
-export const getTours = async () => {
-  try {
-    const tours = await prisma.tour.findMany();
+export const getTours = async (searchTerm) => {
+  if (!searchTerm) {
+    const tours = await prisma.tour.findMany({
+      orderBy: {
+        city: "asc",
+      },
+    });
     return tours;
-  } catch (error) {
-    console.error("Error retrieving tours:", error);
-    return null;
   }
+  const tours = await prisma.tour.findMany({
+    where: {
+      OR: [
+        {
+          city: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          country: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
+    orderBy: {
+      city: "asc",
+    },
+  });
+
+  return tours;
 };
 
 export const getTourById = async (id) => {
