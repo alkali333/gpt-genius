@@ -1,8 +1,17 @@
-import React from "react";
-import { BsSignTurnLeftFill } from "react-icons/bs";
+import SingleTour from "/app/components/SingleTour";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 
 const SingleTourPage = ({ params }) => {
-  return <div>Id selected {params.id}</div>;
+  const queryClient = new QueryClient();
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <SingleTour id={params.id} />
+    </HydrationBoundary>
+  );
 };
 
 export default SingleTourPage;

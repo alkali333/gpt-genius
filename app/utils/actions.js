@@ -116,3 +116,31 @@ export const getTours = async () => {
     return null;
   }
 };
+
+export const getTourById = async (id) => {
+  try {
+    const tour = await prisma.tour.findUnique({
+      where: {
+        id,
+      },
+    });
+    return tour;
+  } catch (error) {
+    console.error("Error retrieving tour by id:", error);
+    return null;
+  }
+};
+
+export const deleteTourById = async (id) => {
+  try {
+    const deletedTour = await prisma.tour.delete({
+      where: {
+        id,
+      },
+    });
+    return deletedTour;
+  } catch (error) {
+    console.error("Error deleting tour by id:", error);
+    return null;
+  }
+};

@@ -10,7 +10,6 @@ const ListTours = () => {
     queryKey: ["gettours"],
     queryFn: () => getTours(),
   });
-  console.log(`data: ${data}`);
 
   if (isPending) {
     return <span className="loading"></span>;

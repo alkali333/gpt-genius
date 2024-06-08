@@ -29,7 +29,7 @@ const NewTour = () => {
         await createNewTour(newTour);
 
         // invalidate so we get the latest data
-        queryClient.invalidateQueries({ queryKey: ["tours"] });
+        queryClient.invalidateQueries({ queryKey: ["gettours"] });
         return newTour;
       }
       toast.error("No matching city found...");
