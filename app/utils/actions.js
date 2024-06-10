@@ -183,7 +183,7 @@ export const generateTourImage = async (city, country = "") => {
 
     console.log("Image written to server. Path:", imagePath);
 
-    return `/${imageName}`;
+    return `/tour-images/${imageName}`;
   } catch (error) {
     console.error("Error generating tour image:", error);
     return null;
