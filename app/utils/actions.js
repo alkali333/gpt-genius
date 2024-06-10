@@ -3,6 +3,13 @@
 import OpenAI from "openai";
 
 import prisma from "./db";
+import axios from "axios";
+import fs from "fs";
+import path from "path";
+import stream from "stream";
+import { promisify } from "util";
+
+const pipeline = promisify(stream.pipeline);
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -81,8 +88,6 @@ export const generateTourResponse = async ({
       console.error("Error parsing tour data:", error);
       return null;
     }
-
-    return message;
   } catch (error) {
     console.error("Error generating tour response:", error);
     return null;
@@ -102,9 +107,11 @@ export const getExistingTour = async ({ city, country = "not supplied" }) => {
 
 export const createNewTour = async (tour) => {
   // retuns a promise
-  return prisma.tour.create({
+  const newTour = prisma.tour.create({
     data: tour,
   });
+
+  return newTour;
 };
 
 export const getTours = async (searchTerm) => {
@@ -141,6 +148,92 @@ export const getTours = async (searchTerm) => {
   return tours;
 };
 
+export const generateTourImage = async (city, country = "") => {
+  try {
+    console.log("Making API request for tour image");
+    const tourImage = await openai.images.generate({
+      prompt: `a panoramic view of ${city}, ${country}`,
+      n: 1,
+      size: "512x512",
+    });
+
+    console.log("Image object received from api:", tourImage);
+    const imageUrl = tourImage?.data[0]?.url;
+    if (!imageUrl) {
+      console.error("No image data received");
+      return null;
+    }
+
+    const imageName = `${city.toLowerCase()}-${country.toLowerCase()}.png`;
+    const imagePath = path.join(
+      process.cwd(),
+      "public",
+      "tour-images",
+      imageName
+    );
+
+    console.log("Downloading image");
+    const response = await axios({
+      url: imageUrl,
+      responseType: "stream",
+    });
+
+    console.log("Writing image to server");
+    await pipeline(response.data, fs.createWriteStream(imagePath));
+
+    console.log("Image written to server. Path:", imagePath);
+
+    return `/${imageName}`;
+  } catch (error) {
+    console.error("Error generating tour image:", error);
+    return null;
+  }
+};
+
+export const generateTourImageDummy = async (city, country = "") => {
+  console.log("Generating dummy tour image");
+
+  const tourImage = {
+    created: 1717941922,
+    data: [
+      {
+        url: "https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png",
+      },
+    ],
+  };
+
+  const imageUrl = tourImage?.data[0]?.url;
+  if (!imageUrl) {
+    console.error("No image data received");
+    return null;
+  }
+
+  const imageName = `${city.toLowerCase()}-${country.toLowerCase()}.png`;
+  const imagePath = path.join(
+    process.cwd(),
+    "public",
+    "tour-images",
+    imageName
+  );
+
+  try {
+    console.log("Downloading image");
+    const response = await axios({
+      url: imageUrl,
+      responseType: "stream",
+    });
+
+    console.log("Writing image to server");
+    await pipeline(response.data, fs.createWriteStream(imagePath));
+
+    console.log("Image written to server. Path:", imagePath);
+
+    return `/${imageName}`;
+  } catch (error) {
+    console.error("Error generating tour image:", error);
+    return null;
+  }
+};
 export const getTourById = async (id) => {
   try {
     const tour = await prisma.tour.findUnique({

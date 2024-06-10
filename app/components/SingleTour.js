@@ -1,7 +1,11 @@
 "use client";
 
 import React from "react";
-import { getTourById, deleteTourById } from "../utils/actions";
+import {
+  getTourById,
+  deleteTourById,
+  generateTourImage,
+} from "../utils/actions";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TourInfo from "./TourInfo";
 import toast from "react-hot-toast";
@@ -10,6 +14,7 @@ import { useRouter } from "next/navigation";
 const SingleTour = ({ id }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
+
   const {
     isPending,
     isError,
@@ -51,24 +56,28 @@ const SingleTour = ({ id }) => {
     return <div>Error: {error.message}</div>;
   }
 
-  return (
-    tour && (
-      <div>
-        <TourInfo tour={tour} />
+  return tour ? (
+    <div>
+      <TourInfo tour={tour} />
 
-        <div className="max-w-2xl flex items-justify mt-4 gap-4">
-          <a href="/tours" className="btn btn-primary">
-            Back
-          </a>
-          <button
-            onClick={() => handleDelete(tour.id)}
-            className="btn btn-warning ml-auto"
-          >
-            Delete Tour
-          </button>
-        </div>
+      <div className="max-w-2xl flex items-justify mt-4 gap-S4">
+        <button
+          onClick={() => router.push("/tours")}
+          href="/tours"
+          className="btn btn-primary"
+        >
+          Back
+        </button>
+        <button
+          onClick={() => handleDelete(tour.id)}
+          className="btn btn-warning ml-auto"
+        >
+          Delete Tour
+        </button>
       </div>
-    )
+    </div>
+  ) : (
+    <p>no tour found</p>
   );
 };
 

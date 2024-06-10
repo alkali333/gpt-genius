@@ -8,6 +8,8 @@ import {
   getExistingTour,
   generateTourResponse,
   createNewTour,
+  generateTourImage,
+  generateTourImageDummy,
 } from "../utils/actions";
 
 const NewTour = () => {
@@ -18,6 +20,8 @@ const NewTour = () => {
     isPending,
     data: tour,
   } = useMutation({
+    // all the stuff called from the front end to prevent timeouts
+    // on free version of vercell
     mutationFn: async (destination) => {
       const existingTour = await getExistingTour(destination);
 
@@ -26,6 +30,15 @@ const NewTour = () => {
       const newTour = await generateTourResponse(destination);
 
       if (newTour) {
+        const tourImagePath = await generateTourImage(
+          newTour.city,
+          newTour.country
+        );
+        console.log(`Tour image path should be here: ${tourImagePath}`);
+        if (tourImagePath) {
+          newTour.image = tourImagePath;
+        }
+
         await createNewTour(newTour);
 
         // invalidate so we get the latest data
