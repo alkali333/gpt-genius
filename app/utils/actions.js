@@ -42,6 +42,7 @@ export const generateTourResponse = async ({
   const query = `Find a ${city} in this ${country}. If country is unspecified, do not included it in response,
   and choose the mostlikely country based on the city name.
   If ${city} in this ${country} exists, create a list of things families can do in this ${city},${country}.
+  Write in a fun and playful style. 
   Once you have a list, create a one-day tour. Response should be in the following JSON format. 
   {
     "tour": {
@@ -95,11 +96,15 @@ export const generateTourResponse = async ({
 };
 
 export const getExistingTour = async ({ city, country = "not supplied" }) => {
-  return prisma.tour.findUnique({
+  return prisma.tour.findFirst({
     where: {
-      city_country: {
-        city,
-        country,
+      city: {
+        equals: city,
+        mode: "insensitive",
+      },
+      country: {
+        equals: country,
+        mode: "insensitive",
       },
     },
   });
@@ -152,7 +157,7 @@ export const generateTourImage = async (city, country = "") => {
   try {
     console.log("Making API request for tour image");
     const tourImage = await openai.images.generate({
-      prompt: `a panoramic view of ${city}, ${country}`,
+      prompt: `A stylish painting of ${city}, ${country}`,
       n: 1,
       size: "512x512",
     });
@@ -190,50 +195,6 @@ export const generateTourImage = async (city, country = "") => {
   }
 };
 
-export const generateTourImageDummy = async (city, country = "") => {
-  console.log("Generating dummy tour image");
-
-  const tourImage = {
-    created: 1717941922,
-    data: [
-      {
-        url: "https://upload.wikimedia.org/wikipedia/commons/7/70/Example.png",
-      },
-    ],
-  };
-
-  const imageUrl = tourImage?.data[0]?.url;
-  if (!imageUrl) {
-    console.error("No image data received");
-    return null;
-  }
-
-  const imageName = `${city.toLowerCase()}-${country.toLowerCase()}.png`;
-  const imagePath = path.join(
-    process.cwd(),
-    "public",
-    "tour-images",
-    imageName
-  );
-
-  try {
-    console.log("Downloading image");
-    const response = await axios({
-      url: imageUrl,
-      responseType: "stream",
-    });
-
-    console.log("Writing image to server");
-    await pipeline(response.data, fs.createWriteStream(imagePath));
-
-    console.log("Image written to server. Path:", imagePath);
-
-    return `/${imageName}`;
-  } catch (error) {
-    console.error("Error generating tour image:", error);
-    return null;
-  }
-};
 export const getTourById = async (id) => {
   try {
     const tour = await prisma.tour.findUnique({
@@ -255,6 +216,23 @@ export const deleteTourById = async (id) => {
         id,
       },
     });
+    const city = deletedTour.city.toLowerCase();
+    const country = deletedTour.country.toLowerCase();
+    const imageName = `${city}-${country}.png`;
+    const imagePath = path.join(
+      process.cwd(),
+      "public",
+      "tour-images",
+      imageName
+    );
+    console.log("Checking if image file exists:", imagePath);
+    if (fs.existsSync(imagePath)) {
+      console.log("Image file exists. Deleting:", imagePath);
+      fs.unlinkSync(imagePath);
+      console.log("Image file deleted");
+    } else {
+      console.log("Image file does not exist");
+    }
     return deletedTour;
   } catch (error) {
     console.error("Error deleting tour by id:", error);
