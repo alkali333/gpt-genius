@@ -1,11 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  getTourById,
-  deleteTourById,
-  generateTourImage,
-} from "../utils/actions";
+import { getTourById, deleteTour } from "../utils/actions";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import TourInfo from "./TourInfo";
 import toast from "react-hot-toast";
@@ -30,20 +26,20 @@ const SingleTour = ({ id }) => {
     isPending: isDeleting,
     data: deletedTour,
   } = useMutation({
-    mutationFn: deleteTourById,
+    mutationFn: deleteTour,
     onSuccess: (deletedTour) => {
       toast.success("Tour deleted");
       queryClient.invalidateQueries({ queryKey: ["gettours", "getTourById"] });
       router.push("/tours");
     },
-    onError: () => {
-      toast.error("Error deleting tour");
+    onError: (e) => {
+      toast.error("Error deleting tour:", e);
     },
   });
 
-  const handleDelete = (id) => {
+  const handleDelete = (tour) => {
     if (window.confirm("Are you sure you want to delete this tour?")) {
-      mutate(id);
+      mutate(tour);
     }
   };
 
@@ -69,7 +65,7 @@ const SingleTour = ({ id }) => {
           Back
         </button>
         <button
-          onClick={() => handleDelete(tour.id)}
+          onClick={() => handleDelete(tour)}
           className="btn btn-warning ml-auto"
         >
           Delete Tour

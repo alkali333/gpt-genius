@@ -209,16 +209,15 @@ export const getTourById = async (id) => {
   }
 };
 
-export const deleteTourById = async (id) => {
+export const deleteTour = async (tour) => {
   try {
+    const { id, city, country } = tour;
     const deletedTour = await prisma.tour.delete({
       where: {
         id,
       },
     });
-    const city = deletedTour.city.toLowerCase();
-    const country = deletedTour.country.toLowerCase();
-    const imageName = `${city}-${country}.png`;
+    const imageName = `${city.toLowerCase()}-${country.toLowerCase()}.png`;
     const imagePath = path.join(
       process.cwd(),
       "public",
@@ -235,7 +234,12 @@ export const deleteTourById = async (id) => {
     }
     return deletedTour;
   } catch (error) {
-    console.error("Error deleting tour by id:", error);
+    console.error("Error deleting tour:", error);
     return null;
   }
+};
+
+export const capitalizeFirstLetter = (str) => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1);
 };

@@ -3,9 +3,12 @@ import Image from "next/image";
 
 const TourCard = ({ tour }) => {
   const { city, id, country } = tour;
+  const formattedCity = city.replace(/\s+/g, "-").toLowerCase();
+  const formattedCountry = country.replace(/\s+/g, "-").toLowerCase();
+
   return (
     <Link
-      href={`/tours/${id}`}
+      href={`/tours/all/${formattedCity}/${formattedCountry}`}
       className="card card-compact rounded-xl bg-base-300"
     >
       <div className="card-body items-center text-center">
