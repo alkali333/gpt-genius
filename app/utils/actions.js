@@ -157,7 +157,7 @@ export const generateTourImage = async (city, country = "") => {
   try {
     console.log("Making API request for tour image");
     const tourImage = await openai.images.generate({
-      prompt: `A stylish painting of ${city}, ${country}`,
+      prompt: `Panoramic photo of ${city}, ${country}`,
       n: 1,
       size: "512x512",
     });

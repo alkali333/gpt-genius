@@ -33,10 +33,12 @@ const DeleteTour = ({ tour }) => {
   };
 
   return (
-    <MdDeleteForever
-      onClick={() => handleDelete(tour)}
-      className="text-5xl text-secondary cursor-pointer"
-    />
+    <div className="tooltip" data-tip={`Delete tour of ${tour.city}`}>
+      <MdDeleteForever
+        onClick={() => handleDelete(tour)}
+        className="text-5xl text-secondary cursor-pointer"
+      />
+    </div>
   );
 };
 
