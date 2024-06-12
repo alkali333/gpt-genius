@@ -1,19 +1,29 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { generateChatResponse } from "../utils/actions";
 import toast from "react-hot-toast";
-import { getLatestResponse } from "../utils/langchain";
+
 import { FaArrowUp } from "react-icons/fa";
 import sanitizeHtml from "sanitize-html";
+import Settings from "./Settings";
+
+// I will add the option to change the system message,
+// it will stick replace the first message in the array
 
 const Chat = () => {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      console.log("First message:", messages[0]);
+    }
+  }, [messages]); // Dependency array ensures this runs every time `messages` changes
+
   const { mutate, isPending } = useMutation({
     // sends messages plus latest query to generateChatResponse
-    mutationFn: (query) => getLatestResponse([...messages, query]),
+    mutationFn: (query) => generateChatResponse([...messages, query]),
     onSuccess: (data) => {
       if (!data) {
         toast.error("Error generating chat response");
@@ -94,6 +104,9 @@ const Chat = () => {
               <FaArrowUp />
             )}
           </button>
+          <div className="ml-5">
+            <Settings setMessages={setMessages} messages={messages} />
+          </div>
         </div>
       </form>
     </div>

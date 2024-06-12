@@ -24,7 +24,7 @@ export const generateChatResponse = async (chatMessages) => {
       ],
       model: "gpt-3.5-turbo",
       temperature: 0.8,
-      max_tokens: 100,
+      max_tokens: 200,
     });
 
     const message = response.choices[0].message;
@@ -169,7 +169,9 @@ export const generateTourImage = async (city, country = "") => {
       return null;
     }
 
-    const imageName = `${city.toLowerCase()}-${country.toLowerCase()}.png`;
+    const cityFormatted = city.toLowerCase().replace(/\s/g, "-");
+    const countryFormatted = country.toLowerCase().replace(/\s/g, "-");
+    const imageName = `${cityFormatted}-${countryFormatted}.png`;
     const imagePath = path.join(
       process.cwd(),
       "public",
