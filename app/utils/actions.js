@@ -15,13 +15,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const generateChatResponse = async (chatMessages) => {
+export const generateChatResponse = async (systemMessage, chatMessages) => {
   try {
     const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: "you are a helpful assistant" },
-        ...chatMessages,
-      ],
+      messages: [{ role: "system", content: systemMessage }, ...chatMessages],
       model: "gpt-3.5-turbo",
       temperature: 0.8,
       max_tokens: 200,

@@ -12,18 +12,27 @@ import Settings from "./Settings";
 // it will stick replace the first message in the array
 
 const Chat = () => {
+  // try to get chat working with this initial message and don't have it in the utils
+
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [systemMessage, setSystemMessage] = useState(
+    "You are a helpful ChatBot."
+  );
 
   useEffect(() => {
-    if (messages.length > 0) {
-      console.log("First message:", messages[0]);
-    }
-  }, [messages]); // Dependency array ensures this runs every time `messages` changes
+    setMessages([]);
+  }, [systemMessage]);
+
+  const changeSystemMessage = (systemMessage) => {
+    setSystemMessage(systemMessage);
+    setMessages([]);
+  };
 
   const { mutate, isPending } = useMutation({
     // sends messages plus latest query to generateChatResponse
-    mutationFn: (query) => generateChatResponse([...messages, query]),
+    mutationFn: (query) =>
+      generateChatResponse(systemMessage, [...messages, query]),
     onSuccess: (data) => {
       if (!data) {
         toast.error("Error generating chat response");
@@ -105,7 +114,10 @@ const Chat = () => {
             )}
           </button>
           <div className="ml-5">
-            <Settings setMessages={setMessages} messages={messages} />
+            <Settings
+              systemMessage={systemMessage}
+              setSystemMessage={setSystemMessage}
+            />
           </div>
         </div>
       </form>
