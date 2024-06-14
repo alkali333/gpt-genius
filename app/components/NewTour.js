@@ -4,16 +4,20 @@ import TourInfo from "./TourInfo";
 import { FaArrowUp } from "react-icons/fa";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/nextjs";
 import {
   getExistingTour,
   generateTourResponse,
   createNewTour,
   generateTourImage,
-  generateTourImageDummy,
 } from "../utils/actions";
+
+import { fetchUserTokensById, subtractTokens } from "../utils/actions";
+import toast from "react-hot-toast";
 
 const NewTour = () => {
   const queryClient = useQueryClient();
+  const { userId } = useAuth();
 
   const {
     mutate,
@@ -27,26 +31,35 @@ const NewTour = () => {
 
       if (existingTour) return existingTour;
 
+      const currentTokens = await fetchUserTokensById(userId);
+      if (currentTokens < 300) {
+        toast.error("Token balance too low...");
+        return;
+      }
+
       const newTour = await generateTourResponse(destination);
 
-      if (newTour) {
-        const tourImagePath = await generateTourImage(
-          newTour.city,
-          newTour.country
-        );
-        console.log(`Tour image path should be here: ${tourImagePath}`);
-        if (tourImagePath) {
-          newTour.image = tourImagePath;
-        }
-
-        await createNewTour(newTour);
-
-        // invalidate so we get the latest data
-        queryClient.invalidateQueries({ queryKey: ["gettours"] });
-        return newTour;
+      if (!newTour) {
+        toast.error("No matching city found...");
+        return null;
       }
-      toast.error("No matching city found...");
-      return null;
+
+      const tourImagePath = await generateTourImage(
+        newTour.tour.city,
+        newTour.tour.country
+      );
+
+      if (tourImagePath) {
+        newTour.tour.image = tourImagePath;
+      }
+
+      const response = await createNewTour(newTour.tour);
+
+      // invalidate so we get the latest data
+      queryClient.invalidateQueries({ queryKey: ["gettours"] });
+      const newTokens = await subtractTokens(userId, newTour.tokens);
+      toast.success(`${newTokens} tokens left`);
+      return newTour.tour;
     },
   });
 

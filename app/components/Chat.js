@@ -3,16 +3,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { generateChatResponse } from "../utils/actions";
 import toast from "react-hot-toast";
-
+import { fetchUserTokensById, subtractTokens } from "../utils/actions";
+import { useAuth } from "@clerk/nextjs";
 import { FaArrowUp } from "react-icons/fa";
 import sanitizeHtml from "sanitize-html";
 import Settings from "./Settings";
 
-// I will add the option to change the system message,
-// it will stick replace the first message in the array
-
 const Chat = () => {
-  // try to get chat working with this initial message and don't have it in the utils
+  const { userId } = useAuth();
 
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -20,25 +18,34 @@ const Chat = () => {
     "You are a helpful ChatBot."
   );
 
+  // reset the messages when the system message changed byt <Settings/>
   useEffect(() => {
     setMessages([]);
   }, [systemMessage]);
 
-  const changeSystemMessage = (systemMessage) => {
-    setSystemMessage(systemMessage);
-    setMessages([]);
-  };
-
+  // Chat response handled here
   const { mutate, isPending } = useMutation({
-    // sends messages plus latest query to generateChatResponse
-    mutationFn: (query) =>
-      generateChatResponse(systemMessage, [...messages, query]),
-    onSuccess: (data) => {
-      if (!data) {
-        toast.error("Error generating chat response");
+    mutationFn: async (query) => {
+      const currentTokens = await fetchUserTokensById(userId);
+      if (currentTokens < 300) {
+        toast.error("Token balance too low...");
+        return;
       }
-      // sticks the answer in the messages array
-      setMessages((prev) => [...prev, data]);
+      return await generateChatResponse(systemMessage, [...messages, query]);
+    },
+    onError: (error) => {
+      toast.error("Error generating chat response");
+      console.log(error);
+    },
+    onSuccess: async (data) => {
+      try {
+        const newTokens = await subtractTokens(userId, data.tokens);
+        toast.success(`${newTokens} tokens left`);
+        setMessages((prev) => [...prev, data.message]);
+      } catch (error) {
+        toast.error("Error updating token balance");
+        console.error(error);
+      }
     },
   });
 
