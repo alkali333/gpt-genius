@@ -5,6 +5,7 @@ const links = [
   { href: "/tours", label: "tours" },
   { href: "/tours/new-tour", label: "new tour" },
   { href: "/profile", label: "profile" },
+  { href: "/about-me", label: "About Me" },
 ];
 
 const NavLinks = () => {

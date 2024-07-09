@@ -9,6 +9,8 @@ import { FaArrowUp } from "react-icons/fa";
 import sanitizeHtml from "sanitize-html";
 import Settings from "./Settings";
 
+import ChatForm from "./ChatForm";
+
 const Chat = () => {
   const { userId } = useAuth();
 
@@ -18,7 +20,7 @@ const Chat = () => {
     "You are a helpful ChatBot."
   );
 
-  // reset the messages when the system message changed byt <Settings/>
+  // reset the messages when the system message changed by <Settings/>
   useEffect(() => {
     setMessages([]);
   }, [systemMessage]);
@@ -27,7 +29,7 @@ const Chat = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: async (query) => {
       const currentTokens = await fetchUserTokensById(userId);
-      if (currentTokens < 300) {
+      if (currentTokens < 55) {
         toast.error("Token balance too low...");
         return;
       }
@@ -96,30 +98,14 @@ const Chat = () => {
           );
         })}
       </div>
-      <form onSubmit={handleSubmit} className="max-w-4xl pt-12">
+      <div className="max-w-4xl pt-12">
         <div className="w-full flex items-center">
-          <textarea
-            type="text"
-            placeholder="Message Genius GPT"
-            className="textarea-md textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
-            value={text}
-            required
-            autoFocus
-            disabled={isPending}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={handleKeyDown}
+          <ChatForm
+            handleSubmit={handleSubmit}
+            text={text}
+            setText={setText}
+            isPending={isPending}
           />
-
-          <button
-            className="btn btn-circle btn-s btn-primary w-25 -ml-14"
-            type="submit"
-          >
-            {isPending ? (
-              <span className="loading loading-spinner"></span>
-            ) : (
-              <FaArrowUp />
-            )}
-          </button>
           <div className="ml-5">
             <Settings
               systemMessage={systemMessage}
@@ -127,7 +113,7 @@ const Chat = () => {
             />
           </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

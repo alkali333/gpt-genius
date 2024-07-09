@@ -30,3 +30,28 @@ model Token {
   clerkId String @id
   tokens Int @default(1000)
 }
+
+
+
+
+model Diary {
+  id       Int      @id @default(autoincrement())
+  entry    String
+  summary  String
+  date     DateTime
+  clerkId  String
+  // Assuming there's a way to reference the Clerk user directly if needed
+  // This field links each diary entry to a Clerk user
+}
+
+model MindState {
+  id                      Int      @id @default(autoincrement())
+  hopes_and_dreams        Json?
+  skills_and_achievements Json?
+  obstacles_and_challenges Json?
+  grateful_for            Json?
+  current_tasks           Json?
+  clerkId                 String   @unique
+  timestamp               DateTime @default(now())
+  // This field uniquely links each MindState to a Clerk user
+}
