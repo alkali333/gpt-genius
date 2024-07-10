@@ -12,8 +12,8 @@ export const summarizeInfo = async (query, type) => {
 
   const systemMessage = `You are a life coach summarzing the users ${type}. You will respond in json format, with 
     three ${type}. Each ${type} should have a name, description, and outcome (how they will feel when resolved).
-    Respond purely with the json, no commentary or code.
-    {"${type}" {"name": "name goes here", "description": "description goes here", "outcome": "outcome goes here"}`;
+    Respond purely with correctly formatted json, no commentary or code.
+    {"${type}" :[ {"name": "name goes here", "description": "description goes here", "outcome": "outcome goes here"}]}`;
 
   try {
     const response = await openai.chat.completions.create({
@@ -26,14 +26,14 @@ export const summarizeInfo = async (query, type) => {
     });
 
     const summary = response.choices[0].message.content;
-    console.log("Summary from LLM:", summary);
+
     const cleanedSummary = summary
       .replace(/^```json\n?/, "")
       .replace(/```$/, "")
       .trim();
-
+    console.log("Summary from LLM:", cleanedSummary);
     try {
-      userData = JSON.parse(cleanedSummary);
+      const userData = JSON.parse(cleanedSummary);
       return userData;
     } catch (error) {
       console.error("Data not in valid JSON format:", error);

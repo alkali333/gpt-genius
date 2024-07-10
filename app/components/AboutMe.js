@@ -13,7 +13,7 @@ import { useAuth } from "@clerk/nextjs";
 
 import ChatForm from "/app/components/ChatForm";
 import { questions } from "../utils/questions";
-import Skeleton from "./Skeleton";
+import TextSkeleton from "./TextSkeleton";
 
 const AboutMe = () => {
   const { userId } = useAuth();
@@ -65,7 +65,7 @@ const AboutMe = () => {
               <li
                 key={question.step}
                 className={`step ${
-                  question.step === step && "step-primary"
+                  question.step <= step && "step-primary"
                 } font-bold`}
               >
                 {question.title}
@@ -76,11 +76,7 @@ const AboutMe = () => {
       </div>
       <div className="flex items-center">
         {isPending ? (
-          <div className="flex justify-start py-6 leading-loose max-w-4xl">
-            <p className="max-w-3xl bg-base-100">
-              <Skeleton />
-            </p>
-          </div>
+          <TextSkeleton />
         ) : (
           <div className="flex justify-start py-6 leading-loose max-w-4xl">
             <p className="max-w-3xl bg-base-100">{currentQuestion.content}</p>
