@@ -23,7 +23,6 @@ export const summarizeInfo = async (query, type) => {
       ],
       model: "gpt-4o",
       temperature: 0.8,
-      max_tokens: 200,
     });
 
     const summary = response.choices[0].message.content;
