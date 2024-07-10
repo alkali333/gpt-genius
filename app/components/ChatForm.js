@@ -9,7 +9,8 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
     }
   };
 
-  const remainingChars = Math.max(250 - text.length, 0);
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const remainingWords = Math.max(250 - wordCount, 0);
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full items-center">
@@ -23,11 +24,10 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
         disabled={isPending}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
-        maxLength="500"
       />
       <div
         className="tooltip tooltip-open tooltip-secondary"
-        data-tip={`${remainingChars} Characters Remaining`}
+        data-tip={`${remainingWords} words Remaining`}
       >
         <button
           className="btn btn-circle btn-s btn-primary w-25 -ml-14"
