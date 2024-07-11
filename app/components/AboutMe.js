@@ -1,13 +1,9 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  summarizeHopesAndDreams,
-  updateHopesAndDreams,
-  updateMindState,
-  summarizeInfo,
-} from "/app/utils/about-me-actions";
+import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 import { useAuth } from "@clerk/nextjs";
 
@@ -61,7 +57,7 @@ const AboutMe = () => {
       <div className="max-w-4xl pt-12">
         <div className="w-full flex items-center">
           <ul className="steps">
-            {questions.map((question) => (
+            {questions.slice(0, 3).map((question) => (
               <li
                 key={question.step}
                 className={`step ${
@@ -86,12 +82,24 @@ const AboutMe = () => {
 
       <div className="max-w-4xl pt-12">
         <div className="w-full flex items-center">
-          <ChatForm
-            handleSubmit={handleSubmit}
-            text={text}
-            setText={setText}
-            isPending={isPending}
-          />
+          {step < 4 ? (
+            <ChatForm
+              handleSubmit={handleSubmit}
+              text={text}
+              setText={setText}
+              isPending={isPending}
+            />
+          ) : (
+            <>
+              <p className="text-xl font-semibold">
+                You have completed the journalling exercise. Return to this page
+                frequently and repeat the process.
+              </p>
+              <Link href="/about-me/details" className="btn btn-primary">
+                See my Details
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -10,15 +10,30 @@ export const summarizeInfo = async (query, type) => {
   console.log(`Query sent to openai: ${query}`);
   console.log(`Type of information: ${type}`);
 
-  const systemMessage = `You are a life coach summarzing the users ${type}. You will respond in json format, with 
-    three ${type}. Each ${type} should have a name, description, and outcome (how they will feel when resolved).
-    Respond purely with correctly formatted json, no commentary or code.
-    {"${type}" :[ {"name": "name goes here", "description": "description goes here", "outcome": "outcome goes here"}]}`;
+  const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with three ${type}. Each ${type} should have a name, description, and ${
+    type === "skills and achievements" ? "benefits" : "outcome"
+  }.
+  Respond purely with correctly formatted JSON, no commentary or code.`;
+
+  const responseJson = {
+    [type]: [
+      {
+        name: "name goes here",
+        description: "description goes here",
+        [type === "skills and achievements" ? "benefit" : "outcome"]:
+          "value goes here",
+      },
+    ],
+  };
+
+  const responseString = JSON.stringify(responseJson);
+
+  const systemMessageWithResponse = `${systemMessage}\n${responseString}`;
 
   try {
     const response = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: systemMessage },
+        { role: "system", content: systemMessageWithResponse },
         { role: "user", content: query },
       ],
       model: "gpt-4o",
@@ -70,4 +85,23 @@ export const summarizeAndUpdate = async (
 ) => {
   const summary = await summarizeInfo(query, type);
   const result = updateMindState(clerkId, column, summary);
+};
+
+export const getMindStateField = async (clerkId, column) => {
+  console.log(`Retrieving ${column} from MindState for user:${clerkId}`);
+  const existingUser = await prisma.mindState.findUnique({
+    where: { clerkId: clerkId },
+  });
+  if (existingUser) {
+    const details = await prisma.mindState.findUnique({
+      where: {
+        clerkId,
+      },
+      select: {
+        [column]: true,
+      },
+    });
+    return details[column];
+  }
+  return null;
 };
