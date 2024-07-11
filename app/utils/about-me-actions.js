@@ -105,3 +105,36 @@ export const getMindStateField = async (clerkId, column) => {
   }
   return null;
 };
+
+// const {hopes_and_dreams, skills_and_achievements, obstacles_and_challenges} = await getMindStateFields(clerkId);
+// hopes_and_dreams["hopes and dreams"].map((item, index) => {
+//   return {
+//     ...item,
+//     newIndex: index,
+//   };
+// });
+
+export const getMindStateFields = async (clerkId) => {
+  console.log(`Retrieving mind state fields for user:${clerkId}`);
+  const existingUser = await prisma.mindState.findUnique({
+    where: { clerkId: clerkId },
+  });
+  if (existingUser) {
+    const details = await prisma.mindState.findUnique({
+      where: {
+        clerkId,
+      },
+      select: {
+        hopes_and_dreams: true,
+        skills_and_achievements: true,
+        obstacles_and_challenges: true,
+      },
+    });
+    return {
+      hopes_and_dreams: details.hopes_and_dreams,
+      skills_and_achievements: details.skills_and_achievements,
+      obstacles_and_challenges: details.obstacles_and_challenges,
+    };
+  }
+  return null;
+};

@@ -9,7 +9,7 @@ const Details = async () => {
 
   return (
     <div className="space-y-4">
-      {hopesAndDreams["Hopes and dreams"].map((item, index) => (
+      {hopesAndDreams["hopes and dreams"].map((item, index) => (
         <div
           key={index}
           className="p-4 max-w-3xl first:bg-base-100  rounded-xl shadow-md space-y-2"
