@@ -26,8 +26,8 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
         onKeyDown={handleKeyDown}
       />
       <div
-        className="tooltip tooltip-open tooltip-secondary"
-        data-tip={`${remainingWords} words Remaining`}
+        className="tooltip tooltip-open tooltip-top tooltip-secondary  mr-8"
+        data-tip={`${remainingWords} words left`}
       >
         <button
           className="btn btn-circle btn-s btn-primary w-25 -ml-14"
