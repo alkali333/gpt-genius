@@ -1,15 +1,37 @@
 import { getMindStateField } from "../../../utils/about-me-actions";
+import { pages } from "../../../utils/pages";
+
+import MissingDetails from "../../../components/MissingDetails";
+
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { notFound } from "next/navigation";
 import { IoIosRocket } from "react-icons/io";
 
-const Details = async () => {
+// change outcome to result.
+
+const DetailsPage = async ({ params }) => {
+  const { details } = params;
+  console.log(`details: ${details}`);
+  if (!pages.includes(details)) {
+    notFound();
+  }
+
   const { userId } = auth();
-  const hopesAndDreams = await getMindStateField(userId, "hopes_and_dreams");
-  console.log(hopesAndDreams);
+  console.log(`userId: ${userId} details: ${details}`);
+
+  const userDetails = await getMindStateField(
+    userId,
+    details.replace(/-/g, "_")
+  );
+  const jsonDataName = details.replace(/-/g, " ");
+
+  if (!userDetails) {
+    return <MissingDetails type={jsonDataName} />;
+  }
 
   return (
     <div className="space-y-4">
-      {hopesAndDreams["hopes and dreams"].map((item, index) => (
+      {userDetails[jsonDataName].map((item, index) => (
         <div
           key={index}
           className="p-4 max-w-3xl first:bg-base-100  rounded-xl shadow-md space-y-2"
@@ -26,4 +48,4 @@ const Details = async () => {
   );
 };
 
-export default Details;
+export default DetailsPage;

@@ -11,7 +11,9 @@ export const summarizeInfo = async (query, type) => {
   console.log(`Type of information: ${type}`);
 
   const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with three ${type}. Each ${type} should have a name, description, and ${
-    type === "skills and achievements" ? "benefits" : "outcome"
+    type === "skills and achievements"
+      ? "beneficial result of having this skill or achievement"
+      : "result (how it will be when the issue is resolved)"
   }.
   Respond purely with correctly formatted JSON, no commentary or code.`;
 
@@ -20,8 +22,7 @@ export const summarizeInfo = async (query, type) => {
       {
         name: "name goes here",
         description: "description goes here",
-        [type === "skills and achievements" ? "benefit" : "outcome"]:
-          "value goes here",
+        result: "value goes here",
       },
     ],
   };
