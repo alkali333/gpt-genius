@@ -14,7 +14,7 @@ const layout = ({ children }) => {
         </label>
         <div className="bg-base-100 px-8 py-12 min-h-screen">{children}</div>
       </div>
-      <div className="drawer-side">
+      <div className="drawer-side z-50">
         <label
           htmlFor="my-drawer-2"
           aria-label="close sidebar"

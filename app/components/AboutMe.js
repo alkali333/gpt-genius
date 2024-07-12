@@ -56,13 +56,13 @@ const AboutMe = () => {
     <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto]">
       <div className="max-w-4xl pt-12">
         <div className="w-full flex items-center">
-          <ul className="steps">
+          <ul className="steps w-full">
             {questions.slice(0, 3).map((question) => (
               <li
                 key={question.step}
                 className={`step ${
                   question.step <= step && "step-primary"
-                } font-bold`}
+                } text-sm`}
               >
                 {question.title}
               </li>
@@ -75,7 +75,9 @@ const AboutMe = () => {
           <TextSkeleton />
         ) : (
           <div className="flex justify-start py-6 leading-loose max-w-4xl">
-            <p className="max-w-3xl bg-base-100">{currentQuestion.content}</p>
+            <p className="max-w-4xl bg-base-100 text-m lg:text-xl">
+              {currentQuestion.content}
+            </p>
           </div>
         )}
       </div>

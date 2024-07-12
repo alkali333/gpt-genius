@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const links = [
   { href: "/chat", label: "chat" },
-  { href: "/tours", label: "tours" },
-  { href: "/tours/new-tour", label: "new tour" },
+  { href: "/about-me", label: "Journalling" },
+  { href: "/about-me/hopes-and-dreams", label: "My life" },
+  { href: "/meditate", label: "meditate" },
   { href: "/profile", label: "profile" },
-  { href: "/about-me", label: "About Me" },
 ];
 
 const NavLinks = () => {
@@ -14,7 +14,7 @@ const NavLinks = () => {
       {links.map((link, index) => {
         return (
           <li key={index}>
-            <Link href={link.href} className="capitalize">
+            <Link href={link.href} className="uppercase">
               {link.label}
             </Link>
           </li>

@@ -36,7 +36,7 @@ const DetailsPage = async ({ params }) => {
           key={index}
           className="p-4 max-w-3xl first:bg-base-100  rounded-xl shadow-md space-y-2"
         >
-          <div className="text-xl font-medium text-black"> {item.name}</div>
+          <div className="text-xl font-medium text-secondary"> {item.name}</div>
           <p className="text-gray-500">{item.description}</p>
           <div className="flex space-y-2 items-center">
             <IoIosRocket className="text-primary mr-2 text-2xl" />
