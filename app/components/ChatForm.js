@@ -16,7 +16,7 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
     <form onSubmit={handleSubmit} className="flex w-full items-center">
       <textarea
         type="text"
-        placeholder="Message Genius GPT"
+        placeholder="Send message"
         className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
         value={text}
         required

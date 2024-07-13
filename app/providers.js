@@ -3,8 +3,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
-
 import { Toaster } from "react-hot-toast";
+
+import { MenuCloseWrapper } from "/app/components/MenuCloseWrapper";
 
 const Providers = ({ children }) => {
   const [queryClient] = useState(() => {
@@ -17,7 +18,7 @@ const Providers = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-centre" />
-      {children}
+      <MenuCloseWrapper>{children}</MenuCloseWrapper>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

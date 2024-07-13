@@ -107,14 +107,6 @@ export const getMindStateField = async (clerkId, column) => {
   return null;
 };
 
-// const {hopes_and_dreams, skills_and_achievements, obstacles_and_challenges} = await getMindStateFields(clerkId);
-// hopes_and_dreams["hopes and dreams"].map((item, index) => {
-//   return {
-//     ...item,
-//     newIndex: index,
-//   };
-// });
-
 export const getMindStateFields = async (clerkId) => {
   console.log(`Retrieving mind state fields for user:${clerkId}`);
   const existingUser = await prisma.mindState.findUnique({
@@ -138,4 +130,64 @@ export const getMindStateFields = async (clerkId) => {
     };
   }
   return null;
+};
+
+export const getMindStateFieldsWithUsername = async (clerkId, username) => {
+  console.log(`Retrieving mind state fields for user:${clerkId}`);
+
+  const existingUser = await prisma.mindState.findUnique({
+    where: { clerkId: clerkId },
+  });
+
+  if (existingUser) {
+    const details = await prisma.mindState.findUnique({
+      where: { clerkId },
+      select: {
+        hopes_and_dreams: true,
+        skills_and_achievements: true,
+        obstacles_and_challenges: true,
+      },
+    });
+
+    // Wrap the details in an object with the username as the key
+    return {
+      [username]: {
+        hopes_and_dreams: details.hopes_and_dreams,
+        skills_and_achievements: details.skills_and_achievements,
+        obstacles_and_challenges: details.obstacles_and_challenges,
+      },
+    };
+  }
+
+  // If no user is found, return null or an empty object with the username
+  return { [username]: null };
+};
+
+export const generateMeditation = async (
+  coachStyle = "spiritual life coach",
+  userInfo,
+  exerciseType = ""
+) => {
+  const systemMessage = `You are a ${coachStyle}, creating a medition for the user to help them with the issues identifed below\n\n
+  USER INFO: ${userInfo}\n\n`;
+
+  const userMessage = `Create the following exercise: ${
+    exerciseType ? exerciseType : " a meditation / visualisation"
+  }`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessageWithResponse },
+        { role: "user", content: query },
+      ],
+      model: "gpt-4o",
+      temperature: 0.8,
+    });
+
+    return (exercise = response.choices[0].message.content);
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return null;
+  }
 };
