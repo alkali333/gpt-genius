@@ -7,11 +7,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { IoIosRocket } from "react-icons/io";
 
-// change outcome to result.
-
 const DetailsPage = async ({ params }) => {
   const { details } = params;
-  console.log(`details: ${details}`);
+
   if (!pages.includes(details)) {
     notFound();
   }
@@ -26,7 +24,12 @@ const DetailsPage = async ({ params }) => {
   const jsonDataName = details.replace(/-/g, " ");
 
   if (!userDetails) {
-    return <MissingDetails type={jsonDataName} />;
+    return (
+      <MissingDetails>
+        You need to complete the journaling exercises before accessing your
+        info.
+      </MissingDetails>
+    );
   }
 
   return (

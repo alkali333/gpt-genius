@@ -1,6 +1,6 @@
 import React from "react";
 
-const MissingDetails = ({ type }) => {
+const MissingDetails = ({ children }) => {
   return (
     <div role="alert" className="max-w-xl text-sm alert alert-error">
       <svg
@@ -16,10 +16,7 @@ const MissingDetails = ({ type }) => {
           d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
-      <span>
-        You need to complete the journalling exercise before you review your{" "}
-        {type}
-      </span>
+      <span>{children}</span>
     </div>
   );
 };

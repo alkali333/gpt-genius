@@ -1,6 +1,6 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";

@@ -166,26 +166,24 @@ export const getMindStateFieldsWithUsername = async (clerkId, username) => {
 export const generateMeditation = async (
   coachStyle = "spiritual life coach",
   userInfo,
-  exerciseType = ""
+  exerciseType = "a meditation / visualisation"
 ) => {
   const systemMessage = `You are a ${coachStyle}, creating a medition for the user to help them with the issues identifed below\n\n
   USER INFO: ${userInfo}\n\n`;
 
-  const userMessage = `Create the following exercise: ${
-    exerciseType ? exerciseType : " a meditation / visualisation"
-  }`;
+  const userMessage = `Create the following exercise: ${exerciseType}`;
 
   try {
     const response = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: systemMessageWithResponse },
-        { role: "user", content: query },
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
       ],
       model: "gpt-4o",
       temperature: 0.8,
     });
 
-    return (exercise = response.choices[0].message.content);
+    return response.choices[0].message.content;
   } catch (error) {
     console.error("Error generating chat response:", error);
     return null;
