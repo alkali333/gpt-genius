@@ -160,7 +160,7 @@ export const getMindStateFieldsWithUsername = async (clerkId, username) => {
   }
 
   // If no user is found, return null or an empty object with the username
-  return { [username]: null };
+  return null;
 };
 
 export const generateMeditation = async (
@@ -168,10 +168,43 @@ export const generateMeditation = async (
   userInfo,
   exerciseType = "a meditation / visualisation"
 ) => {
-  const systemMessage = `You are a ${coachStyle}, creating a medition for the user to help them with the issues identifed below\n\n
+  const systemMessage = `You are a ${coachStyle}, creating a medition for the user to help them with the issues identifed below. Use the user information to customize the meditation
+  based on their details \n\n
   USER INFO: ${userInfo}\n\n`;
 
   const userMessage = `Create the following exercise: ${exerciseType}`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: "gpt-4o",
+      temperature: 0.8,
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return null;
+  }
+};
+
+export const generateMeditationDummy = async (
+  coachStyle = "spiritual life coach",
+  userInfo,
+  exerciseType = "a meditation / visualisation"
+) => {
+  return `I am a ${coachStyle}, creating ${exerciseType} user to help them with the issues identifed below\n\n
+  USER INFO: ${userInfo}\n\n`;
+};
+
+export const fetchDailySummary = async (firstName, userInfo) => {
+  const systemMessage = `You are a life-coach looking at the users last diary entries for ${firstName} regarding what
+   they are grateful for and tasks to do. Please make a conscise summary and give a supportive, encouraging message`;
+
+  const userMessage = `Create the following exercise: DIARY INFO: ${userInfo}`;
 
   try {
     const response = await openai.chat.completions.create({

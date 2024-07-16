@@ -4,7 +4,10 @@ import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useUserData } from "/app/contexts/useDataContext";
 import AudioPlayer from "./AudioPlayer";
-import { generateMeditation } from "/app/utils/about-me-actions";
+import {
+  generateMeditation,
+  generateMeditationDummy,
+} from "/app/utils/about-me-actions";
 import { MissingDetails } from "./MissingDetails";
 
 const Meditation = () => {
@@ -13,7 +16,7 @@ const Meditation = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (userInfo) => {
-      const meditationResponse = await generateMeditation(
+      const meditationResponse = await generateMeditationDummy(
         "spiritual life coach",
         userInfo,
         "a meditation / visualisation"

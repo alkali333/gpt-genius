@@ -5,6 +5,7 @@ const links = [
   { href: "/about-me", label: "Journalling" },
   { href: "/about-me/hopes-and-dreams", label: "My life" },
   { href: "/meditate", label: "meditate" },
+  { href: "/daily-diary", label: "daily diary" },
   { href: "/profile", label: "profile" },
 ];
 
