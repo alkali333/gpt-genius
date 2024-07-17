@@ -152,22 +152,19 @@ export const getMindStateFieldsWithUsername = async (clerkId, username) => {
     details.skills_and_achievements &&
     details.obstacles_and_challenges
   ) {
-    // Wrap the details in an object with the username as the key
-    return {
-      [username]: {
-        hopes_and_dreams: details.hopes_and_dreams,
-        skills_and_achievements: details.skills_and_achievements,
-        obstacles_and_challenges: details.obstacles_and_challenges,
-        grateful_for: details.grateful_for || [],
-        current_tasks: details.current_tasks || [],
-      },
-    };
+    const combinedData = Object.entries(details).reduce((acc, [key, value]) => {
+      if (value && typeof value === "object") {
+        return { ...acc, ...value };
+      }
+      return acc;
+    }, {});
+
+    return { [username]: combinedData };
   }
 
   // If no user is found or any of the required fields are missing, return null
   return null;
 };
-
 export const generateMeditation = async (
   coachStyle = "spiritual life coach",
   userInfo,
