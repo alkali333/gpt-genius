@@ -12,8 +12,8 @@ import { useUser } from "@clerk/nextjs";
 
 const UserDataContext = createContext();
 
-export default function UserDataProvider({ children }) {
-  const [userData, setUserData] = useState(null);
+export default function UserDataProvider({ children, initialData }) {
+  const [userData, setUserData] = useState(initialData);
   const { user, isLoaded } = useUser();
 
   // for debugging
@@ -34,8 +34,10 @@ export default function UserDataProvider({ children }) {
   }, [isLoaded, user]);
 
   useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
+    if (!initialData) {
+      fetchUserData();
+    }
+  }, [fetchUserData, initialData]);
 
   // Debug logging
   useEffect(() => {

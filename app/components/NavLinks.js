@@ -3,7 +3,7 @@ import Link from "next/link";
 const links = [
   { href: "/chat", label: "chat" },
   { href: "/about-me", label: "Journalling" },
-  { href: "/about-me/hopes-and-dreams", label: "My life" },
+  { href: "/my-info/hopes-and-dreams", label: "my info" },
   { href: "/meditate", label: "meditate" },
   { href: "/daily-diary", label: "daily diary" },
   { href: "/profile", label: "profile" },

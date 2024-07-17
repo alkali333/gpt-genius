@@ -2,15 +2,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useAuth } from "@clerk/nextjs";
-import React, { useContext } from "react";
+
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
 import DailyMessage from "/app/components/DailyMessage";
 import DailyInputForm from "/app/components/DailyInputForm";
 
 import { updateMindState } from "../utils/about-me-actions";
-
-import { useQuery } from "@tanstack/react-query";
 
 const DailyDiary = () => {
   // Get QueryClient from the context
