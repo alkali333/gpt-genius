@@ -135,31 +135,36 @@ export const getMindStateFields = async (clerkId) => {
 export const getMindStateFieldsWithUsername = async (clerkId, username) => {
   console.log(`Retrieving mind state fields for user:${clerkId}`);
 
-  const existingUser = await prisma.mindState.findUnique({
-    where: { clerkId: clerkId },
+  const details = await prisma.mindState.findUnique({
+    where: { clerkId },
+    select: {
+      hopes_and_dreams: true,
+      skills_and_achievements: true,
+      obstacles_and_challenges: true,
+      grateful_for: true,
+      current_tasks: true,
+    },
   });
 
-  if (existingUser) {
-    const details = await prisma.mindState.findUnique({
-      where: { clerkId },
-      select: {
-        hopes_and_dreams: true,
-        skills_and_achievements: true,
-        obstacles_and_challenges: true,
-      },
-    });
-
+  if (
+    details &&
+    details.hopes_and_dreams &&
+    details.skills_and_achievements &&
+    details.obstacles_and_challenges
+  ) {
     // Wrap the details in an object with the username as the key
     return {
       [username]: {
         hopes_and_dreams: details.hopes_and_dreams,
         skills_and_achievements: details.skills_and_achievements,
         obstacles_and_challenges: details.obstacles_and_challenges,
+        grateful_for: details.grateful_for || [],
+        current_tasks: details.current_tasks || [],
       },
     };
   }
 
-  // If no user is found, return null or an empty object with the username
+  // If no user is found or any of the required fields are missing, return null
   return null;
 };
 
@@ -202,9 +207,9 @@ export const generateMeditationDummy = async (
 
 export const fetchDailySummary = async (firstName, userInfo) => {
   const systemMessage = `You are a life-coach looking at the users last diary entries for ${firstName} regarding what
-   they are grateful for and tasks to do. Please make a conscise summary and give a supportive, encouraging message`;
+   they are grateful for and tasks to do. Please make a concise summary and give a supportive, encouraging message`;
 
-  const userMessage = `Create the following exercise: DIARY INFO: ${userInfo}`;
+  const userMessage = `DIARY INFO: ${userInfo}`;
 
   try {
     const response = await openai.chat.completions.create({
@@ -212,13 +217,13 @@ export const fetchDailySummary = async (firstName, userInfo) => {
         { role: "system", content: systemMessage },
         { role: "user", content: userMessage },
       ],
-      model: "gpt-4o",
+      model: "gpt-4",
       temperature: 0.8,
     });
 
     return response.choices[0].message.content;
   } catch (error) {
     console.error("Error generating chat response:", error);
-    return null;
+    throw error; // It's better to throw the error so React Query can handle it
   }
 };

@@ -1,11 +1,16 @@
+"use client";
 import DailyInputForm from "./DailyInputForm";
+
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { updateMindState, fetchDailySummary } from "../utils/about-me-actions";
+import { updateMindState } from "../utils/about-me-actions";
 import { useAuth } from "@clerk/nextjs";
+import React, { useContext } from "react";
+import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
 const DailyDiary = () => {
   const { userId, useUser } = useAuth();
+  const { fetchUserData } = useUserData();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ clerkId, data, column }) => {
@@ -18,6 +23,9 @@ const DailyDiary = () => {
       }
 
       return update;
+    },
+    onSuccess: () => {
+      fetchUserData(); // Refresh the user data after successful update
     },
   });
 
@@ -55,9 +63,9 @@ const DailyDiary = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto]">
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
       <div max-w-2xl>
-        <p className="textPrimary">Information will go here</p>
+        <p className="textPrimary">Daily message will go here</p>
       </div>
       <div className="max-w-2xl flex gap-5">
         <div className="w-1/2">

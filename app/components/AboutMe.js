@@ -10,11 +10,14 @@ import { useAuth } from "@clerk/nextjs";
 import ChatForm from "/app/components/ChatForm";
 import { questions } from "../utils/questions";
 import TextSkeleton from "./TextSkeleton";
+import { useUserData } from "/app/contexts/useDataContext";
 
 const AboutMe = () => {
   const { userId } = useAuth();
   const [step, setStep] = useState(1);
   const [text, setText] = useState("");
+
+  const { fetchUserData } = useUserData();
 
   const currentQuestion = questions[step - 1];
 
@@ -34,6 +37,9 @@ const AboutMe = () => {
 
       setStep(step + 1);
       return summary;
+    },
+    onSuccess: () => {
+      fetchUserData(); // Refresh the user data after successful update
     },
   });
 

@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import { getMindStateFieldsWithUsername } from "../utils/about-me-actions";
 import { useUser } from "@clerk/nextjs";
@@ -14,6 +15,9 @@ const UserDataContext = createContext();
 export default function UserDataProvider({ children }) {
   const [userData, setUserData] = useState(null);
   const { user, isLoaded } = useUser();
+
+  // for debugging
+  const prevUserDataRef = useRef();
 
   const fetchUserData = useCallback(async () => {
     if (isLoaded && user) {
@@ -32,6 +36,15 @@ export default function UserDataProvider({ children }) {
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
+
+  // Debug logging
+  useEffect(() => {
+    if (userData !== prevUserDataRef.current) {
+      console.log("UserDataContext updated:");
+      console.log(JSON.stringify(userData, null, 2));
+      prevUserDataRef.current = userData;
+    }
+  }, [userData]);
 
   return (
     <UserDataContext.Provider value={{ userData, fetchUserData }}>
