@@ -204,7 +204,8 @@ export const generateMeditationDummy = async (
 
 export const fetchDailySummary = async (firstName, userInfo) => {
   const systemMessage = `You are a life-coach looking at the users last diary entries for ${firstName} regarding what
-   they are grateful for and tasks to do. Please make a concise summary and give a supportive, encouraging message`;
+   they are grateful for and tasks to do. Write a 100 word daily message for the user based on this information so they can remember
+   what they are grateful for and what needs to be done. `;
 
   const userMessage = `DIARY INFO: ${userInfo}`;
 

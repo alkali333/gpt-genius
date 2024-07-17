@@ -1,14 +1,21 @@
 "use client";
-import DailyInputForm from "./DailyInputForm";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { updateMindState } from "../utils/about-me-actions";
 import { useAuth } from "@clerk/nextjs";
 import React, { useContext } from "react";
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
+import DailyMessage from "/app/components/DailyMessage";
+import DailyInputForm from "/app/components/DailyInputForm";
+
+import { updateMindState } from "../utils/about-me-actions";
+
+import { useQuery } from "@tanstack/react-query";
+
 const DailyDiary = () => {
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
   const { userId, useUser } = useAuth();
   const { fetchUserData } = useUserData();
 
@@ -25,15 +32,10 @@ const DailyDiary = () => {
       return update;
     },
     onSuccess: () => {
-      fetchUserData(); // Refresh the user data after successful update
+      fetchUserData();
+      queryClient.invalidateQueries({ queryKey: ["dailyMessage"] });
     },
   });
-
-  // const {data: dailySummary, error, isFetching} = useQuery({ queryKey: ['posts'],
-  //   queryFn: async ({firstName, diaryInfo}) => {
-  //     await fetchDailySummary(firstName, diaryInfo);
-  //   }
-  // });
 
   const gratitudeItems = [
     { name: "gratitude1", placeholder: "One" },
@@ -52,20 +54,19 @@ const DailyDiary = () => {
   ];
 
   const handleSubmitGratitude = (jsonData) => {
-    console.log("Submitted gratitude:", jsonData);
     mutate({ clerkId: userId, data: jsonData, column: "grateful_for" });
-    // Do something with the input values
   };
 
   const handleSubmitToDo = (jsonData) => {
-    console.log("Submitted to do:", jsonData);
     mutate({ clerkId: userId, data: jsonData, column: "current_tasks" });
   };
 
   return (
     <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
-      <div max-w-2xl>
-        <p className="textPrimary">Daily message will go here</p>
+      <div className="max-w-2xl">
+        <p className="text-primary text-xl">
+          <DailyMessage />
+        </p>
       </div>
       <div className="max-w-2xl flex gap-5">
         <div className="w-1/2">

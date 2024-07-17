@@ -3,7 +3,8 @@ import { fetchDailySummary } from "/app/utils/about-me-actions";
 
 export const getDailyMessage = async ({ queryKey }) => {
   const [_, userName, userData] = queryKey;
-  const { grateful_for, current_tasks } = userData[userName];
+  const { "grateful for": grateful_for, "current tasks": current_tasks } =
+    userData[userName];
 
   if (
     !grateful_for ||

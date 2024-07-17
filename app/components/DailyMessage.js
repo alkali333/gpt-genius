@@ -2,7 +2,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "/app/contexts/useDataContext";
-import { getDailyMessage } from "../queries/dailyMessageQuery";
+import { getDailyMessage } from "/app/queries/dailyMessageQuery";
 import { MissingDetails } from "/app/components/MissingDetails";
 import React from "react";
 
@@ -32,9 +32,8 @@ const DailyMessage = () => {
   if (error) return <div>Error loading message: {error.message}</div>;
 
   return (
-    <div>
-      <h2>Your Daily Message</h2>
-      <p>{message}</p>
+    <div className="max-w-2xl">
+      <p className="text-xl text-secondary">{message}</p>
     </div>
   );
 };
