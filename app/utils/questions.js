@@ -1,3 +1,6 @@
+import { useUser } from "@clerk/nextjs";
+import useUserData from "/app/contexts/useDataContext";
+
 export const questions = [
   {
     step: 1,

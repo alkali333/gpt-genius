@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 
 const themes = {
-  light: { name: "cupcake", icon: BsMoonFill },
+  light: { name: "nord", icon: BsMoonFill },
   dark: { name: "synthwave", icon: BsSunFill },
 };
 

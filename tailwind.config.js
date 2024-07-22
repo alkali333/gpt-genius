@@ -16,6 +16,6 @@ module.exports = {
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
-    themes: ["dracula", "winter", "retro", "synthwave", "cupcake"],
+    themes: ["dracula", "winter", "retro", "synthwave", "cupcake", "nord"],
   },
 };

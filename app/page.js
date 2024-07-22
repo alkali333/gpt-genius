@@ -14,7 +14,7 @@ const HomePage = async () => {
             <h1 className="mb-5 text-5xl font-bold text-primary">Attenshun</h1>
           </div>
           <p className="py-6 text-lg text-secondary">{quote}</p>
-          <Link href="/chat" className="btn btn-primary">
+          <Link href="/welcome" className="btn btn-primary">
             Get Started
           </Link>
         </div>

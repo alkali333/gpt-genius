@@ -215,7 +215,7 @@ export const fetchDailySummary = async (firstName, userInfo) => {
         { role: "system", content: systemMessage },
         { role: "user", content: userMessage },
       ],
-      model: "gpt-4",
+      model: "gpt-4o",
       temperature: 0.8,
     });
 
@@ -224,4 +224,29 @@ export const fetchDailySummary = async (firstName, userInfo) => {
     console.error("Error generating chat response:", error);
     throw error; // It's better to throw the error so React Query can handle it
   }
+};
+
+export const fetchWelcomeMessage = async (userInfo) => {
+  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to make sure the user focuses their attention on what is important. Use the user
+  information below to generate messags for the user. \n\n
+  USER INFO: ${userInfo}\n\n`;
+
+  const userMessage = `Welcome the user and remind them of what they need to focus on based on their details, offer support, encouragement, and guidance. Keep them focused`;
+
+  return systemMessage + userMessage;
+  // try {
+  //   const response = await openai.chat.completions.create({
+  //     messages: [
+  //       { role: "system", content: systemMessage },
+  //       { role: "user", content: userMessage },
+  //     ],
+  //     model: "gpt-4o",
+  //     temperature: 0.8,
+  //   });
+
+  //   return response.choices[0].message.content;
+  // } catch (error) {
+  //   console.error("Error generating chat response:", error);
+  //   throw error;
+  // }
 };

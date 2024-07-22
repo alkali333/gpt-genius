@@ -8,9 +8,8 @@ import Providers from "./providers";
 const space_grotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "GPTGenius",
-  description:
-    "GPTGenius: Your AI language companion. Powered by OpenAI, it enhances your conversations, content creation, and more!",
+  title: "Attenshun",
+  description: "Control your mind to manifest your dreams.",
 };
 export default function RootLayout({ children }) {
   return (

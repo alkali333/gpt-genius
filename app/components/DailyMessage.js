@@ -1,4 +1,3 @@
-// DailyMessage.jsx
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "/app/contexts/useDataContext";

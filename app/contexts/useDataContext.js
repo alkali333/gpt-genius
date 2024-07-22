@@ -9,6 +9,7 @@ import {
 } from "react";
 import { getMindStateFieldsWithUsername } from "../utils/about-me-actions";
 import { useUser } from "@clerk/nextjs";
+import { revalidatePath } from "next/cache";
 
 const UserDataContext = createContext();
 

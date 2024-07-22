@@ -17,7 +17,7 @@ const AboutMe = () => {
   const [step, setStep] = useState(1);
   const [text, setText] = useState("");
 
-  const { fetchUserData } = useUserData();
+  const { userData, fetchUserData } = useUserData();
 
   const currentQuestion = questions[step - 1];
 
@@ -80,7 +80,14 @@ const AboutMe = () => {
         {isPending ? (
           <TextSkeleton />
         ) : (
-          <div className="flex justify-start py-6 leading-loose max-w-4xl">
+          <div className="flex flex-col justify-start py-6 leading-loose max-w-4xl">
+            {step === 1 && (
+              <p className="max-w-4xl bg-base-100 text-m lg:text-xl mb-4">
+                {userData
+                  ? "Completing this exercise again will result in your goals, skills, and obstacles being updated. I recommend to do this at least once a month  "
+                  : "Welcome to Attenshun! Completing this exercise will help me understand your goals, skills, and obstacles. "}
+              </p>
+            )}
             <p className="max-w-4xl bg-base-100 text-m lg:text-xl">
               {currentQuestion.content}
             </p>

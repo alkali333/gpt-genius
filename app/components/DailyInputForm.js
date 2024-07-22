@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaGrinStars, FaCheckCircle } from "react-icons/fa";
-import { useMutation } from "@tanstack/react-query";
 
 const DailyInputForm = ({ inputs, onSubmit, title }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
