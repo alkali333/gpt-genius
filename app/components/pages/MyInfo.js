@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { IoIosRocket } from "react-icons/io";
-import MissingDetails from "./MissingDetails";
 import { pages } from "/app/utils/pages";
 
 const MyInfo = ({ userData, details }) => {

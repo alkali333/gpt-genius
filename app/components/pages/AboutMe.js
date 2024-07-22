@@ -7,9 +7,9 @@ import Link from "next/link";
 
 import { useAuth } from "@clerk/nextjs";
 
-import ChatForm from "/app/components/ChatForm";
-import { questions } from "../utils/questions";
-import TextSkeleton from "./TextSkeleton";
+import ChatForm from "/app/components/forms/ChatForm";
+import { questions } from "../../utils/questions";
+import TextSkeleton from "../TextSkeleton";
 import { useUserData } from "/app/contexts/useDataContext";
 
 const AboutMe = () => {

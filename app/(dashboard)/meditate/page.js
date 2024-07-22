@@ -1,4 +1,4 @@
-import Meditation from "../../components/Meditation";
+import Meditation from "../../components/pages/Meditation";
 import {
   dehydrate,
   HydrationBoundary,

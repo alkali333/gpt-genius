@@ -249,3 +249,21 @@ export const fetchWelcomeMessage = async (userInfo) => {
     throw error;
   }
 };
+
+export async function insertDiaryEntry(formData) {
+  const clerkId = formData.get("clerkId");
+  const entry = formData.get("entry");
+
+  try {
+    const newEntry = await prisma.diary.create({
+      data: {
+        clerkId,
+        entry,
+      },
+    });
+    return { message: "Diary entry successfully created", data: newEntry };
+  } catch (error) {
+    console.error("Error creating diary entry:", error);
+    return { message: "Error creating diary entry", data: null };
+  }
+}

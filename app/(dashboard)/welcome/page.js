@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUserData } from "/app/contexts/useDataContext";
 import { useRouter } from "next/navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import WelcomeMessage from "/app/components/WelcomeMessage";
+import WelcomeMessage from "/app/components/messages/WelcomeMessage";
 import { QueryClient } from "@tanstack/react-query";
 
 const WelcomePage = () => {

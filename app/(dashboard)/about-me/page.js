@@ -1,4 +1,4 @@
-import AboutMe from "/app/components/AboutMe";
+import AboutMe from "/app/components/pages/AboutMe";
 import {
   dehydrate,
   HydrationBoundary,

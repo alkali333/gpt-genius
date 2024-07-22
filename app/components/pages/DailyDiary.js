@@ -5,10 +5,10 @@ import { useAuth } from "@clerk/nextjs";
 
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
-import DailyMessage from "/app/components/DailyMessage";
-import DailyInputForm from "/app/components/DailyInputForm";
+import DailyMessage from "/app/components/messages/DailyMessage";
+import DailyInputForm from "/app/components/forms/DailyInputForm";
 
-import { updateMindState } from "../utils/about-me-actions";
+import { updateMindState } from "../../utils/about-me-actions";
 
 const DailyDiary = () => {
   // Get QueryClient from the context

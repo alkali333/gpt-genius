@@ -1,15 +1,15 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { generateChatResponse } from "../utils/actions";
+import { generateChatResponse } from "../../utils/actions";
 import toast from "react-hot-toast";
-import { fetchUserTokensById, subtractTokens } from "../utils/actions";
+import { fetchUserTokensById, subtractTokens } from "../../utils/actions";
 import { useAuth } from "@clerk/nextjs";
-import { FaArrowUp } from "react-icons/fa";
-import sanitizeHtml from "sanitize-html";
-import Settings from "./Settings";
 
-import ChatForm from "./ChatForm";
+import sanitizeHtml from "sanitize-html";
+import Settings from "../Settings";
+
+import ChatForm from "../forms/ChatForm";
 
 const Chat = () => {
   const { userId } = useAuth();

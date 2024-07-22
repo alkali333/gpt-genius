@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useUserData } from "/app/contexts/useDataContext";
 import { getDailyMessage } from "/app/queries/dailyMessageQuery";
-import { MissingDetails } from "/app/components/MissingDetails";
+import { MissingDetails } from "/app/components/messages/MissingDetails";
 import React from "react";
 
 const DailyMessage = () => {

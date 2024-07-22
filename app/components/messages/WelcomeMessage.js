@@ -1,7 +1,7 @@
 "use client";
 import { useUserData } from "/app/contexts/useDataContext";
-import { getWelcomeMessage } from "../queries/welcomeMessageQuery";
-import MissingDetails from "/app/components/MissingDetails";
+import { getWelcomeMessage } from "../../queries/welcomeMessageQuery";
+import MissingDetails from "/app/components/messages/MissingDetails";
 import { useQuery } from "@tanstack/react-query";
 import { marked } from "marked";
 

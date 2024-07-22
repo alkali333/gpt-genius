@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 
-import DailyDiary from "../../components/DailyDiary";
+import DailyDiary from "../../components/pages/DailyDiary";
 
 const DailyDiaryPage = () => {
   const queryClient = new QueryClient();
