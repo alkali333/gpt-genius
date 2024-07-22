@@ -4,7 +4,7 @@ import React from "react";
 import { useFormStatus } from "react-dom";
 import { FaArrowUp } from "react-icons/fa";
 
-const DiaryInput = () => {
+export const DiaryInput = () => {
   const [text, setText] = React.useState("");
   const { pending } = useFormStatus();
 
@@ -38,5 +38,3 @@ const DiaryInput = () => {
     </>
   );
 };
-
-export default DiaryInput;

@@ -1,15 +1,19 @@
 "use client";
 
-import React from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import React, { useEffect, useState } from "react";
+import { useFormState } from "react-dom";
 import { useAuth } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 
-const FormContainer = ({ action, children, className }) => {
-  const { clerkId } = useAuth();
-  const [state, formAction] = useFormState(action, { message: null });
+export const FormContainer = ({ action, children, className }) => {
+  const initialState = {
+    message: null,
+    data: null,
+  };
 
-  React.useEffect(() => {
+  const [state, formAction] = useFormState(action, initialState);
+
+  useEffect(() => {
     if (state.message) {
       toast(state.message);
     }
@@ -17,16 +21,7 @@ const FormContainer = ({ action, children, className }) => {
 
   return (
     <form action={formAction} className={className}>
-      <input type="hidden" name="clerkId" value={clerkId} />
       {children}
     </form>
   );
-};
-
-export default FormContainer;
-
-// Helper component to access form status
-export const FormStatus = ({ children }) => {
-  const status = useFormStatus();
-  return children(status);
 };

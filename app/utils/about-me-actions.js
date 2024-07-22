@@ -1,6 +1,7 @@
 "use server";
 import prisma from "./db";
 import OpenAI from "openai";
+import { auth } from "@clerk/nextjs/server";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -250,14 +251,18 @@ export const fetchWelcomeMessage = async (userInfo) => {
   }
 };
 
-export async function insertDiaryEntry(formData) {
-  const clerkId = formData.get("clerkId");
+export async function insertDiaryEntry(prevState, formData) {
+  const { userId } = auth();
   const entry = formData.get("entry");
+
+  if (!entry) {
+    return { message: "Missing required fields", data: null };
+  }
 
   try {
     const newEntry = await prisma.diary.create({
       data: {
-        clerkId,
+        clerkId: userId,
         entry,
       },
     });
