@@ -233,20 +233,19 @@ export const fetchWelcomeMessage = async (userInfo) => {
 
   const userMessage = `Welcome the user and remind them of what they need to focus on based on their details, offer support, encouragement, and guidance. Keep them focused`;
 
-  return systemMessage + userMessage;
-  // try {
-  //   const response = await openai.chat.completions.create({
-  //     messages: [
-  //       { role: "system", content: systemMessage },
-  //       { role: "user", content: userMessage },
-  //     ],
-  //     model: "gpt-4o",
-  //     temperature: 0.8,
-  //   });
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: "gpt-4o",
+      temperature: 0.8,
+    });
 
-  //   return response.choices[0].message.content;
-  // } catch (error) {
-  //   console.error("Error generating chat response:", error);
-  //   throw error;
-  // }
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    throw error;
+  }
 };
