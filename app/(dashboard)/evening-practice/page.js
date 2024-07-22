@@ -15,7 +15,7 @@ const EveningPractice = () => {
           action={insertDiaryEntry}
           className="flex w-full items-center"
         >
-          <DiaryInput />
+          <DiaryInput words={150} />
         </FormContainer>
       </div>
     </div>
