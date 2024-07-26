@@ -27,12 +27,13 @@ const DailyMessage = () => {
       </MissingDetails>
     );
   }
-  if (isLoading) return <div>Loading daily message...</div>;
+  if (isLoading)
+    return <span className="loading loading-spinner loading-lg"></span>;
   if (error) return <div>Error loading message: {error.message}</div>;
 
   return (
     <div className="max-w-2xl">
-      <p className="text-xl text-secondary">{message}</p>
+      <p className="text-xl text-primary">{message}</p>
     </div>
   );
 };

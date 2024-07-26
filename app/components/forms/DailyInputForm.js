@@ -55,13 +55,13 @@ const DailyInputForm = ({ inputs, onSubmit, title }) => {
           />
         </label>
       ))}
-      <div className="flex justify-center items-center h-10">
+      <div className="flex h-10">
         {isSubmitted ? (
           <FaCheckCircle className="text-green-500 text-2xl" />
         ) : (
           <button
             type="submit"
-            className={`btn btn-active btn-primary mx-auto ${
+            className={`btn btn-active btn-primary  ${
               !isFormValid ? "btn-disabled" : ""
             }`}
             disabled={!isFormValid}

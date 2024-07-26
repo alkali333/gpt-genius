@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 
 const themes = {
-  light: { name: "nord", icon: BsMoonFill },
+  light: { name: "cupcake", icon: BsMoonFill },
   dark: { name: "synthwave", icon: BsSunFill },
 };
 
 const ThemeSelect = () => {
-  const [themeType, setThemeType] = useState("light");
+  const [themeType, setThemeType] = useState("dark");
 
   const toggleTheme = () => {
     const newThemeType = themeType === "light" ? "dark" : "light";

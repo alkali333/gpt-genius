@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider appearence={{ baseTheme: neobrutalism }}>
-      <html data-theme="cupcake" lang="en">
+      <html data-theme="synthwave" lang="en">
         <body className={space_grotesk.className}>
           <Providers>{children}</Providers>
         </body>

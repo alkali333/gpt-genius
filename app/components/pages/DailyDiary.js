@@ -60,15 +60,14 @@ const DailyDiary = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr] items-center">
       <div className="max-w-2xl">
-        <p className="text-primary text-xl">
-          <DailyMessage />
-        </p>
+        <h1 className="text-secondary text-2xl mb-3">Daily Diary</h1>
+        <DailyMessage />
       </div>
-      <div className="max-w-2xl flex gap-5">
+      <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">
-          <h1 className="text-primary text-2xl mb-3">
+          <h1 className="text-secondary text-2xl mb-3">
             Things I&apos;m grateful for...{" "}
           </h1>
           <DailyInputForm
@@ -78,16 +77,13 @@ const DailyDiary = () => {
           />
         </div>
         <div className="w-1/2">
-          <h1 className="text-primary text-2xl mb-3">Things to do ...</h1>
+          <h1 className="text-secondary text-2xl mb-3">Things to do ...</h1>
           <DailyInputForm
             inputs={toDoItems}
             onSubmit={handleSubmitToDo}
             title="current tasks"
           />
         </div>
-      </div>
-      <div className="max-w-2xl">
-        <p>Text here</p>
       </div>
     </div>
   );

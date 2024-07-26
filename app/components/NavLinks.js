@@ -1,11 +1,12 @@
 import Link from "next/link";
 
 const links = [
+  { href: "/welcome", label: "Welcome" },
   { href: "/chat", label: "chat" },
   { href: "/about-me", label: "Journalling" },
   { href: "/my-info/hopes-and-dreams", label: "my info" },
-  { href: "/meditate", label: "meditate" },
-  { href: "/daily-diary", label: "daily diary" },
+  { href: "/morning-practice", label: "morning practice" },
+  { href: "/evening-practice", label: "evening practice" },
   { href: "/profile", label: "profile" },
 ];
 
