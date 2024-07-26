@@ -252,6 +252,7 @@ export const fetchWelcomeMessage = async (userInfo) => {
 };
 
 export async function insertDiaryEntry(prevState, formData) {
+  // need to implement zod stuff including word count
   const { userId } = auth();
   const entry = formData.get("entry");
 
