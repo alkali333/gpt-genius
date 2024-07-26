@@ -1,4 +1,4 @@
-import Chat from "/app/components/pages/Chat";
+import CoachChat from "/app/components/pages/CoachChat";
 import {
   dehydrate,
   HydrationBoundary,
@@ -10,7 +10,7 @@ const ChatPage = () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Chat />
+      <CoachChat />
     </HydrationBoundary>
   );
 };

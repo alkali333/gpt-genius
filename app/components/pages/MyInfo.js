@@ -23,9 +23,7 @@ const MyInfo = ({ userData, details, compact = false }) => {
             key={index}
             className="p-4 max-w-3xl first:bg-base-100 rounded-xl shadow-md space-y-2"
           >
-            <div className="text-xl font-medium text-secondary">
-              {item.name}
-            </div>
+            <div className="text-xl font-medium text-accent">{item.name}</div>
             {!compact && (
               <>
                 <p className="text-gray-500 text-lg">{item.description}</p>

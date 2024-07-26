@@ -1,8 +1,7 @@
 "use server";
 import prisma from "./db";
 import OpenAI from "openai";
-import { auth } from "@clerk/nextjs/server";
-
+import { auth, currentUser } from "@clerk/nextjs/server";
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -273,3 +272,22 @@ export async function insertDiaryEntry(prevState, formData) {
     return { message: "Error creating diary entry", data: null };
   }
 }
+
+export const generateChatResponse = async (systemMessage, chatMessages) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [{ role: "system", content: systemMessage }, ...chatMessages],
+      model: "gpt-4o-mini",
+      temperature: 0.8,
+      max_tokens: 200,
+    });
+
+    const message = response.choices[0].message;
+    const tokens = response.usage.total_tokens;
+
+    return { message: message, tokens: tokens };
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return null;
+  }
+};

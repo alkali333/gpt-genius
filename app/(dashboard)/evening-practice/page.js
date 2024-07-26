@@ -11,7 +11,11 @@ import MissingDetails from "../../components/messages/MissingDetails";
 
 const EveningPractice = () => {
   const { userData } = useUserData();
+
+  // used to make sure userData is fully loaded
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     if (userData) {
@@ -20,9 +24,9 @@ const EveningPractice = () => {
   }, [userData]);
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-1fr,auto] max-w-2xl">
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
       <div>
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-primary">
           Evening practice: hopes and dreams journalling
         </h2>
         {isLoading ? (
@@ -34,7 +38,7 @@ const EveningPractice = () => {
             compact={true}
           />
         )}
-        <p className="text-lg mt-8">
+        <p className="text-lg mt-8 text-secondary">
           Write at least 150 words about what you did today in relation to your
           hopes and dreams. Did you make progress towards all or some of them?
           Or did you procrastinate? Is there anything you could have done
@@ -42,12 +46,17 @@ const EveningPractice = () => {
         </p>
       </div>
       <div>
-        <FormContainer
-          action={insertDiaryEntry}
-          className="flex w-full items-center"
-        >
-          <DiaryInput words={150} />
-        </FormContainer>
+        {!isComplete ? (
+          <FormContainer
+            action={insertDiaryEntry}
+            className="flex w-full items-center"
+            onComplete={setIsComplete}
+          >
+            <DiaryInput words={150} />
+          </FormContainer>
+        ) : (
+          <p>Meditation unlocked! (meditation will appear here)</p>
+        )}
       </div>
     </div>
   );
