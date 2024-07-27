@@ -23,6 +23,8 @@ export const getRandomQuote = () => {
     "Maya Angelou: 'Nothing will work unless you do.'",
     "Albert Einstein: 'Any man who can drive safely while kissing a pretty girl is simply not giving the kiss the attention it deserves.'",
     "Stephen Covey: 'The main thing is to keep the main thing the main thing.'",
+    "James Baldwin: 'Not everything that is faced can be changed, but nothing can be changed until it is faced.'",
+    "Neil A. Fiore: 'There's a myth that time is money. In fact, time is more precious than money. It's a nonrenewable resource. Once you've spent it, and if you've spent it badly, it's gone forever'",
   ];
   const index = Math.floor(Math.random() * quotes.length);
   return quotes[index];

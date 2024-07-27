@@ -1,6 +1,6 @@
 import React from "react";
 
-const MissingDetails = ({ children }) => {
+export const MissingDetails = ({ children }) => {
   return (
     <div role="alert" className="max-w-xl text-sm alert alert-error">
       <svg
@@ -20,5 +20,3 @@ const MissingDetails = ({ children }) => {
     </div>
   );
 };
-
-export default MissingDetails;

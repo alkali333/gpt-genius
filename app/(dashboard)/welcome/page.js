@@ -21,7 +21,7 @@ const WelcomePage = () => {
   }, [userData, router]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show loading state or a spinner
+    return <span className="loading loading-spinner loading-lg"></span>; // Show loading state or a spinner
   }
 
   return (

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { IoIosRocket } from "react-icons/io";
-import { pages } from "/app/utils/pages";
 
 const MyInfo = ({ userData, details, compact = false }) => {
   const firstName = Object.keys(userData)[0];
@@ -13,7 +12,7 @@ const MyInfo = ({ userData, details, compact = false }) => {
 
   return (
     <div>
-      {pages.includes(details) && (
+      {!compact && (
         // if we are displaying an info page, include the title
         <h2 className="text-2xl font-bold mb-4">Your {type}</h2>
       )}
@@ -26,10 +25,12 @@ const MyInfo = ({ userData, details, compact = false }) => {
             <div className="text-xl font-medium text-accent">{item.name}</div>
             {!compact && (
               <>
-                <p className="text-gray-500 text-lg">{item.description}</p>
+                <p className="text-secondary text-lg">{item.description}</p>
                 <div className="flex items-center">
                   <IoIosRocket className="text-primary mr-2 text-2xl" />
-                  <p className="text-primary">{item.outcome || item.benefit}</p>
+                  <p className="text-primary">
+                    {item.outcome || item.benefit || item.result}
+                  </p>
                 </div>
               </>
             )}

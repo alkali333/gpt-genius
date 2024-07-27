@@ -7,13 +7,10 @@ const openai = new OpenAI({
 });
 
 export const summarizeInfo = async (query, type) => {
-  console.log(`Query sent to openai: ${query}`);
-  console.log(`Type of information: ${type}`);
-
   const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with three ${type}. Each ${type} should have a name, description, and ${
     type === "skills and achievements"
-      ? "beneficial result of having this skill or achievement"
-      : "result (how it will be when the issue is resolved)"
+      ? "result (the benefits it gives them)"
+      : "result (e.g.  'Solving this will mean...')"
   }.
   Respond purely with correctly formatted JSON, no commentary or code.`;
 
@@ -170,7 +167,7 @@ export const generateMeditation = async (
   userInfo,
   exerciseType = "a meditation / visualisation"
 ) => {
-  const systemMessage = `You are a ${coachStyle}, creating a medition for the user to help them with the issues identifed below. Use the user information to customize the meditation
+  const systemMessage = `You are a ${coachStyle}, creating a 500 word medition for the user to help them with the issues identifed below. Use the user information to customize the meditation
   based on their details \n\n
   USER INFO: ${userInfo}\n\n`;
 
@@ -195,35 +192,19 @@ export const generateMeditation = async (
 
 export const generateMeditationDummy = async (
   coachStyle = "spiritual life coach",
-  userInfo,
+  userInfo = null,
   exerciseType = "a meditation / visualisation"
 ) => {
-  return `I am a ${coachStyle}, creating ${exerciseType} user to help them with the issues identifed below\n\n
-  USER INFO: ${userInfo}\n\n`;
-};
+  // Simulate API call delay
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
-export const fetchDailySummary = async (firstName, userInfo) => {
-  const systemMessage = `You are a life-coach looking at the users last diary entries for ${firstName} regarding what
-   they are grateful for and tasks to do. Write a 100 word daily message for the user based on this information so they can remember
-   what they are grateful for and what needs to be done. `;
-
-  const userMessage = `DIARY INFO: ${userInfo}`;
-
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: "gpt-4o",
-      temperature: 0.8,
-    });
-
-    return response.choices[0].message.content;
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    throw error; // It's better to throw the error so React Query can handle it
+  if (userInfo) {
+    console.log(
+      `User info received by server to send to LLM ${JSON.stringify(userInfo)}`
+    );
   }
+  return `I am a ${coachStyle}, creating ${exerciseType} user to help them with the issues identified below\n\n
+  The meditation will go here.`;
 };
 
 export const fetchWelcomeMessage = async (userInfo) => {
