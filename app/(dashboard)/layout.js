@@ -1,6 +1,7 @@
 import SideBar from "../components/SideBar";
 import { FaBarsStaggered } from "react-icons/fa6";
 import UserDataProvider from "../contexts/useDataContext";
+import BottomNav from "/app/components/BottomNav";
 
 const layout = ({ children }) => {
   return (
@@ -14,7 +15,8 @@ const layout = ({ children }) => {
           <FaBarsStaggered className="w-8 h-8 text-primary" />
         </label>
         <div className="bg-base-100 px-8 py-12 min-h-screen">
-          <UserDataProvider>{children}</UserDataProvider>
+          <UserDataProvider> {children}</UserDataProvider>
+          <BottomNav />
         </div>
       </div>
       <div className="drawer-side z-50">

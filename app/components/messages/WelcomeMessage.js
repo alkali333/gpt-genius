@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { marked } from "marked";
 
 const WelcomeMessage = () => {
-  const userData = useUserData();
+  const { userData, isLoading: dataIsLoading } = useUserData();
   const {
     data: message,
     isLoading,
@@ -17,6 +17,10 @@ const WelcomeMessage = () => {
     staleTime: 1000 * 60 * 60,
   });
 
+  if (isLoading || dataIsLoading) {
+    return <span className="loading loading-spinner loading-md"></span>;
+  }
+
   if (!userData) {
     return (
       <MissingDetails>
@@ -24,10 +28,6 @@ const WelcomeMessage = () => {
         else.
       </MissingDetails>
     );
-  }
-
-  if (isLoading) {
-    return <span className="loading loading-spinner loading-md"></span>;
   }
 
   if (error) {
@@ -44,9 +44,7 @@ const WelcomeMessage = () => {
           className="prose prose-slate max-w-none text-sm"
           dangerouslySetInnerHTML={{ __html: htmlMessage }}
         />
-        ;
       </p>
-      <p>Use the daily diary, meditations and journalling exercises.</p>
     </div>
   );
 };

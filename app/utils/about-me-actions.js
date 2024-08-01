@@ -228,7 +228,33 @@ export const fetchWelcomeMessage = async (userInfo) => {
   information below to generate messags for the user. \n\n
   USER INFO: ${userInfo}\n\n`;
 
-  const userMessage = `Welcome the user and remind them of what they need to focus on based on their details, offer support, encouragement, and guidance. Keep them focused`;
+  const userMessage = `Write an empowering statement for the user and give them some tips based on their user info. 350 words and include a famous quote. `;
+
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: "gpt-4o-mini",
+      temperature: 0.8,
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    throw error;
+  }
+};
+
+export const fetchDailySummary = async (userInfo) => {
+  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to make sure the user focuses their attention on what is important. Use the user
+  information below to generate messags for the user. \n\n
+  USER INFO: ${userInfo}\n\n`;
+
+  console.log(`System message: ${systemMessage}`);
+
+  const userMessage = `Based on the USER INFO. Write a short message (100 words) reminding them of their goals, things they are grateful for, and tasks. Invite them to record their daily gratitude and task list. `;
 
   try {
     const response = await openai.chat.completions.create({

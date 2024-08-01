@@ -9,16 +9,13 @@ import MissingDetails from "/app/components/messages/MissingDetails";
 
 const MyInfoPage = ({ params }) => {
   const router = useRouter(); //
-  const { userData } = useUserData();
-  const [isLoading, setIsLoading] = useState(true);
+  const { userData, isLoading } = useUserData();
 
   useEffect(() => {
-    if (userData) {
-      setIsLoading(false);
-    } else if (userData === null) {
+    if (!isLoading && userData === null) {
       router.push("/about-me");
     }
-  }, [userData, router]);
+  }, [userData, isLoading, router]);
 
   if (isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>; // Show loading state or a spinner

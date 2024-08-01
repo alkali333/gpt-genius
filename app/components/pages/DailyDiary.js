@@ -1,6 +1,7 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
@@ -9,17 +10,18 @@ import DailyMessage from "/app/components/messages/DailyMessage";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
 
 import { updateMindState } from "../../utils/about-me-actions";
+import { set } from "zod";
 
 const DailyDiary = () => {
-  // Get QueryClient from the context
+  const [formsCompleted, setFormsCompleted] = useState(0);
+
   const queryClient = useQueryClient();
 
-  const { userId, useUser } = useAuth();
   const { fetchUserData } = useUserData();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async ({ clerkId, data, column }) => {
-      const update = await updateMindState(clerkId, column, data);
+    mutationFn: async ({ data, column }) => {
+      const update = await updateMindState(column, data);
       if (!update) {
         toast.error("Error generating chat response");
         return;
@@ -32,6 +34,10 @@ const DailyDiary = () => {
     onSuccess: () => {
       fetchUserData();
       queryClient.invalidateQueries({ queryKey: ["dailyMessage"] });
+      setFormsCompleted((prevFormsCompleted) => prevFormsCompleted + 1);
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
@@ -52,17 +58,17 @@ const DailyDiary = () => {
   ];
 
   const handleSubmitGratitude = (jsonData) => {
-    mutate({ clerkId: userId, data: jsonData, column: "grateful_for" });
+    mutate({ data: jsonData, column: "grateful_for" });
   };
 
   const handleSubmitToDo = (jsonData) => {
-    mutate({ clerkId: userId, data: jsonData, column: "current_tasks" });
+    mutate({ data: jsonData, column: "current_tasks" });
   };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr] items-center">
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
-        <h1 className="text-secondary text-2xl mb-3">Daily Diary</h1>
+        <h1 className="text-secondary text-2xl mb-3">Morning Practice</h1>
         <DailyMessage />
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
@@ -84,6 +90,13 @@ const DailyDiary = () => {
             title="current tasks"
           />
         </div>
+      </div>
+      <div>
+        {formsCompleted >= 2 ? (
+          <p>Meditation will go here</p>
+        ) : (
+          <p>Please complete the forms to unlock your morning meditation.</p>
+        )}
       </div>
     </div>
   );

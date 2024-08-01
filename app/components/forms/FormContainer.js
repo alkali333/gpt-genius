@@ -4,7 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useFormState } from "react-dom";
 import toast from "react-hot-toast";
 
-export const FormContainer = ({ action, children, onComplete, className }) => {
+export const FormContainer = ({
+  action,
+  children,
+  onComplete,
+  className = "",
+}) => {
   const initialState = {
     message: null,
     data: null,

@@ -6,18 +6,20 @@ import { MissingDetails } from "/app/components/messages/MissingDetails";
 import React from "react";
 
 const DailyMessage = () => {
-  const { userData } = useUserData();
-  const userName = userData ? Object.keys(userData)[0] : null;
+  const { userData, isLoading: dataIsLoading } = useUserData();
 
   const {
     data: message,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["dailyMessage", userName, userData],
+    queryKey: ["dailyMessage", userData],
     queryFn: getDailyMessage,
     staleTime: 1000 * 60 * 60, // 1 hour
   });
+
+  if (isLoading || dataIsLoading)
+    return <span className="loading loading-spinner loading-lg"></span>;
 
   if (!userData) {
     return (
@@ -27,8 +29,7 @@ const DailyMessage = () => {
       </MissingDetails>
     );
   }
-  if (isLoading)
-    return <span className="loading loading-spinner loading-lg"></span>;
+
   if (error) return <div>Error loading message: {error.message}</div>;
 
   return (
