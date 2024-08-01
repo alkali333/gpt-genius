@@ -1,11 +1,13 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
+import { useState } from "react";
+import {
+  updateMindState,
+  summarizeInfo,
+  updateUserHasData,
+} from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";
-
-import { useAuth } from "@clerk/nextjs";
 
 import ChatForm from "/app/components/forms/ChatForm";
 import { questions } from "../../utils/questions";
@@ -13,7 +15,6 @@ import TextSkeleton from "../TextSkeleton";
 import { useUserData } from "/app/contexts/useDataContext";
 
 const AboutMe = () => {
-  const { userId } = useAuth();
   const [step, setStep] = useState(1);
   const [text, setText] = useState("");
 
@@ -23,19 +24,20 @@ const AboutMe = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ query, type, column }) => {
-      const summary = await summarizeInfo(query, type);
-      if (!summary) {
-        toast.error("Error generating chat response");
+      const summaryResponse = await summarizeInfo(query, type);
+      if (!summaryResponse.data && summaryResponse.message) {
+        toast.error(summaryResponse.message);
         return;
       }
-      console.log(`Info recieved from LLM: ${summary}`);
-      const update = await updateMindState(userId, column, summary);
+      // console.log(`Info recieved from LLM: ${summaryResponse.data}`);
+      const update = await updateMindState(column, summaryResponse.data);
       if (!update) {
         toast.error("Error updating mind state");
         return;
       }
 
       setStep(step + 1);
+
       return summary;
     },
     onSuccess: () => {

@@ -2,33 +2,28 @@
 import { useEffect, useState } from "react";
 
 import { useUserData } from "/app/contexts/useDataContext";
-import { FormContainer } from "../../components/forms/FormContainer";
-import { Meditation } from "../../components/Meditation";
-import { DiaryInput } from "../../components/forms/DiaryInput";
-import MyInfo from "../../components/pages/MyInfo";
-import { insertDiaryEntry } from "../../utils/about-me-actions";
+import { FormContainer } from "/app/components/forms/FormContainer";
+import { DiaryInput } from "/app/components/forms/DiaryInput";
+import MyInfo from "/app/components/pages/MyInfo";
+import { insertDiaryEntry } from "/app/utils/about-me-actions";
+import MissingDetails from "/app/components/messages/MissingDetails";
+import Meditation from "/app/components/Meditation"; // Make sure this import is correct
 
-import MissingDetails from "../../components/messages/MissingDetails";
-
-const EveningPractice = () => {
+const EveningPracticePage = () => {
   const { userData } = useUserData();
-
-  // State to track if we've checked for data
   const [hasCheckedData, setHasCheckedData] = useState(false);
-
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    // Mark that we've checked for data
-    setHasCheckedData(true);
+    if (userData) {
+      setHasCheckedData(true);
+    }
   }, [userData]);
 
-  // Don't render anything until we've checked for data
   if (!hasCheckedData) {
     return <span className="loading loading-spinner loading-lg"></span>;
   }
 
-  // Now we can safely check if userData exists
   if (!userData) {
     return (
       <MissingDetails>
@@ -66,11 +61,11 @@ const EveningPractice = () => {
             <DiaryInput words={150} />
           </FormContainer>
         ) : (
-          <Meditation />
+          <Meditation /> // Replace with Meditation component
         )}
       </div>
     </div>
   );
 };
 
-export default EveningPractice;
+export default EveningPracticePage;

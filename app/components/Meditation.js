@@ -6,6 +6,7 @@ import { marked } from "marked";
 import { useUserData } from "/app/contexts/useDataContext";
 import { generateMeditationDummy } from "/app/utils/about-me-actions";
 import { MissingDetails } from "./messages/MissingDetails";
+import { getRandomExercise } from "../utils/exercises";
 
 const Meditation = () => {
   const { userData } = useUserData();
@@ -18,7 +19,7 @@ const Meditation = () => {
         setIsLoading(true);
         try {
           const meditationResponse = await generateMeditationDummy(
-            "spiritual life coach",
+            getRandomExercise(),
             JSON.stringify(userData),
             "a meditation / visualisation"
           );

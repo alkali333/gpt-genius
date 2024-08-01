@@ -1,20 +1,44 @@
 "use client";
+import { notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
 import { useUserData } from "/app/contexts/useDataContext";
-import MyInfo from "../../../components/pages/MyInfo";
-import MissingDetails from "../../../components/messages/MissingDetails";
-import pages from "/app/utils/pages";
+import MyInfo from "/app/components/pages/MyInfo";
+import MissingDetails from "/app/components/messages/MissingDetails";
 
 const MyInfoPage = ({ params }) => {
-  if (!pages.includes(details)) {
-    notFound();
+  const router = useRouter(); //
+  const { userData } = useUserData();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (userData) {
+      setIsLoading(false);
+    } else if (userData === null) {
+      router.push("/about-me");
+    }
+  }, [userData, router]);
+
+  if (isLoading) {
+    return <span className="loading loading-spinner loading-lg"></span>; // Show loading state or a spinner
   }
 
-  const { userData } = useUserData();
+  const validPaths = [
+    "hopes-and-dreams",
+    "skills-and-achievements",
+    "obstacles-and-challenges",
+  ];
+
+  // Check if the current path is valid
+  if (!validPaths.includes(params.details)) {
+    notFound();
+  }
 
   if (!userData) {
     return (
       <MissingDetails>Please complete the journalling exercise.</MissingDetails>
-    ); // Or any loading state you prefer
+    );
   }
 
   return <MyInfo userData={userData} details={params.details} />;

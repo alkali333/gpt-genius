@@ -19,7 +19,8 @@ export const questions = [
   {
     step: 3,
     title: "obstacles and challenges",
-    content: "Content for obstacles and challenges",
+    content:
+      "Tell me about the obstacles and challenges you are facing. What is holding you back? What are the things you should be doing that you don't do, and the things you shouldn't be doing that you should do? For each obstacle / challenge, tell me how you will feel when it is resolved. ",
     column: "obstacles_and_challenges",
   },
   {

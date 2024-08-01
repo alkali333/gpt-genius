@@ -12,12 +12,11 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
   const wordCount = text.split(/\s+/).filter(Boolean).length;
   const remainingWords = Math.max(250 - wordCount, 0);
 
-  const isButtonDisabled = remainingWords > 0; // Check if there are remaining words
-
   return (
     <form onSubmit={handleSubmit} className="flex w-full items-center">
       <textarea
         type="text"
+        name="message"
         placeholder="Send message"
         className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
         value={text}
@@ -34,7 +33,6 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
         <button
           className="btn btn-circle btn-s btn-primary w-25 -ml-14"
           type="submit"
-          disabled={isButtonDisabled} // Disable the button if there are remaining words
         >
           {isPending ? (
             <span className="loading loading-spinner"></span>

@@ -13,7 +13,7 @@ import { useUser } from "@clerk/nextjs";
 const UserDataContext = createContext();
 
 export default function UserDataProvider({ children, initialData }) {
-  const [userData, setUserData] = useState(initialData);
+  const [userData, setUserData] = useState(initialData || null);
   const { user, isLoaded } = useUser();
 
   // for debugging
@@ -22,13 +22,11 @@ export default function UserDataProvider({ children, initialData }) {
   const fetchUserData = useCallback(async () => {
     if (isLoaded && user) {
       try {
-        const data = await getMindStateFieldsWithUsername(
-          user.id,
-          user.firstName
-        );
-        setUserData(data);
+        const data = await getMindStateFieldsWithUsername();
+        setUserData(data || null);
       } catch (error) {
         console.error(`No data for user: ${user.id} error: ${error}`);
+        setUserData(null);
       }
     }
   }, [isLoaded, user]);
