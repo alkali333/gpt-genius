@@ -23,7 +23,7 @@ export const summarizeInfo = async (query, type) => {
       ? "result (the benefits it gives them)"
       : "result (e.g.  'Solving this will mean...')"
   }.
-  Respond purely with correctly formatted JSON, no commentary or code.`;
+  Give each one a default rating of 3. Respond purely with correctly formatted JSON, no commentary or code.`;
 
   const responseJson = {
     [type]: [
@@ -31,6 +31,7 @@ export const summarizeInfo = async (query, type) => {
         name: "name goes here",
         description: "description goes here",
         result: "value goes here",
+        rating: 3,
       },
     ],
   };

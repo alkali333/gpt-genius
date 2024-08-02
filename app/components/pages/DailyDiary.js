@@ -69,7 +69,11 @@ const DailyDiary = () => {
     <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
         <h1 className="text-secondary text-2xl mb-3">Morning Practice</h1>
-        <DailyMessage />
+        {formsCompleted < 2 ? (
+          <DailyMessage />
+        ) : (
+          <p>Thanks for recording your gratitude and task lists</p>
+        )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">

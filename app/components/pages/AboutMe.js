@@ -1,11 +1,7 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  updateMindState,
-  summarizeInfo,
-  updateUserHasData,
-} from "/app/utils/about-me-actions";
+import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
@@ -59,6 +55,10 @@ const AboutMe = () => {
     });
     setText("");
   };
+
+  if (isPending || dataIsLoading) {
+    return <span className="loading loading-spinner loading-md"></span>;
+  }
 
   return (
     <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto]">

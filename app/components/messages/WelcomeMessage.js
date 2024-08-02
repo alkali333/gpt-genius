@@ -39,12 +39,11 @@ const WelcomeMessage = () => {
   return (
     <div className="max-w-2xl text-sm leading-loose">
       <h2 className="text-primary text-xl mb-7">Welcome To Attenshun</h2>
-      <p className="text-secondary">
-        <div
-          className="prose prose-slate max-w-none text-sm"
-          dangerouslySetInnerHTML={{ __html: htmlMessage }}
-        />
-      </p>
+
+      <div
+        className="text-secondary prose prose-slate max-w-none text-sm"
+        dangerouslySetInnerHTML={{ __html: htmlMessage }}
+      />
     </div>
   );
 };
