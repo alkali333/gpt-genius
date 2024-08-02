@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
+import { revalidatePath } from "next/cache";
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as needed
 import { updateMindState } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
@@ -33,21 +34,20 @@ const HopesAndDreamsRating = () => {
     );
     if (update) {
       toast.success("Ratings updated successfully", { icon: "🚀" });
+      fetchUserData();
     } else {
       toast.error("Failed to update ratings");
     }
 
-    fetchUserData();
     console.log(JSON.stringify(updatedHopesAndDreams, null, 2));
   };
 
   return (
-    <div>
+    <div className="max-w-2xl flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Hopes and Dreams</h2>
       {hopesAndDreams.map((item, index) => (
         <div key={index} className="mb-4">
           <h3 className="text-lg font-bold">{item.name}</h3>
-          <p>{item.description}</p>
           <div className="rating gap-1 mt-2">
             {[1, 2, 3, 4, 5].map((rating) => (
               <input
@@ -56,7 +56,7 @@ const HopesAndDreamsRating = () => {
                 name={`rating-${index}`}
                 className="mask mask-star bg-orange-400"
                 onChange={() => handleRatingChange(index, rating)}
-                defaultChecked={rating === 3}
+                checked={ratings[index] === rating}
               />
             ))}
           </div>

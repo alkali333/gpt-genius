@@ -2,7 +2,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import { useAuth } from "@clerk/nextjs";
 
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
@@ -10,7 +9,6 @@ import DailyMessage from "/app/components/messages/DailyMessage";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
 
 import { updateMindState } from "../../utils/about-me-actions";
-import { set } from "zod";
 
 const DailyDiary = () => {
   const [formsCompleted, setFormsCompleted] = useState(0);
@@ -75,9 +73,9 @@ const DailyDiary = () => {
           <p>Thanks for recording your gratitude and task lists</p>
         )}
       </div>
-      <div className="max-w-2xl flex gap-5 mt-8">
+      <div className="max-w-2xl flex gap-5">
         <div className="w-1/2">
-          <h1 className="text-secondary text-2xl mb-3">
+          <h1 className="text-secondary text-xl mb-3">
             Things I&apos;m grateful for...{" "}
           </h1>
           <DailyInputForm
@@ -87,7 +85,7 @@ const DailyDiary = () => {
           />
         </div>
         <div className="w-1/2">
-          <h1 className="text-secondary text-2xl mb-3">Things to do ...</h1>
+          <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
           <DailyInputForm
             inputs={toDoItems}
             onSubmit={handleSubmitToDo}

@@ -2,18 +2,41 @@
 import prisma from "./db";
 import OpenAI from "openai";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import { eveningJournalSchema, aboutMeSchema } from "/app/utils/schemas";
+import { revalidatePath } from "next/cache";
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: model,
+      temperature: 0.8,
+    });
+
+    const reply = response.choices[0].message.content;
+
+    return { message: "Received OpenAI response", data: reply };
+  } catch (error) {
+    return { message: `Error generating chat response: ${error}`, data: null };
+  }
+};
 
 export const summarizeInfo = async (query, type) => {
   // Validate input
   const result = aboutMeSchema.shape.message.safeParse(query);
   if (!result.success) {
-    return { message: result.error.message, data: null };
+    if (result.error instanceof ZodError) {
+      const errorMessage = error.errors[0]?.message || "Validation error";
+      return { message: errorMessage };
+    }
   }
 
   const validatedQuery = result.data;
@@ -39,36 +62,33 @@ export const summarizeInfo = async (query, type) => {
   const responseString = JSON.stringify(responseJson);
   const systemMessageWithResponse = `${systemMessage}\n${responseString}`;
 
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessageWithResponse },
-        { role: "user", content: validatedQuery },
-      ],
-      model: "gpt-4o-mini",
-      temperature: 0.8,
-    });
+  const openAiResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessageWithResponse,
+    validatedQuery
+  );
 
-    const summary = response.choices[0].message.content;
+  if (openAiResponse.data) {
+    const summary = openAiResponse.data;
 
     // Clean and parse the response
     const cleanedSummary = summary
       .replace(/^```json\n?/, "")
       .replace(/```$/, "")
       .trim();
-    console.log("Summary from LLM:", cleanedSummary);
+    //  console.log("Summary from LLM:", cleanedSummary);
 
     const userData = JSON.parse(cleanedSummary);
     return { message: "User data created", data: userData };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } else {
     return {
-      message: `Error processing request: ${errorMessage}`,
+      message: "Error generating user data: " + openAiResponse.message,
       data: null,
     };
   }
 };
 
+// add path revalidation here
 export const updateMindState = async (column, data) => {
   const user = await currentUser();
   if (!user) {
@@ -89,61 +109,6 @@ export const updateMindState = async (column, data) => {
     });
   }
 };
-
-// export const summarizeAndUpdate = async (
-//   query,
-//   type,
-//   clerkId,
-//   column,
-//   data
-// ) => {
-//   const summary = await summarizeInfo(query, type);
-//   const result = updateMindState(clerkId, column, summary);
-// };
-
-// export const getMindStateField = async (clerkId, column) => {
-//   console.log(`Retrieving ${column} from MindState for user:${clerkId}`);
-//   const existingUser = await prisma.mindState.findUnique({
-//     where: { clerkId: clerkId },
-//   });
-//   if (existingUser) {
-//     const details = await prisma.mindState.findUnique({
-//       where: {
-//         clerkId,
-//       },
-//       select: {
-//         [column]: true,
-//       },
-//     });
-//     return details[column];
-//   }
-//   return null;
-// };
-
-// export const getMindStateFields = async (clerkId) => {
-//   console.log(`Retrieving mind state fields for user:${clerkId}`);
-//   const existingUser = await prisma.mindState.findUnique({
-//     where: { clerkId: clerkId },
-//   });
-//   if (existingUser) {
-//     const details = await prisma.mindState.findUnique({
-//       where: {
-//         clerkId,
-//       },
-//       select: {
-//         hopes_and_dreams: true,
-//         skills_and_achievements: true,
-//         obstacles_and_challenges: true,
-//       },
-//     });
-//     return {
-//       hopes_and_dreams: details.hopes_and_dreams,
-//       skills_and_achievements: details.skills_and_achievements,
-//       obstacles_and_challenges: details.obstacles_and_challenges,
-//     };
-//   }
-//   return null;
-// };
 
 export const getMindStateFieldsWithUsername = async () => {
   const user = await currentUser();
@@ -190,20 +155,15 @@ export const generateMeditation = async (
 
   const userMessage = `Create the following exercise: ${exerciseType}`;
 
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: "gpt-4o",
-      temperature: 0.8,
-    });
-
-    return response.choices[0].message.content;
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    return null;
+  const constOpenAiResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessage,
+    userMessage
+  );
+  if (openAIResponse.data) {
+    return openAIResponse.data;
+  } else {
+    return "Error generating welcome message: " + openAIResponse.message;
   }
 };
 
@@ -231,20 +191,16 @@ export const fetchWelcomeMessage = async (userInfo) => {
 
   const userMessage = `Write an empowering statement for the user and give them some tips based on their user info. 350 words and include a famous quote. `;
 
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: "gpt-4o-mini",
-      temperature: 0.8,
-    });
+  const openAIResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessage,
+    userMessage
+  );
 
-    return response.choices[0].message.content;
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    throw error;
+  if (openAIResponse.data) {
+    return openAIResponse.data;
+  } else {
+    return "Error generating welcome message: " + openAIResponse.message;
   }
 };
 
@@ -257,20 +213,37 @@ export const fetchDailySummary = async (userInfo) => {
 
   const userMessage = `Based on the USER INFO. Write a short message (100 words) reminding them of their goals, things they are grateful for, and tasks. Invite them to record their daily gratitude and task list. `;
 
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: "gpt-4o",
-      temperature: 0.8,
-    });
+  const openAIResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessage,
+    userMessage
+  );
 
-    return response.choices[0].message.content;
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    throw error;
+  if (openAIResponse.data) {
+    return openAIResponse.data;
+  } else {
+    return "Error generating welcome message: " + openAIResponse.message;
+  }
+};
+
+export const fetchDiaryEncouragementMessage = async (userInfo, diaryEntry) => {
+  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to compare the user's latest diary entry with their existing information and let them know how they are doing, offering tips and suggestions \n\n
+  USER INFO: ${userInfo}\n\n`;
+
+  console.log(`System message: ${systemMessage}`);
+
+  const userMessage = `Latest user diary entry: ${diaryEntry}`;
+
+  const openAIResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessage,
+    userMessage
+  );
+
+  if (openAIResponse.data) {
+    return openAIResponse.data;
+  } else {
+    return "Error generating welcome message: " + openAIResponse.message;
   }
 };
 

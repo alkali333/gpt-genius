@@ -34,7 +34,7 @@ const DailyMessage = () => {
 
   return (
     <div className="max-w-2xl">
-      <p className="text-xl text-primary">{message}</p>
+      <p className="text-lg text-primary">{message}</p>
     </div>
   );
 };

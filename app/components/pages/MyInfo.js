@@ -32,6 +32,19 @@ const MyInfo = ({ userData, details, compact = false }) => {
                     {item.outcome || item.benefit || item.result}
                   </p>
                 </div>
+                {item.rating && (
+                  <div className="rating gap-1 mt-2">
+                    {[1, 2, 3, 4, 5].map((value) => (
+                      <input
+                        key={value}
+                        type="radio"
+                        name="rating"
+                        className="mask mask-star bg-orange-400"
+                        checked={item.rating === value}
+                      />
+                    ))}
+                  </div>
+                )}
               </>
             )}
           </div>
