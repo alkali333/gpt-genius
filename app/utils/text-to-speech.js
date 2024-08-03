@@ -1,41 +1,36 @@
+// app/actions.js
 "use server";
 
-const {
-  PollyClient,
-  SynthesizeSpeechCommand,
-} = require("@aws-sdk/client-polly");
-const { writeFile } = require("fs/promises");
-const { v4: uuidv4 } = require("uuid");
-const path = require("path");
+import AWS from "aws-sdk";
+import fs from "fs";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
-export async function textToSpeech(text) {
-  const polly = new PollyClient({
-    region: "us-west-2", // Replace with your preferred region
-  });
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
+const polly = new AWS.Polly();
+
+export async function synthesizeSpeech(text) {
   const params = {
-    OutputFormat: "mp3",
     Text: text,
-    VoiceId: "Joanna", // Replace with your preferred voice
-    Engine: "neural",
+    OutputFormat: "mp3",
+    VoiceId: "Emma",
   };
 
   try {
-    const command = new SynthesizeSpeechCommand(params);
-    const { AudioStream } = await polly.send(command);
-
-    if (!AudioStream) {
-      throw new Error("No audio stream returned from Polly");
-    }
-
+    const data = await polly.synthesizeSpeech(params).promise();
     const fileName = `${uuidv4()}.mp3`;
     const filePath = path.join(process.cwd(), "public", fileName);
 
-    await writeFile(filePath, AudioStream);
+    fs.writeFileSync(filePath, data.AudioStream);
 
     return `/${fileName}`;
   } catch (error) {
-    console.error("Error in text-to-speech conversion:", error);
-    throw error;
+    console.error("Error synthesizing speech:", error);
+    throw new Error("Failed to synthesize speech");
   }
 }
