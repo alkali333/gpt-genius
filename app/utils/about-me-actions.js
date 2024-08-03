@@ -94,7 +94,11 @@ export const updateMindState = async (column, data) => {
   if (!user) {
     throw new Error("User not found, please log in to create a profile");
   }
-  console.log(`Updating mind state for user:${user.firstName}`);
+  console.log(
+    `Updating mind state for user:${
+      user.firstName
+    } \n${column}: ${JSON.stringify(data)}`
+  );
   const existingUser = await prisma.mindState.findUnique({
     where: { clerkId: user.id },
   });

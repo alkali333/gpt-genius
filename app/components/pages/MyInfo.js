@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { IoIosRocket } from "react-icons/io";
+import { FaStar } from "react-icons/fa";
 
 const MyInfo = ({ userData, details, compact = false }) => {
   const firstName = Object.keys(userData)[0];
@@ -32,19 +33,13 @@ const MyInfo = ({ userData, details, compact = false }) => {
                     {item.outcome || item.benefit || item.result}
                   </p>
                 </div>
-                {item.rating && (
-                  <div className="rating gap-1 mt-2">
-                    {[1, 2, 3, 4, 5].map((value) => (
-                      <input
-                        key={value}
-                        type="radio"
-                        name="rating"
-                        className="mask mask-star bg-orange-400"
-                        checked={item.rating === value}
-                      />
+                <div className="flex">
+                  {Array(item.rating)
+                    .fill(null)
+                    .map((_, index) => (
+                      <FaStar key={index} className="text-yellow-500 mr-1" />
                     ))}
-                  </div>
-                )}
+                </div>
               </>
             )}
           </div>
