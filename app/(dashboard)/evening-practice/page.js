@@ -5,7 +5,6 @@ import { useUserData } from "/app/contexts/useDataContext";
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
 import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
-import MyInfo from "/app/components/pages/MyInfo";
 import { insertDiaryEntry } from "/app/utils/about-me-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
 import Meditation from "/app/components/Meditation"; // Make sure this import is correct
@@ -15,6 +14,8 @@ const EveningPracticePage = () => {
 
   const [journalComplete, setJournalComplete] = useState(false);
   const [ratingComplete, setRatingComplete] = useState(false);
+
+  const formsComplete = journalComplete && ratingComplete;
 
   if (isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -38,7 +39,7 @@ const EveningPracticePage = () => {
         <HopesAndDreamsRating setIsFinished={setRatingComplete} />
       </div>
       <div>
-        {!journalComplete || !ratingComplete ? (
+        {!formsComplete ? (
           <>
             <p className="text-lg mt-8 mb-8 text-secondary">
               Write at least 150 words about what you did today in relation to

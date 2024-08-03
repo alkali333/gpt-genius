@@ -64,7 +64,7 @@ const DailyDiary = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto] items-center">
+    <div className=" grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
         <h1 className="text-secondary text-2xl mb-3">Morning Practice</h1>
         {formsCompleted < 2 ? (
@@ -73,7 +73,7 @@ const DailyDiary = () => {
           <p>Thanks for recording your gratitude and task lists</p>
         )}
       </div>
-      <div className="max-w-2xl flex gap-5">
+      <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">
           <h1 className="text-secondary text-xl mb-3">
             Things I&apos;m grateful for...{" "}
@@ -93,7 +93,7 @@ const DailyDiary = () => {
           />
         </div>
       </div>
-      <div>
+      <div className="mt-8">
         {formsCompleted >= 2 ? (
           <p>Meditation will go here</p>
         ) : (
