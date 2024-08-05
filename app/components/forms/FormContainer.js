@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useFormState } from "react-dom";
+
 import toast from "react-hot-toast";
 
-export const FormContainer = ({
-  action,
-  children,
-  onComplete,
-  className = "",
-}) => {
+export const FormContainer = ({ action, children, className }) => {
   const initialState = {
     message: null,
     data: null,
@@ -21,10 +17,7 @@ export const FormContainer = ({
     if (state.message) {
       toast(state.message);
     }
-    if (state.data) {
-      onComplete(true);
-    }
-  }, [state, onComplete]);
+  }, [state]);
 
   return (
     <form action={formAction} className={className}>

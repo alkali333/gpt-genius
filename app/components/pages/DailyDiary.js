@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as necessary
 
 import DailyMessage from "/app/components/messages/DailyMessage";
+import DiaryMessage from "/app/components/messages/DiaryMessage";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
 
 import { updateMindState } from "../../utils/about-me-actions";
@@ -15,7 +16,7 @@ const DailyDiary = () => {
 
   const queryClient = useQueryClient();
 
-  const { fetchUserData } = useUserData();
+  const { fetchUserData, userData, isLoading: dataIsLoading } = useUserData();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async ({ data, column }) => {
@@ -63,6 +64,9 @@ const DailyDiary = () => {
     mutate({ data: jsonData, column: "current_tasks" });
   };
 
+  if (isPending || dataIsLoading)
+    return <span className="loading loading-spinner loading-lg"></span>;
+
   return (
     <div className=" grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
@@ -91,6 +95,9 @@ const DailyDiary = () => {
             onSubmit={handleSubmitToDo}
             title="current tasks"
           />
+          <p>
+            <DiaryMessage userInfo={userInfo} />
+          </p>
         </div>
       </div>
       <div className="mt-8">

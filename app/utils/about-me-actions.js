@@ -5,6 +5,7 @@ import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { ZodError } from "zod";
 import { eveningJournalSchema, aboutMeSchema } from "/app/utils/schemas";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -116,6 +117,7 @@ export const updateMindState = async (column, data) => {
 
 export const getMindStateFieldsWithUsername = async () => {
   const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
   const details = await prisma.mindState.findUnique({
     where: { clerkId: user.id },
@@ -230,13 +232,35 @@ export const fetchDailySummary = async (userInfo) => {
   }
 };
 
-export const fetchDiaryEncouragementMessage = async (userInfo, diaryEntry) => {
+export const getLatestDiaryEntry = async () => {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+
+  const latestDiary = await prisma.diary.findFirst({
+    where: {
+      clerkId: user.id,
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  if (!latestDiary) return null;
+
+  return latestDiary.entry;
+};
+
+export const fetchDiaryEncouragementMessage = async () => {
+  const userInfo = JSON.stringify(getMindStateFieldsWithUsername());
+  const latestDiaryEntry = await getLatestDiaryEntry();
+
+  if (!latestDiaryEntry || !userInfo)
+    return "Please complete the journalling exercise and your evening practice.";
+
   const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to compare the user's latest diary entry with their existing information and let them know how they are doing, offering tips and suggestions \n\n
   USER INFO: ${userInfo}\n\n`;
 
-  console.log(`System message: ${systemMessage}`);
-
-  const userMessage = `Latest user diary entry: ${diaryEntry}`;
+  const userMessage = `Diary Entry: ${latestDiaryEntry} `;
 
   const openAIResponse = await fetchOpenAiResponse(
     "gpt-4o",
@@ -252,26 +276,46 @@ export const fetchDiaryEncouragementMessage = async (userInfo, diaryEntry) => {
 };
 
 export async function insertDiaryEntry(prevState, formData) {
+  console.log("Insert Diary Entry Triggered");
   const { userId } = auth();
   const rawData = Object.fromEntries(formData);
 
+  // Debugging: Log the raw data received
+  console.log("Raw Data:", rawData);
+
   try {
     const validatedFields = eveningJournalSchema.parse(rawData);
+
+    // Debugging: Log the validated fields
+    console.log("Validated Fields:", validatedFields);
+
     const newEntry = await prisma.diary.create({
       data: {
         clerkId: userId,
         ...validatedFields,
       },
     });
+
+    // Debugging: Log the new entry created
+    console.log("New Entry:", newEntry);
+
     return { message: "Diary entry successfully created", data: newEntry };
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessage = error.errors[0]?.message || "Validation error";
-      return { message: errorMessage };
+
+      // Debugging: Log the validation error
+      console.log("Validation Error:", errorMessage);
+
+      return { message: errorMessage, data: null };
     }
+
+    // Debugging: Log any unexpected errors
+    console.log("Unexpected Error:", error);
+
+    return { message: "An unexpected error occurred", data: null };
   }
 }
-
 // export const generateChatResponse = async (systemMessage, chatMessages) => {
 //   try {
 //     const response = await openai.chat.completions.create({

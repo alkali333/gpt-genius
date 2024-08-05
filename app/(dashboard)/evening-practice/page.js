@@ -6,7 +6,7 @@ import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
 import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
 import { insertDiaryEntry } from "/app/utils/about-me-actions";
-import MissingDetails from "/app/components/messages/MissingDetails";
+import { MissingDetails } from "/app/components/messages/MissingDetails";
 import Meditation from "/app/components/Meditation"; // Make sure this import is correct
 
 const EveningPracticePage = () => {

@@ -1,11 +1,24 @@
 import * as z from "zod";
 
+const countWords = (str) => str.trim().split(/\s+/).length;
+
+const wordCountSchema = (minWords, maxWords) =>
+  z.string().refine(
+    (value) => {
+      const wordCount = countWords(value);
+      return wordCount >= minWords && wordCount <= maxWords;
+    },
+    {
+      message: `String must be between ${minWords} and ${maxWords} words.`,
+    }
+  );
+
 export const eveningJournalSchema = z.object({
-  message: z.string().min(150).max(1000),
+  message: wordCountSchema(150, 1000),
 });
 
 export const aboutMeSchema = z.object({
-  message: z.string().min(250).max(1500),
+  message: wordCountSchema(250, 1500),
 });
 
 export const morningJournalSchema = z.object({

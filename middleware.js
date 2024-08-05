@@ -8,6 +8,8 @@ const isProtectedRoute = createRouteMatcher([
   "/meditation(.*)",
   "/morning-practice(.*)",
   "/welcome(.*)",
+  "/welcome-v2(.*)",
+  "/my-info-v2(.*)",
   "/evening-practice(.*)",
 ]);
 

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { synthesizeSpeech } from "./actions";
+import { synthesizeSpeech } from "/app/utils/text-to-speech";
 
 export default function Home() {
   const [text, setText] = useState("");
