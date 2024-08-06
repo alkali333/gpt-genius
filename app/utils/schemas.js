@@ -21,10 +21,18 @@ export const aboutMeSchema = z.object({
   message: wordCountSchema(250, 1500),
 });
 
-export const morningJournalSchema = z.object({
-  gratitude1: z.string().min(10).max(100),
-  gratitude2: z.string().min(10).max(100),
-  gratitude3: z.string().min(10).max(100),
-  gratitude4: z.string().min(10).max(100),
-  gratitude5: z.string().min(10).max(100),
+export const gratitudeSchema = z.object({
+  gratitude1: z.string().min(3).max(1000),
+  gratitude2: z.string().min(3).max(1000),
+  gratitude3: z.string().min(3).max(1000),
+  gratitude4: z.string().min(3).max(1000),
+  gratitude5: z.string().min(3).max(1000),
+});
+
+export const todoSchema = z.object({
+  todo1: z.string().min(3).max(1000),
+  todo2: z.string().min(3).max(1000),
+  todo3: z.string().min(3).max(1000),
+  todo4: z.string().min(3).max(1000),
+  todo5: z.string().min(3).max(1000),
 });

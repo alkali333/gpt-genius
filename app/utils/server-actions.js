@@ -1,8 +1,11 @@
 "use server";
 import prisma from "./db";
 import OpenAI from "openai";
-import { currentUser } from "@clerk/nextjs/server";
+
+import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
+import { ZodError } from "zod";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -95,5 +98,64 @@ export const fetchWelcomeMessage = async () => {
     };
   } else {
     return { message: "Error retrieving welcome message", data: null };
+  }
+};
+
+export const updateMorningJournal = async (prevState, formData) => {
+  const user = await fetchAuthUser();
+  const rawData = Object.fromEntries(formData);
+
+  try {
+    const isGratitudeForm = "gratitude1" in rawData;
+    const isTodoForm = "todo1" in rawData;
+
+    let validatedFields, updateObject, columnName;
+
+    if (isGratitudeForm) {
+      validatedFields = gratitudeSchema.parse(rawData);
+      updateObject = {
+        "grateful for": {
+          1: validatedFields.gratitude1,
+          2: validatedFields.gratitude2,
+          3: validatedFields.gratitude3,
+          4: validatedFields.gratitude4,
+          5: validatedFields.gratitude5,
+        },
+      };
+      columnName = "grateful_for";
+    } else if (isTodoForm) {
+      validatedFields = todoSchema.parse(rawData);
+      updateObject = {
+        "current tasks": {
+          1: validatedFields.todo1,
+          2: validatedFields.todo2,
+          3: validatedFields.todo3,
+          4: validatedFields.todo4,
+          5: validatedFields.todo5,
+        },
+      };
+      columnName = "current_tasks";
+    }
+
+    await prisma.mindState.update({
+      where: { clerkId: user.id },
+      data: { [columnName]: updateObject },
+    });
+
+    return {
+      message: `${isGratitudeForm ? "Gratitude" : "Todo"} updated`,
+      data: updateObject,
+    };
+  } catch (error) {
+    console.error("Error in updateMindState:", error);
+    if (error instanceof ZodError) {
+      const errorMessage = error.errors[0]?.message || "Validation error";
+      return { message: errorMessage, data: null };
+    } else {
+      return {
+        message: error.message || "An unexpected error occurred",
+        data: null,
+      };
+    }
   }
 };

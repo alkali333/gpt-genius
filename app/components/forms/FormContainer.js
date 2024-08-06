@@ -5,7 +5,12 @@ import { useFormState } from "react-dom";
 
 import toast from "react-hot-toast";
 
-export const FormContainer = ({ action, children, className }) => {
+export const FormContainer = ({
+  action,
+  children,
+  className,
+  onComplete = () => {},
+}) => {
   const initialState = {
     message: null,
     data: null,
@@ -17,7 +22,10 @@ export const FormContainer = ({ action, children, className }) => {
     if (state.message) {
       toast(state.message);
     }
-  }, [state]);
+    if (state.data) {
+      onComplete(true);
+    }
+  }, [state, onComplete]);
 
   return (
     <form action={formAction} className={className}>
@@ -25,3 +33,5 @@ export const FormContainer = ({ action, children, className }) => {
     </form>
   );
 };
+
+export default FormContainer;

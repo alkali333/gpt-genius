@@ -22,10 +22,10 @@ const DailyDiary = () => {
     mutationFn: async ({ data, column }) => {
       const update = await updateMindState(column, data);
       if (!update) {
-        toast.error("Error generating chat response");
+        toast.error("Error updating mindstate");
         return;
       } else {
-        toast.success("Diary updated successfully");
+        toast.success("Mindstate updated successfully");
       }
 
       return update;

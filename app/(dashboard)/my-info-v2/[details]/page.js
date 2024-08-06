@@ -17,7 +17,7 @@ const MyInfoPage = async ({ params }) => {
   const userJson = await fetchUserJson();
   const firstName = Object.keys(userJson)[0];
   const typeJson = userJson[firstName];
-  const type = details.replace(/-/g, " ");
+  const type = params.details.replace(/-/g, " ");
 
   if (!typeJson[type] || !Array.isArray(typeJson[type])) {
     return <p>No data found for {type}</p>;
