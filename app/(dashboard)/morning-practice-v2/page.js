@@ -1,12 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-
 import { updateMorningJournal } from "../../utils/server-actions";
-import FormContainer from "../../components/forms/FormContainer";
-import DailyInputFormV2 from "../../components/forms/DailyInputFormV2";
+import FormContainer from "../forms/FormContainer";
+import DailyInputFormV2 from "../forms/DailyInputFormV2";
+import MissingDetails from "../messages/MissingDetails";
 
-const MorningPracticePage = () => {
+const MorningPractice = () => {
   const gratitudeItems = [
     { name: "gratitude1", placeholder: "One" },
     { name: "gratitude2", placeholder: "Two" },
@@ -29,10 +29,10 @@ const MorningPracticePage = () => {
   const formsComplete = gratitudeComplete && toDoComplete;
 
   return (
-    <div className=" grid grid-rows-[auto,1fr,auto] items-center">
+    <div className="grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
         <h1 className="text-secondary text-2xl mb-3">Morning Practice</h1>
-        <p>Daily Message Goes Here</p>
+        <p>Message Will Go Here</p>
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">
@@ -57,17 +57,12 @@ const MorningPracticePage = () => {
           >
             <DailyInputFormV2 inputs={toDoItems} />
           </FormContainer>
+          {toDoComplete && (
+            <FaCheckCircle className="text-green-500 text-2xl" />
+          )}
         </div>
-      </div>
-      <div className="mt-8">
-        {formsComplete ? (
-          <p>Meditation will go here</p>
-        ) : (
-          <p>Complete forms to access meditation</p>
-        )}
       </div>
     </div>
   );
 };
-
-export default MorningPracticePage;
+export default MorningPractice;

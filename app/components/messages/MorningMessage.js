@@ -1,16 +1,14 @@
-import { marked } from "marked";
-
-import { fetchCoachingContent } from "/app/utils/server-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
 
-const WelcomePage = async () => {
-  const welcomeMessage =
-    await fetchCoachingContent(`Write an empowering statement for the user 
-    and give them some tips based on their user info. 350 words and include a famous quote. `);
+const MorningMessage = async () => {
+  const morningMessage =
+    await fetchCoachingContent(`Based on the USER INFO. Write a short message 
+        (100 words) reminding them of their goals, things they are grateful for,
+        and tasks. Invite them to record their daily gratitude and task list.`);
 
-  const htmlMessage = marked(welcomeMessage.data);
+  const htmlMessage = marked(morningMessage.data);
 
-  if (!welcomeMessage.data && welcomeMessage.message) {
+  if (!morningMessage.data && morningMessage.message) {
     return (
       <MissingDetails>
         Could not load welcome message, have you completed the journalling
@@ -30,4 +28,4 @@ const WelcomePage = async () => {
   );
 };
 
-export default WelcomePage;
+export default MorningMessage;
