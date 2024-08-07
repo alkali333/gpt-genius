@@ -6,6 +6,7 @@ import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
 import { ZodError } from "zod";
+import { revalidatePath } from "next/cache";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -52,52 +53,30 @@ export const fetchUserJson = async () => {
   return null;
 };
 
-const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: model,
-      temperature: 0.8,
+export const updateMindState = async (column, data) => {
+  const user = await fetchAuthUser();
+  let returnData = null;
+
+  const existingUser = await prisma.mindState.findUnique({
+    where: { clerkId: user.id },
+  });
+  if (existingUser) {
+    returnData = prisma.mindState.update({
+      where: { clerkId: user.id },
+      data: { [column]: data },
+    });
+  } else {
+    returnData = prisma.mindState.create({
+      data: { clerkId: user.id, [column]: data },
     });
 
-    const reply = response.choices[0].message.content;
+    if (returnData) {
+      revalidatePath("/my-info/*");
+      revalidatePath("/welcome");
+      revalidatePath("/morning-practice");
+    }
 
-    return { message: "Received OpenAI response", data: reply };
-  } catch (error) {
-    return { message: `Error generating chat response: ${error}`, data: null };
-  }
-};
-
-export const fetchCoachingContent = async (prompt) => {
-  const userJson = await fetchUserJson();
-
-  // if there is no userData, it must be a new user
-  if (!userJson) redirect("/about-me");
-
-  const userStr = JSON.stringify(userJson);
-
-  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to make sure the user focuses their attention on what is important. Use the user
-    information below to generate personalised messages and exercises addressing the user by name. Encourage and power the user. \n\n
-    USER INFO: ${userStr}\n\n`;
-
-  const userMessage = prompt;
-
-  const openAIResponse = await fetchOpenAiResponse(
-    "gpt-4o",
-    systemMessage,
-    userMessage
-  );
-
-  if (openAIResponse.data) {
-    return {
-      message: "Successfully retrieved welcome message",
-      data: openAIResponse.data,
-    };
-  } else {
-    return { message: "Error retrieving welcome message", data: null };
+    return { message: "Mind state updated", data: returnData };
   }
 };
 
@@ -157,5 +136,96 @@ export const updateMorningJournal = async (prevState, formData) => {
         data: null,
       };
     }
+  }
+};
+
+export async function insertDiaryEntry(prevState, formData) {
+  console.log("Insert Diary Entry Triggered");
+  const { userId } = auth();
+  const rawData = Object.fromEntries(formData);
+
+  // Debugging: Log the raw data received
+  console.log("Raw Data:", rawData);
+
+  try {
+    const validatedFields = eveningJournalSchema.parse(rawData);
+
+    // Debugging: Log the validated fields
+    console.log("Validated Fields:", validatedFields);
+
+    const newEntry = await prisma.diary.create({
+      data: {
+        clerkId: userId,
+        ...validatedFields,
+      },
+    });
+
+    // Debugging: Log the new entry created
+    console.log("New Entry:", newEntry);
+
+    return { message: "Diary entry successfully created", data: newEntry };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessage = error.errors[0]?.message || "Validation error";
+
+      // Debugging: Log the validation error
+      console.log("Validation Error:", errorMessage);
+
+      return { message: errorMessage, data: null };
+    }
+
+    // Debugging: Log any unexpected errors
+    console.log("Unexpected Error:", error);
+
+    return { message: "An unexpected error occurred", data: null };
+  }
+}
+
+const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: model,
+      temperature: 0.8,
+    });
+
+    const reply = response.choices[0].message.content;
+
+    return { message: "Received OpenAI response", data: reply };
+  } catch (error) {
+    return { message: `Error generating chat response: ${error}`, data: null };
+  }
+};
+
+export const fetchCoachingContent = async (prompt) => {
+  const userJson = await fetchUserJson();
+
+  // if there is no userData, it must be a new user
+  if (!userJson) redirect("/about-me");
+
+  const userStr = JSON.stringify(userJson);
+
+  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to make sure the user focuses their attention on what is important. Use the user
+    information below to generate personalised messages and exercises addressing the user by name. Encourage and power the user. \n\n
+    USER INFO: ${userStr}\n\n`;
+
+  const userMessage = prompt;
+
+  const openAIResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessage,
+    userMessage
+  );
+
+  if (openAIResponse.data) {
+    return {
+      message: "Successfully retrieved welcome message",
+      data: openAIResponse.data,
+    };
+  } else {
+    return { message: "Error retrieving welcome message", data: null };
   }
 };

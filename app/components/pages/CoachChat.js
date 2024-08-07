@@ -1,7 +1,7 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { generateChatResponse } from "../../utils/actions";
+import { generateChatResponse } from "../../utils/server-actions";
 import toast from "react-hot-toast";
 import { fetchUserTokensById, subtractTokens } from "../../utils/actions";
 import { useAuth } from "@clerk/nextjs";
@@ -21,7 +21,6 @@ const CoachChat = () => {
       const tempSystemMessage = `You are a life coach chatting with the user about their issues. 
         Encourage them to focus on the issues below and offer positive encouragement and ideas \n\n
         USER INFO ${JSON.stringify(userData)}`;
-      console.log(`Setting system message to: ${tempSystemMessage}`);
       setSystemMessage(tempSystemMessage);
     }
   }, [userData]);
@@ -32,11 +31,6 @@ const CoachChat = () => {
   // Chat response handled here
   const { mutate, isPending } = useMutation({
     mutationFn: async (query) => {
-      const currentTokens = await fetchUserTokensById(userId);
-      if (currentTokens < 55) {
-        toast.error("Token balance too low...");
-        return;
-      }
       return await generateChatResponse(systemMessage, [...messages, query]);
     },
     onError: (error) => {

@@ -316,21 +316,21 @@ export async function insertDiaryEntry(prevState, formData) {
     return { message: "An unexpected error occurred", data: null };
   }
 }
-// export const generateChatResponse = async (systemMessage, chatMessages) => {
-//   try {
-//     const response = await openai.chat.completions.create({
-//       messages: [{ role: "system", content: systemMessage }, ...chatMessages],
-//       model: "gpt-4o-mini",
-//       temperature: 0.8,
-//       max_tokens: 200,
-//     });
 
-//     const message = response.choices[0].message;
-//     const tokens = response.usage.total_tokens;
+export const generateChatResponse = async (systemMessage, chatMessages) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [{ role: "system", content: systemMessage }, ...chatMessages],
+      model: "gpt-4o-mini",
+      temperature: 0.8,
+    });
 
-//     return { message: message, tokens: tokens };
-//   } catch (error) {
-//     console.error("Error generating chat response:", error);
-//     return null;
-//   }
-// };
+    const message = response.choices[0].message;
+    const tokens = response.usage.total_tokens;
+
+    return { message: message, tokens: tokens };
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return null;
+  }
+};

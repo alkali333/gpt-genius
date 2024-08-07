@@ -4,7 +4,8 @@ import { useState } from "react";
 import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";
-
+import { useUser } from "@clerk/nextjs";
+import { updateUserMetadata } from "@clerk/nextjs/server";
 import ChatForm from "/app/components/forms/ChatForm";
 import { questions } from "../../utils/questions";
 import TextSkeleton from "../TextSkeleton";
@@ -13,8 +14,9 @@ import { useUserData } from "/app/contexts/useDataContext";
 const AboutMe = () => {
   const [step, setStep] = useState(1);
   const [text, setText] = useState("");
+  const { user, isLoaded: userLoaded } = useUser();
 
-  const { userData, fetchUserData } = useUserData();
+  const { userData, fetchUserData, isLoading: dataIsLoading } = useUserData();
 
   const currentQuestion = questions[step - 1];
 
@@ -32,12 +34,15 @@ const AboutMe = () => {
         return;
       }
 
-      setStep(step + 1);
+      setStep((prevStep) => prevStep + 1);
 
       return summary;
     },
     onSuccess: () => {
       fetchUserData(); // Refresh the user data after successful update
+      if (step === 3) {
+        updateUserMetadata({ completedAboutMe: true });
+      }
     },
   });
 
@@ -56,7 +61,7 @@ const AboutMe = () => {
     setText("");
   };
 
-  if (isPending || dataIsLoading) {
+  if (isPending || dataIsLoading || !userLoaded) {
     return <span className="loading loading-spinner loading-md"></span>;
   }
 
