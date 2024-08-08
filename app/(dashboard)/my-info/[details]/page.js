@@ -1,26 +1,8 @@
-"use client";
-import { notFound } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { fetchUserJson } from "../../../utils/server-actions";
+import { FaStar } from "react-icons/fa";
+import { IoIosRocket } from "react-icons/io";
 
-import { useUserData } from "/app/contexts/useDataContext";
-import MyInfo from "/app/components/pages/MyInfo";
-import MissingDetails from "/app/components/messages/MissingDetails";
-
-const MyInfoPage = ({ params }) => {
-  const router = useRouter(); //
-  const { userData, isLoading } = useUserData();
-
-  useEffect(() => {
-    if (!isLoading && userData === null) {
-      router.push("/about-me");
-    }
-  }, [userData, isLoading, router]);
-
-  if (isLoading) {
-    return <span className="loading loading-spinner loading-lg"></span>; // Show loading state or a spinner
-  }
-
+const MyInfoPage = async ({ params }) => {
   const validPaths = [
     "hopes-and-dreams",
     "skills-and-achievements",
@@ -32,13 +14,48 @@ const MyInfoPage = ({ params }) => {
     notFound();
   }
 
-  if (!userData) {
-    return (
-      <MissingDetails>Please complete the journalling exercise.</MissingDetails>
-    );
+  const userJson = await fetchUserJson();
+  const firstName = Object.keys(userJson)[0];
+  const typeJson = userJson[firstName];
+  const type = params.details.replace(/-/g, " ");
+
+  if (!typeJson[type] || !Array.isArray(typeJson[type])) {
+    return <p>No data found for {type}</p>;
   }
 
-  return <MyInfo userData={userData} details={params.details} />;
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Your {type}</h2>
+      <div className="space-y-4">
+        {typeJson[type].map((item, index) => (
+          <div
+            key={index}
+            className="p-4 max-w-3xl first:bg-base-100 rounded-xl shadow-md space-y-2"
+          >
+            <div className="text-xl font-medium text-accent">{item.name}</div>
+            <>
+              <p className="text-secondary text-lg">{item.description}</p>
+              <div className="flex items-center">
+                <IoIosRocket className="text-primary mr-2 text-2xl" />
+                <p className="text-primary">
+                  {item.outcome || item.benefit || item.result}
+                </p>
+              </div>
+              {item.rating && (
+                <div className="flex">
+                  {Array(item.rating)
+                    .fill(null)
+                    .map((_, index) => (
+                      <FaStar key={index} className="text-yellow-500 mr-1" />
+                    ))}
+                </div>
+              )}
+            </>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default MyInfoPage;

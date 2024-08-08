@@ -5,6 +5,7 @@ import { updateMorningJournal } from "../../utils/server-actions";
 import FormContainer from "/app/components/forms/FormContainer";
 import DailyInputFormV2 from "/app/components/forms/DailyInputFormV2";
 import { FaSun } from "react-icons/fa";
+import { useUser } from "@clerk/nextjs";
 
 const MorningPractice = ({ morningMessage = "" }) => {
   const gratitudeItems = [
@@ -26,7 +27,25 @@ const MorningPractice = ({ morningMessage = "" }) => {
   const [gratitudeComplete, setGratitudeComplete] = useState(false);
   const [toDoComplete, setToDoComplete] = useState(false);
 
+  const { user } = useUser();
   const formsComplete = gratitudeComplete && toDoComplete;
+
+  useEffect(() => {
+    if (user && toDoComplete && gratitudeComplete) {
+      const updateMetadata = async () => {
+        try {
+          await clerkClient.users.updateUserMetadata(user.id, {
+            publicMetadata: { hasProfile: true },
+          });
+          // Handle success
+        } catch (error) {
+          console.error("Failed to update metadata:", error);
+        }
+      };
+
+      updateMetadata();
+    }
+  }, [user, toDoComplete, gratitudeComplete]);
 
   return (
     <div className="grid grid-rows-[auto,1fr,auto] items-center">

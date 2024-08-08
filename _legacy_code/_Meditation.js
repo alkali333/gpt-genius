@@ -3,12 +3,12 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { useUserData } from "/app/contexts/useDataContext";
-import AudioPlayer from "../AudioPlayer";
+import AudioPlayer from "../app/components/AudioPlayer";
 import {
   generateMeditation,
   generateMeditationDummy,
 } from "/app/utils/about-me-actions";
-import { MissingDetails } from "../messages/MissingDetails";
+import { MissingDetails } from "../app/components/messages/MissingDetails";
 
 const Meditation = () => {
   const { userData } = useUserData();

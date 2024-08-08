@@ -181,6 +181,65 @@ export async function insertDiaryEntry(prevState, formData) {
   }
 }
 
+export const summarizeInfo = async (query, type) => {
+  // Validate input
+  const result = aboutMeSchema.shape.message.safeParse(query);
+  if (!result.success) {
+    if (result.error instanceof ZodError) {
+      const errorMessage = error.errors[0]?.message || "Validation error";
+      return { message: errorMessage };
+    }
+  }
+
+  const validatedQuery = result.data;
+
+  const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with maxiumum 8 ${type}. Each ${type} should have a name, description, and ${
+    type === "skills and achievements"
+      ? "result (the benefits it gives them)"
+      : "result (e.g.  'Solving this will mean...')"
+  }.
+  Give each one a default rating of 3. Respond purely with correctly formatted JSON, no commentary or code.`;
+
+  const responseJson = {
+    [type]: [
+      {
+        name: "name goes here",
+        description: "description goes here",
+        result: "value goes here",
+        rating: 3,
+      },
+    ],
+  };
+
+  const responseString = JSON.stringify(responseJson);
+  const systemMessageWithResponse = `${systemMessage}\n${responseString}`;
+
+  const openAiResponse = await fetchOpenAiResponse(
+    "gpt-4o",
+    systemMessageWithResponse,
+    validatedQuery
+  );
+
+  if (openAiResponse.data) {
+    const summary = openAiResponse.data;
+
+    // Clean and parse the response
+    const cleanedSummary = summary
+      .replace(/^```json\n?/, "")
+      .replace(/```$/, "")
+      .trim();
+    //  console.log("Summary from LLM:", cleanedSummary);
+
+    const userData = JSON.parse(cleanedSummary);
+    return { message: "User data created", data: userData };
+  } else {
+    return {
+      message: "Error generating user data: " + openAiResponse.message,
+      data: null,
+    };
+  }
+};
+
 const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
   try {
     const response = await openai.chat.completions.create({

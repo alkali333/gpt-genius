@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useUserData } from "/app/contexts/useDataContext";
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
-import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
+import HopesAndDreamsRatingV2 from "/app/components/forms/HopesAndDreamsRatingV2";
 import { insertDiaryEntry } from "/app/utils/server-actions";
 import { MissingDetails } from "/app/components/messages/MissingDetails";
 import Meditation from "/app/components/Meditation"; // Make sure this import is correct
@@ -36,7 +36,7 @@ const EveningPracticePage = () => {
         <h2 className="text-2xl font-bold mb-4 text-primary">
           Rate how well you progressed towards each one today.
         </h2>
-        <HopesAndDreamsRating setIsFinished={setRatingComplete} />
+        <HopesAndDreamsRatingV2 setIsFinished={setRatingComplete} />
       </div>
       <div>
         {!formsComplete ? (

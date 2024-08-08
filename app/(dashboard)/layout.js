@@ -2,8 +2,19 @@ import SideBar from "../components/SideBar";
 import { FaBarsStaggered } from "react-icons/fa6";
 import UserDataProvider from "../contexts/useDataContext";
 import BottomNav from "/app/components/BottomNav";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
-const layout = ({ children }) => {
+const layout = async ({ children }) => {
+  const user = await currentUser();
+  const headersList = headers();
+  const pathname = headersList.get("x-invoke-path") || "";
+
+  if (!user?.publicMetadata.hasProfile && !pathname.includes("/about-me")) {
+    redirect("/welcome");
+  }
+
   return (
     <div className="drawer lg:drawer-open">
       <input type="checkbox" id="my-drawer-2" className="drawer-toggle" />

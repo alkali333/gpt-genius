@@ -1,11 +1,11 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { updateMindState, summarizeInfo } from "/app/utils/about-me-actions";
+import { updateMindState, summarizeInfo } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
-import { updateUserMetadata } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import ChatForm from "/app/components/forms/ChatForm";
 import { questions } from "../../utils/questions";
 import TextSkeleton from "../TextSkeleton";
@@ -38,10 +38,12 @@ const AboutMe = () => {
 
       return summary;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       fetchUserData(); // Refresh the user data after successful update
       if (step === 3) {
-        updateUserMetadata({ completedAboutMe: true });
+        await clerkClient.users.updateUserMetadata(user.id, {
+          publicMetadata: { hasProfile: true },
+        });
       }
     },
   });

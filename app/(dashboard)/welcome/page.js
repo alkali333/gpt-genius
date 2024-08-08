@@ -1,36 +1,32 @@
-"use client";
-import { useEffect } from "react";
-import { useUserData } from "/app/contexts/useDataContext";
-import { useRouter } from "next/navigation";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import WelcomeMessage from "/app/components/messages/WelcomeMessage";
-import { QueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { marked } from "marked";
 
-const WelcomePage = () => {
-  const { userData, isLoading } = useUserData();
-  const router = useRouter();
-  const queryClient = new QueryClient();
+import { fetchCoachingContent } from "/app/utils/server-actions";
+import MissingDetails from "/app/components/messages/MissingDetails";
 
-  useEffect(() => {
-    if (!isLoading && userData === null) {
-      toast("Please complete the journalling exercises first.");
-      router.push("/about-me");
-    }
-  }, [userData, isLoading, router]);
+const WelcomePage = async () => {
+  const welcomeMessage = await fetchCoachingContent(
+    `Based on the user info, give the user an encouraging message, 10 powerful affirmations, and 1 inspiring quote. `
+  );
 
-  if (isLoading) {
-    return <span className="loading loading-spinner loading-lg"></span>;
-  }
+  const htmlMessage = marked(welcomeMessage.data);
 
-  if (!userData) {
-    return null; // This prevents flash of content before redirect
+  if (!welcomeMessage.data && welcomeMessage.message) {
+    return (
+      <MissingDetails>
+        Could not load welcome message, have you completed the journalling
+        exercise?
+      </MissingDetails>
+    );
   }
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <WelcomeMessage />
-    </HydrationBoundary>
+    <div className="max-w-2xl text-sm leading-loose">
+      <h2 className="text-primary text-xl mb-7">Welcome To Attenshun</h2>
+      <div
+        className="text-secondary prose prose-slate max-w-none text-sm"
+        dangerouslySetInnerHTML={{ __html: htmlMessage }}
+      />
+    </div>
   );
 };
 

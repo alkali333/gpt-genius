@@ -9,7 +9,7 @@ import DailyMessage from "/app/components/messages/DailyMessage";
 import DiaryMessage from "/app/components/messages/DiaryMessage";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
 
-import { updateMindState } from "../../utils/about-me-actions";
+import { updateMindState } from "../app/utils/about-me-actions";
 
 const DailyDiary = () => {
   const [formsCompleted, setFormsCompleted] = useState(0);
