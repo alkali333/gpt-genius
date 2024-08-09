@@ -63,7 +63,7 @@ const MorningPractice = ({ morningMessage = "" }) => {
           <p>
             The morning practice is to fill out the two forms. List five things
             you are grateful for, and five tasks that will help you move towards
-            your goas
+            your goals
           </p>
         )}
       </div>

@@ -182,6 +182,21 @@ export async function insertDiaryEntry(prevState, formData) {
   }
 }
 
+export const getLatestDiaryEntry = async () => {
+  user = fetchAuthUser();
+
+  const latestEntry = await prisma.diary.findFirst({
+    data: { clerkId: user.id },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (latestEntry) {
+    return { message: "Diary entry retrieved", data: latestEntry };
+  } else {
+    return { message: "No diary entry found", data: null };
+  }
+};
+
 export const summarizeInfo = async (query, type) => {
   // Validate input
   const result = aboutMeSchema.shape.message.safeParse(query);
