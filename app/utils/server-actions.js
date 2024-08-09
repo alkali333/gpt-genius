@@ -71,9 +71,10 @@ export const updateMindState = async (column, data) => {
     });
 
     if (returnData) {
-      revalidatePath("/my-info/*");
+      revalidatePath("/my-info/[details]", "page");
       revalidatePath("/welcome");
       revalidatePath("/morning-practice");
+      revalidatePath("/evening-practice");
     }
 
     return { message: "Mind state updated", data: returnData };

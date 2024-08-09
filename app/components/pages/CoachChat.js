@@ -1,29 +1,35 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { generateChatResponse } from "../../utils/server-actions";
+import {
+  generateChatResponse,
+  fetchUserJson,
+} from "../../utils/server-actions";
 import toast from "react-hot-toast";
-import { fetchUserTokensById, subtractTokens } from "../../utils/actions";
-import { useAuth } from "@clerk/nextjs";
 
 import sanitizeHtml from "sanitize-html";
-import { useUserData } from "/app/contexts/useDataContext";
+
 import ChatForm from "../forms/ChatForm";
 
 const CoachChat = () => {
-  const { userId } = useAuth();
-  const { userData } = useUserData();
   const [systemMessage, setSystemMessage] = useState("");
 
-  // once the userData is ready, we use it to set the system message
   useEffect(() => {
-    if (userData) {
-      const tempSystemMessage = `You are a life coach chatting with the user about their issues. 
-        Encourage them to focus on the issues below and offer positive encouragement and ideas \n\n
-        USER INFO ${JSON.stringify(userData)}`;
-      setSystemMessage(tempSystemMessage);
-    }
-  }, [userData]);
+    const fetchData = async () => {
+      try {
+        const userData = await fetchUserJson();
+        const tempSystemMessage = `You are a life coach chatting with the user about their issues. 
+          Encourage them to focus on the issues below and offer positive encouragement and ideas \n\n
+          USER INFO ${JSON.stringify(userData)}\n\n`;
+        setSystemMessage(tempSystemMessage);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        toast.error("Error fetching user data.");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
@@ -36,16 +42,6 @@ const CoachChat = () => {
     onError: (error) => {
       toast.error("Error generating chat response");
       console.log(error);
-    },
-    onSuccess: async (data) => {
-      try {
-        const newTokens = await subtractTokens(userId, data.tokens);
-        toast.success(`${newTokens} tokens left`);
-        setMessages((prev) => [...prev, data.message]);
-      } catch (error) {
-        toast.error("Error updating token balance");
-        console.error(error);
-      }
     },
   });
 

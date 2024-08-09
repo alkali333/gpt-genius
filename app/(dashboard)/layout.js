@@ -7,14 +7,6 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 
 const layout = async ({ children }) => {
-  const user = await currentUser();
-  const headersList = headers();
-  const pathname = headersList.get("x-invoke-path") || "";
-
-  if (!user?.publicMetadata.hasProfile && !pathname.includes("/about-me")) {
-    redirect("/welcome");
-  }
-
   return (
     <div className="drawer lg:drawer-open">
       <input type="checkbox" id="my-drawer-2" className="drawer-toggle" />
