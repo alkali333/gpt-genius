@@ -8,6 +8,7 @@ import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
 import { ZodError } from "zod";
 import { revalidatePath } from "next/cache";
 import { marked } from "marked";
+import { messageToOpenAIRole } from "@langchain/openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -79,6 +80,27 @@ export const updateMindState = async (column, data) => {
     }
 
     return { message: "Mind state updated", data: returnData };
+  }
+};
+
+export const getMindStateColumn = async (column) => {
+  const user = await fetchAuthUser();
+
+  const data = await prisma.mindState.findUnique({
+    where: { clerkId: user.id },
+    select: { [column]: true },
+  });
+
+  if (data && data[column] !== undefined) {
+    return {
+      message: `Mind state retrieved for ${user.firstName}, column: ${column}`,
+      data: data[column],
+    };
+  } else {
+    return {
+      message: `Cannot find data for ${user.firstName}, column: ${column}`,
+      data: null,
+    };
   }
 };
 
@@ -203,6 +225,26 @@ export const getLatestDiaryEntry = async () => {
   }
 };
 
+const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [
+        { role: "system", content: systemMessage },
+        { role: "user", content: userMessage },
+      ],
+      model: model,
+      temperature: 0.8,
+    });
+
+    const reply = response.choices[0].message.content;
+
+    return { message: "Received OpenAI response", data: reply };
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return { message: `Error generating chat response: ${error}`, data: null };
+  }
+};
+
 export const summarizeInfo = async (query, type) => {
   // Validate input
   const result = aboutMeSchema.shape.message.safeParse(query);
@@ -259,26 +301,6 @@ export const summarizeInfo = async (query, type) => {
       message: "Error generating user data: " + openAiResponse.message,
       data: null,
     };
-  }
-};
-
-const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
-  try {
-    const response = await openai.chat.completions.create({
-      messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
-      ],
-      model: model,
-      temperature: 0.8,
-    });
-
-    const reply = response.choices[0].message.content;
-
-    return { message: "Received OpenAI response", data: reply };
-  } catch (error) {
-    console.error("Error generating chat response:", error);
-    return { message: `Error generating chat response: ${error}`, data: null };
   }
 };
 

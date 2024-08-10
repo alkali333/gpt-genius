@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { updateMindState, fetchUserJson } from "/app/utils/server-actions";
+import { updateMindState, getMindStateColumn } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 
 const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
@@ -10,17 +10,18 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
   useEffect(() => {
     console.log("useEffect triggered");
     const fetchUserData = async () => {
-      const userData = await fetchUserJson();
-
-      if (userData) {
-        console.log("userData", JSON.stringify(userData));
-        const username = Object.keys(userData)[0];
-        const tempHopesAndDreams = userData[username]["hopes and dreams"];
-        setHopesAndDreams(tempHopesAndDreams);
+      const userHopesAndDreams = await getMindStateColumn("hopes_and_dreams");
+      if (userHopesAndDreams.data) {
+        setHopesAndDreams(userHopesAndDreams.data);
         setRatings(
           Object.fromEntries(
-            tempHopesAndDreams.map((item, index) => [index, item.rating])
+            userHopesAndDreams.map((item, index) => [index, item.rating])
           )
+        );
+      } else {
+        toast.error(
+          "Could not fetch hopes and dreams. Error: ",
+          userHopesAndDreams.message
         );
       }
     };
