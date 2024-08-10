@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { updateMorningJournal } from "../../utils/server-actions";
+import { updateMorningJournal } from "../app/utils/server-actions";
 import FormContainer from "/app/components/forms/FormContainer";
 import DailyInputFormV2 from "/app/components/forms/DailyInputFormV2";
 import { FaSun } from "react-icons/fa";
 import { useUser } from "@clerk/nextjs";
 
-const MorningPractice = ({ morningMessage = "" }) => {
+const MorningPractice = () => {
   const gratitudeItems = [
     { name: "gratitude1", placeholder: "One" },
     { name: "gratitude2", placeholder: "Two" },
@@ -26,9 +26,36 @@ const MorningPractice = ({ morningMessage = "" }) => {
 
   const [gratitudeComplete, setGratitudeComplete] = useState(false);
   const [toDoComplete, setToDoComplete] = useState(false);
+  const [encouragementMessage, setEncouragementMessage] = useState(null);
 
   const { user } = useUser();
   const formsComplete = gratitudeComplete && toDoComplete;
+
+  useEffect(() => {
+    const getEncouragementMessage = async () => {
+      const diaryEntry = await getLatestDiaryEntry();
+
+      if (!diaryEntry.data) {
+        setEncouragementMessage("");
+        return;
+      }
+
+      const message = !user?.publicMetadata.hasMorningJournals
+        ? await fetchCoachingContent(`Based on the USER INFO. Write a short message 
+      (100 words) reminding them of their goals, things they are grateful for,
+      and tasks. Invite them to record their daily gratitude and task list.`)
+        : `The morning practice is to fill out the two forms. List five things you
+    are grateful for, and five tasks that can bring you closer to your goals`;
+
+      if (message.data) {
+        setEncouragementMessage(message.data);
+      } else {
+        console.log("Error fetching encouragement message");
+      }
+    };
+
+    getEncouragementMessage();
+  }, [user]);
 
   useEffect(() => {
     if (user && toDoComplete && gratitudeComplete) {
@@ -54,17 +81,15 @@ const MorningPractice = ({ morningMessage = "" }) => {
           <FaSun className="text-yellow-500 text-2xl" />
           <h1 className="text-primary text-2xl mb-3">Morning Practice</h1>
         </div>
-        {morningMessage ? (
-          <div
-            className="text-secondary prose prose-slate max-w-none text-sm"
-            dangerouslySetInnerHTML={{ __html: morningMessage }}
-          />
+        {encouragementMessage === null ? (
+          <span className="loading loading-spinner loading-lg"></span>
         ) : (
-          <p>
-            The morning practice is to fill out the two forms. List five things
-            you are grateful for, and five tasks that will help you move towards
-            your goals
-          </p>
+          encouragementMessage || (
+            <div
+              className="text-secondary prose prose-slate max-w-none text-sm"
+              dangerouslySetInnerHTML={{ __html: encouragementMessage }}
+            />
+          )
         )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">

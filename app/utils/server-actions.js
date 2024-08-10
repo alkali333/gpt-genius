@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
 import { ZodError } from "zod";
 import { revalidatePath } from "next/cache";
+import { marked } from "marked";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -163,6 +164,7 @@ export async function insertDiaryEntry(prevState, formData) {
 
     // Debugging: Log the new entry created
     console.log("New Entry:", newEntry);
+    revalidatePath("/evening-practice");
 
     return { message: "Diary entry successfully created", data: newEntry };
   } catch (error) {
@@ -183,16 +185,20 @@ export async function insertDiaryEntry(prevState, formData) {
 }
 
 export const getLatestDiaryEntry = async () => {
-  user = fetchAuthUser();
+  const user = fetchAuthUser();
 
+  console.log("Fetching latest diary entry");
   const latestEntry = await prisma.diary.findFirst({
-    data: { clerkId: user.id },
-    orderBy: { createdAt: "desc" },
+    where: { clerkId: user.id },
+    orderBy: { date: "desc" },
+    select: { entry: true },
   });
 
   if (latestEntry) {
-    return { message: "Diary entry retrieved", data: latestEntry };
+    console.log("Diary entry found");
+    return { message: "Diary entry retrieved", data: latestEntry.entry };
   } else {
+    console.log("No Diary entry found");
     return { message: "No diary entry found", data: null };
   }
 };
@@ -269,13 +275,15 @@ const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
 
     const reply = response.choices[0].message.content;
 
-    return { message: "Received OpenAI response", data: reply };
+    return { message: "Received OpenAI response", data: marked(reply) };
   } catch (error) {
+    console.error("Error generating chat response:", error);
     return { message: `Error generating chat response: ${error}`, data: null };
   }
 };
 
 export const fetchCoachingContent = async (prompt) => {
+  console.log("Fetching coaching content");
   const userJson = await fetchUserJson();
 
   // if there is no userData, it must be a new user
@@ -303,4 +311,33 @@ export const fetchCoachingContent = async (prompt) => {
   } else {
     return { message: "Error retrieving welcome message", data: null };
   }
+};
+
+export const generateEveningPracticeMessage = async () => {
+  console.log("Generating evening practice message");
+  const diaryEntry = await getLatestDiaryEntry();
+
+  if (!diaryEntry.data) {
+    return {
+      message: "User has no diary yet, returning default message",
+      data: `Write at least 150 words about what you did today in relation
+    to your hopes and dreams. Did you make progress towards all or
+    some of them? Or did you procrastinate? Is there anything you
+    could have done differently?`,
+    };
+  }
+
+  const prompt = `Analyze the users last diary entry in relation to the 
+  users goals and other info. Comment on how they are doing based on the 
+  user information. Offer encouragement and suggestions for improvement 
+  and task ideas. Invite them to write their next diary entry, reflecting
+   on how they did today in relation to their goals. 
+  150 words max. \n\n
+  Diary Entry: ${diaryEntry.data}`;
+
+  console.log("Prompt for evening practice:", prompt);
+
+  const response = await fetchCoachingContent(prompt);
+
+  return { message: "Evening Practice Generated", data: response.data };
 };

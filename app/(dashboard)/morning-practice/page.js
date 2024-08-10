@@ -1,22 +1,103 @@
-import MorningPractice from "/app/components/pages/MorningPractice";
+"use client";
+import { useState, useEffect } from "react";
+import { FaCheckCircle } from "react-icons/fa";
+import {
+  updateMorningJournal,
+  getLatestDiaryEntry,
+  fetchCoachingContent,
+} from "../../utils/server-actions";
+import FormContainer from "/app/components/forms/FormContainer";
+import DailyInputFormV2 from "/app/components/forms/DailyInputFormV2";
+import { FaSun } from "react-icons/fa";
 
-import { fetchCoachingContent } from "/app/utils/server-actions";
-import { marked } from "marked";
-import { currentUser } from "@clerk/nextjs/server";
+const MorningPractice = () => {
+  const gratitudeItems = [
+    { name: "gratitude1", placeholder: "One" },
+    { name: "gratitude2", placeholder: "Two" },
+    { name: "gratitude3", placeholder: "Three" },
+    { name: "gratitude4", placeholder: "Four" },
+    { name: "gratitude5", placeholder: "Five" },
+  ];
 
-const MorningPracticePage = async () => {
-  const user = await currentUser();
+  const toDoItems = [
+    { name: "todo1", placeholder: "One" },
+    { name: "todo2", placeholder: "Two" },
+    { name: "todo3", placeholder: "Three" },
+    { name: "todo4", placeholder: "Four" },
+    { name: "todo5", placeholder: "Five" },
+  ];
 
-  const morningMessageContent = !user?.publicMetadata.hasMorningJournals
-    ? await fetchCoachingContent(`Based on the USER INFO. Write a short message 
-    (100 words) reminding them of their goals, things they are grateful for,
-    and tasks. Invite them to record their daily gratitude and task list.`)
-    : `The morning practice is to fill out the two forms. List five things you
-  are grateful for, and five tasks that can bring you closer to your goals`;
+  const [gratitudeComplete, setGratitudeComplete] = useState(false);
+  const [toDoComplete, setToDoComplete] = useState(false);
+  const [encouragementMessage, setEncouragementMessage] = useState(null);
 
-  const htmlMessage = marked(morningMessageContent.data);
+  const formsComplete = gratitudeComplete && toDoComplete;
 
-  return <MorningPractice morningMessage={htmlMessage} />;
+  useEffect(() => {
+    console.log("MorningPractice useEffect");
+    const getEncouragementMessage = async () => {
+      const message =
+        await fetchCoachingContent(`Based on the USER INFO. Write a short message 
+      (100 words) reminding them of their goals and the importance of their morning practice. 
+      Invite them to record their daily gratitude and task list. ONLY If there are existing task
+      lists invite them to remember these and ask if they are still relevant.`);
+
+      if (message.data) {
+        setEncouragementMessage(message.data);
+      } else {
+        console.log("Error fetching encouragement message");
+      }
+    };
+    getEncouragementMessage();
+  }, []);
+
+  return (
+    <div className="grid grid-rows-[auto,1fr,auto] items-center">
+      <div className="max-w-2xl">
+        <div className="flex">
+          <FaSun className="text-yellow-500 text-2xl" />
+          <h1 className="text-primary text-2xl mb-3">Morning Practice</h1>
+        </div>
+        {encouragementMessage === null ? (
+          <span className="loading loading-spinner loading-lg"></span>
+        ) : (
+          encouragementMessage || (
+            <div
+              className="text-secondary prose prose-slate max-w-none text-sm"
+              dangerouslySetInnerHTML={{ __html: encouragementMessage }}
+            />
+          )
+        )}
+      </div>
+      <div className="max-w-2xl flex gap-5 mt-8">
+        <div className="w-1/2">
+          <h1 className="text-secondary text-xl mb-3">
+            Things I&apos;m grateful for...{" "}
+          </h1>
+          <FormContainer
+            action={updateMorningJournal}
+            onComplete={setGratitudeComplete}
+          >
+            <DailyInputFormV2 title="grateful for" inputs={gratitudeItems} />
+          </FormContainer>
+          {gratitudeComplete && (
+            <FaCheckCircle className="text-green-500 text-2xl" />
+          )}
+        </div>
+        <div className="w-1/2">
+          <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
+          <FormContainer
+            action={updateMorningJournal}
+            onComplete={setToDoComplete}
+          >
+            <DailyInputFormV2 inputs={toDoItems} />
+          </FormContainer>
+          {toDoComplete && (
+            <FaCheckCircle className="text-green-500 text-2xl" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
-
-export default MorningPracticePage;
+export default MorningPractice;

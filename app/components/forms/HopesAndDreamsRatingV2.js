@@ -1,28 +1,28 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as needed
-import { updateMindState } from "/app/utils/about-me-actions";
+import { updateMindState, fetchUserJson } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 
 const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
-  const { fetchUserData, userData, isLoading: dataIsLoading } = useUserData();
   const [ratings, setRatings] = useState({});
 
   useEffect(() => {
-    if (!dataIsLoading && userData) {
-      const username = Object.keys(userData)[0];
-      const hopesAndDreams = userData[username]["hopes and dreams"];
-      setRatings(
-        Object.fromEntries(
-          hopesAndDreams.map((item, index) => [index, item.rating])
-        )
-      );
-    }
-  }, [userData, dataIsLoading]);
+    const fetchUserData = async () => {
+      const userData = await fetchUserJson();
 
-  if (dataIsLoading) {
-    return <div>Loading...</div>;
-  }
+      if (userData) {
+        const username = Object.keys(userData)[0];
+        const hopesAndDreams = userData[username]["hopes and dreams"];
+        setRatings(
+          Object.fromEntries(
+            hopesAndDreams.map((item, index) => [index, item.rating])
+          )
+        );
+      }
+      fetchUserData();
+    };
+  }, []);
 
   const username = Object.keys(userData)[0];
   const hopesAndDreams = userData[username]["hopes and dreams"];

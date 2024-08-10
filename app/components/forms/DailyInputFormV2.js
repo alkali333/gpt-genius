@@ -25,6 +25,7 @@ const DailyInputFormV2 = ({ inputs, onComplete = () => {} }) => {
           >
             <FaGrinStars />
             <input
+              key={index}
               type="text"
               name={input.name}
               className="grow bg-base-300 focus:bg-base-300 active:bg-base-300"
