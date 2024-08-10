@@ -275,7 +275,7 @@ const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
 
     const reply = response.choices[0].message.content;
 
-    return { message: "Received OpenAI response", data: marked(reply) };
+    return { message: "Received OpenAI response", data: reply };
   } catch (error) {
     console.error("Error generating chat response:", error);
     return { message: `Error generating chat response: ${error}`, data: null };
@@ -306,7 +306,7 @@ export const fetchCoachingContent = async (prompt) => {
   if (openAIResponse.data) {
     return {
       message: "Successfully retrieved welcome message",
-      data: openAIResponse.data,
+      data: marked(openAIResponse.data),
     };
   } else {
     return { message: "Error retrieving welcome message", data: null };

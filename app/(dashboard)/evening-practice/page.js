@@ -41,12 +41,12 @@ const EveningPracticePage = () => {
       </div>
       <div>
         {!formsComplete ? (
-          <div className="my-8">
+          <>
             {encouragementMessage === null ? (
               <span className="loading loading-spinner loading-lg"></span>
             ) : (
               <div
-                className="text-secondary prose prose-slate max-w-none text-sm"
+                className="my-8 text-secondary prose prose-slate max-w-none text-sm"
                 dangerouslySetInnerHTML={{ __html: encouragementMessage }}
               />
             )}
@@ -57,7 +57,7 @@ const EveningPracticePage = () => {
             >
               <DiaryInput words={150} />
             </FormContainer>
-          </div>
+          </>
         ) : (
           <Meditation /> // Replace with Meditation component
         )}

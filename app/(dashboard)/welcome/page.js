@@ -1,5 +1,3 @@
-import { marked } from "marked";
-
 import { fetchCoachingContent } from "/app/utils/server-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
 
@@ -7,8 +5,6 @@ const WelcomePage = async () => {
   const welcomeMessage = await fetchCoachingContent(
     `Based on the user info, give the user an encouraging message, 10 powerful affirmations, and 1 inspiring quote. `
   );
-
-  const htmlMessage = marked(welcomeMessage.data);
 
   if (!welcomeMessage.data && welcomeMessage.message) {
     return (
@@ -24,7 +20,7 @@ const WelcomePage = async () => {
       <h2 className="text-primary text-xl mb-7">Welcome To Attenshun</h2>
       <div
         className="text-secondary prose prose-slate max-w-none text-sm"
-        dangerouslySetInnerHTML={{ __html: htmlMessage }}
+        dangerouslySetInnerHTML={{ __html: welcomeMessage.data }}
       />
     </div>
   );

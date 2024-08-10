@@ -1,27 +1,30 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as needed
 import { updateMindState, fetchUserJson } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 
 const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
   const [ratings, setRatings] = useState({});
+  const [hopesAndDreams, setHopesAndDreams] = useState(null);
 
   useEffect(() => {
+    console.log("useEffect triggered");
     const fetchUserData = async () => {
       const userData = await fetchUserJson();
 
       if (userData) {
+        console.log("userData", JSON.stringify(userData));
         const username = Object.keys(userData)[0];
-        const hopesAndDreams = userData[username]["hopes and dreams"];
+        const tempHopesAndDreams = userData[username]["hopes and dreams"];
+        setHopesAndDreams(tempHopesAndDreams);
         setRatings(
           Object.fromEntries(
-            hopesAndDreams.map((item, index) => [index, item.rating])
+            tempHopesAndDreams.map((item, index) => [index, item.rating])
           )
         );
       }
-      fetchUserData();
     };
+    fetchUserData();
   }, []);
 
   const handleRatingChange = (index, rating) => {
@@ -58,6 +61,10 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
 
     console.log(JSON.stringify(updatedHopesAndDreams, null, 2));
   };
+
+  if (!hopesAndDreams) {
+    return <span>Loading Hopes And Dreams Rating System .... </span>;
+  }
 
   return (
     <div className="max-w-2xl">
