@@ -24,9 +24,6 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
     };
   }, []);
 
-  const username = Object.keys(userData)[0];
-  const hopesAndDreams = userData[username]["hopes and dreams"];
-
   const handleRatingChange = (index, rating) => {
     setRatings((prevRatings) => {
       if (prevRatings[index] === rating) {
