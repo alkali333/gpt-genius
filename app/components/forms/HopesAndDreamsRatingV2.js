@@ -11,11 +11,21 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
     console.log("useEffect triggered");
     const fetchUserData = async () => {
       const userHopesAndDreams = await getMindStateColumn("hopes_and_dreams");
-      if (userHopesAndDreams.data) {
-        setHopesAndDreams(userHopesAndDreams.data);
+      console.log(
+        "userHopesAndDreams",
+        JSON.stringify(userHopesAndDreams.data)
+      );
+      if (
+        userHopesAndDreams.data &&
+        userHopesAndDreams.data["hopes and dreams"]
+      ) {
+        setHopesAndDreams(userHopesAndDreams.data["hopes and dreams"]);
         setRatings(
           Object.fromEntries(
-            userHopesAndDreams.map((item, index) => [index, item.rating])
+            userHopesAndDreams.data["hopes and dreams"].map((item, index) => [
+              index,
+              item.rating,
+            ])
           )
         );
       } else {
@@ -63,7 +73,7 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
     console.log(JSON.stringify(updatedHopesAndDreams, null, 2));
   };
 
-  if (!hopesAndDreams) {
+  if (hopesAndDreams == null) {
     return <span>Loading Hopes And Dreams Rating System .... </span>;
   }
 

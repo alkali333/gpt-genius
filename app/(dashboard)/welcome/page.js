@@ -1,9 +1,20 @@
 import { fetchCoachingContent } from "/app/utils/server-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
 
+const welcomeMessages = [
+  "an encouraging message, 10 powerful affirmations, and 1 inspiring quote.",
+  "a list of suggestions of how they can achieve their goals and overcome obstacles and a genuine quote from a famous person.",
+  "an insight into a future where they have achieved their goals and overcome challenges, include 3 affirmations to make this a reality.",
+  "a playful story set in a fantasy of magic talking animals world where they are a hero and overcome all obstacles to reach their goals.",
+  "a message from a wise guru, encouraging them on their journey. Use some humour.",
+];
+
+const randomMessage =
+  welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+
 const WelcomePage = async () => {
   const welcomeMessage = await fetchCoachingContent(
-    `Based on the user info, give the user an encouraging message, 10 powerful affirmations, and 1 inspiring quote. `
+    `Based on the user info, ${randomMessage}`
   );
 
   if (!welcomeMessage.data && welcomeMessage.message) {

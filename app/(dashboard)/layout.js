@@ -1,10 +1,7 @@
 import SideBar from "../components/SideBar";
 import { FaBarsStaggered } from "react-icons/fa6";
-import UserDataProvider from "../contexts/useDataContext";
+
 import BottomNav from "/app/components/BottomNav";
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 
 const layout = async ({ children }) => {
   return (
@@ -18,7 +15,7 @@ const layout = async ({ children }) => {
           <FaBarsStaggered className="w-8 h-8 text-primary" />
         </label>
         <div className="bg-base-100 px-8 py-12 min-h-screen">
-          <UserDataProvider> {children}</UserDataProvider>
+          {children}
           <BottomNav />
         </div>
       </div>

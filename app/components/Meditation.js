@@ -3,41 +3,24 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { marked } from "marked";
 
-import { useUserData } from "/app/contexts/useDataContext";
-import { generateMeditationDummy } from "/app/utils/about-me-actions";
-import { MissingDetails } from "./messages/MissingDetails";
+import { fetchCoachingContent } from "../utils/server-actions";
+
+import MissingDetails from "./messages/MissingDetails";
 import { getRandomExercise } from "../utils/exercises";
 
 const Meditation = () => {
-  const { userData } = useUserData();
-  const [meditation, setMeditation] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [meditation, setMeditation] = useState(null);
 
   useEffect(() => {
     const loadMeditation = async () => {
-      if (userData) {
-        setIsLoading(true);
-        try {
-          const meditationResponse = await generateMeditationDummy(
-            getRandomExercise(),
-            JSON.stringify(userData),
-            "a meditation / visualisation"
-          );
-          if (!meditationResponse) {
-            toast.error("Error generating meditation");
-            return;
-          }
-          setMeditation(meditationResponse);
-        } catch (error) {
-          toast.error("Error generating meditation");
-        } finally {
-          setIsLoading(false);
-        }
-      }
+      const meditation = await fetchCoachingContent(getRandomExercise());
+
+      setMeditation(meditation.data);
+      setIsLoading(false);
     };
 
     loadMeditation();
-  }, [userData]);
+  }, []);
 
   if (!userData) {
     return (
@@ -52,7 +35,7 @@ const Meditation = () => {
 
   return (
     <p>
-      {isLoading ? (
+      {meditation == null ? (
         <span className="loading loading-spinner loading-lg text-primary"></span>
       ) : (
         <div

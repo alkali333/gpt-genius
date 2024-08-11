@@ -1,9 +1,7 @@
-import { fetchDiaryEncouragementMessage } from "/app/utils/about-me-actions";
+import HopesAndDreamsRatingV2 from "../../components/forms/HopesAndDreamsRatingV2";
 
-const DiaryMessage = async () => {
-  const message = await fetchDiaryEncouragementMessage();
-
-  return <div>{message}</div>;
+const TestPage = () => {
+  return <HopesAndDreamsRatingV2 />;
 };
 
-export default DiaryMessage;
+export default TestPage;
