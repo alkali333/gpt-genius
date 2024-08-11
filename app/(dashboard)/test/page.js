@@ -1,7 +1,7 @@
-import HopesAndDreamsRatingV2 from "../../components/forms/HopesAndDreamsRatingV2";
+import HopesAndDreamsRating from "../../components/forms/HopesAndDreamsRating";
 
 const TestPage = () => {
-  return <HopesAndDreamsRatingV2 />;
+  return <HopesAndDreamsRating />;
 };
 
 export default TestPage;

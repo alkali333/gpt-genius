@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
-import HopesAndDreamsRatingV2 from "/app/components/forms/HopesAndDreamsRatingV2";
+import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
 import {
   insertDiaryEntry,
   generateEveningPracticeMessage,
@@ -37,7 +37,7 @@ const EveningPracticePage = () => {
         <h2 className="text-2xl font-bold mb-4 text-primary">
           Rate how well you progressed towards each one today.
         </h2>
-        <HopesAndDreamsRatingV2 setIsFinished={setRatingComplete} />
+        <HopesAndDreamsRating setIsFinished={setRatingComplete} />
       </div>
       <div>
         {!formsComplete ? (

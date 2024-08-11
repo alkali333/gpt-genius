@@ -1,50 +1,33 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import { updateMindState, summarizeInfo } from "/app/utils/server-actions";
+import {
+  updateMindState,
+  summarizeInfo,
+  summarizeAndUpdateMindState,
+} from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
-import { clerkClient } from "@clerk/nextjs/server";
+
 import ChatForm from "/app/components/forms/ChatForm";
 import { questions } from "../../utils/questions";
 import TextSkeleton from "../TextSkeleton";
-import { useUserData } from "/app/contexts/useDataContext";
 
 const AboutMe = () => {
   const [step, setStep] = useState(1);
   const [text, setText] = useState("");
-  const { user, isLoaded: userLoaded } = useUser();
-
-  const { userData, fetchUserData, isLoading: dataIsLoading } = useUserData();
 
   const currentQuestion = questions[step - 1];
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async ({ query, type, column }) => {
-      const summaryResponse = await summarizeInfo(query, type);
-      if (!summaryResponse.data && summaryResponse.message) {
-        toast.error(summaryResponse.message);
+    mutationFn: async ({ query, type }) => {
+      const result = await summarizeAndUpdateMindState(type, query);
+      if (!result.data && result.message) {
+        toast.error(result.message);
         return;
       }
-      // console.log(`Info recieved from LLM: ${summaryResponse.data}`);
-      const update = await updateMindState(column, summaryResponse.data);
-      if (!update.data && update.message) {
-        toast.error("Error updating mind state: ", update.message);
-        return;
-      }
-
       setStep((prevStep) => prevStep + 1);
-
-      return summary;
-    },
-    onSuccess: async () => {
-      fetchUserData(); // Refresh the user data after successful update
-      if (step === 3) {
-        await clerkClient.users.updateUserMetadata(user.id, {
-          publicMetadata: { hasProfile: true },
-        });
-      }
+      return result;
     },
   });
 
@@ -58,12 +41,11 @@ const AboutMe = () => {
     mutate({
       query,
       type: currentQuestion.title,
-      column: currentQuestion.column,
     });
     setText("");
   };
 
-  if (isPending || dataIsLoading || !userLoaded) {
+  if (isPending) {
     return <span className="loading loading-spinner loading-md"></span>;
   }
 
@@ -92,9 +74,9 @@ const AboutMe = () => {
           <div className="flex flex-col justify-start py-6 leading-loose max-w-4xl">
             {step === 1 && (
               <p className="max-w-4xl bg-base-100 text-m lg:text-xl mb-4">
-                {userData
-                  ? "Completing this exercise again will result in your goals, skills, and obstacles being updated. I recommend to do this at least once a month  "
-                  : "Welcome to Attenshun! Completing this exercise will help me understand your goals, skills, and obstacles. "}
+                Welcome to Attenshun! Completing this exercise will help me
+                understand your goals, skills, and obstacles. You can do it as
+                often as you like, we recommend once a month at least.
               </p>
             )}
             <p className="max-w-4xl bg-base-100 text-m lg:text-xl">

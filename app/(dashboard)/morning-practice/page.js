@@ -7,7 +7,7 @@ import {
   fetchCoachingContent,
 } from "../../utils/server-actions";
 import FormContainer from "/app/components/forms/FormContainer";
-import DailyInputFormV2 from "/app/components/forms/DailyInputFormV2";
+import DailyInputForm from "/app/components/forms/DailyInputForm";
 import { FaSun } from "react-icons/fa";
 
 const MorningPractice = () => {
@@ -34,7 +34,6 @@ const MorningPractice = () => {
   const formsComplete = gratitudeComplete && toDoComplete;
 
   useEffect(() => {
-    console.log("MorningPractice useEffect");
     const getEncouragementMessage = async () => {
       const message =
         await fetchCoachingContent(`Based on the USER INFO. Write a short message 
@@ -44,6 +43,7 @@ const MorningPractice = () => {
 
       if (message.data) {
         setEncouragementMessage(message.data);
+        console.log("Encouragement message: ", message.data);
       } else {
         console.log("Error fetching encouragement message");
       }
@@ -62,10 +62,12 @@ const MorningPractice = () => {
           <span className="loading loading-spinner loading-lg"></span>
         ) : (
           encouragementMessage || (
-            <div
-              className="text-secondary prose prose-slate max-w-none text-sm"
-              dangerouslySetInnerHTML={{ __html: encouragementMessage }}
-            />
+            <>
+              <div
+                className="text-secondary prose prose-slate max-w-none text-sm"
+                dangerouslySetInnerHTML={{ __html: encouragementMessage }}
+              />
+            </>
           )
         )}
       </div>
@@ -78,7 +80,7 @@ const MorningPractice = () => {
             action={updateMorningJournal}
             onComplete={setGratitudeComplete}
           >
-            <DailyInputFormV2 title="grateful for" inputs={gratitudeItems} />
+            <DailyInputForm title="grateful for" inputs={gratitudeItems} />
           </FormContainer>
           {gratitudeComplete && (
             <FaCheckCircle className="text-green-500 text-2xl" />
@@ -90,7 +92,7 @@ const MorningPractice = () => {
             action={updateMorningJournal}
             onComplete={setToDoComplete}
           >
-            <DailyInputFormV2 inputs={toDoItems} />
+            <DailyInputForm inputs={toDoItems} />
           </FormContainer>
           {toDoComplete && (
             <FaCheckCircle className="text-green-500 text-2xl" />

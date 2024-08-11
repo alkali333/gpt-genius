@@ -1,38 +1,31 @@
 "use client";
 import { useState, useEffect } from "react";
-import { updateMindState, getMindStateColumn } from "/app/utils/server-actions";
+import { useUserData } from "/app/contexts/useDataContext"; // Adjust the import path as needed
+import { updateMindState } from "/app/utils/about-me-actions";
 import toast from "react-hot-toast";
 
 const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
+  const { fetchUserData, userData, isLoading: dataIsLoading } = useUserData();
   const [ratings, setRatings] = useState({});
-  const [hopesAndDreams, setHopesAndDreams] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const userHopesAndDreams = await getMindStateColumn("hopes_and_dreams");
+    if (!dataIsLoading && userData) {
+      const username = Object.keys(userData)[0];
+      const hopesAndDreams = userData[username]["hopes and dreams"];
+      setRatings(
+        Object.fromEntries(
+          hopesAndDreams.map((item, index) => [index, item.rating])
+        )
+      );
+    }
+  }, [userData, dataIsLoading]);
 
-      if (
-        userHopesAndDreams.data &&
-        userHopesAndDreams.data["hopes and dreams"]
-      ) {
-        setHopesAndDreams(userHopesAndDreams.data["hopes and dreams"]);
-        setRatings(
-          Object.fromEntries(
-            userHopesAndDreams.data["hopes and dreams"].map((item, index) => [
-              index,
-              item.rating,
-            ])
-          )
-        );
-      } else {
-        toast.error(
-          "Could not fetch hopes and dreams. Error: ",
-          userHopesAndDreams.message
-        );
-      }
-    };
-    fetchUserData();
-  }, []);
+  if (dataIsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  const username = Object.keys(userData)[0];
+  const hopesAndDreams = userData[username]["hopes and dreams"];
 
   const handleRatingChange = (index, rating) => {
     setRatings((prevRatings) => {
@@ -54,26 +47,20 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
       }),
     };
 
-    try {
-      const response = await updateMindState(
-        "hopes_and_dreams",
-        updatedHopesAndDreams
-      );
-
-      if (response.data) {
-        toast.success("Ratings updated successfully", { icon: "🚀" });
-        setIsFinished(true);
-      } else {
-        toast.error(`Failed to update ratings: ${response.message}`);
-      }
-    } catch (error) {
-      toast.error(`Failed to update ratings: ${error.message}`);
+    const update = await updateMindState(
+      "hopes_and_dreams",
+      updatedHopesAndDreams
+    );
+    if (update) {
+      toast.success("Ratings updated successfully", { icon: "🚀" });
+      fetchUserData();
+      setIsFinished(true);
+    } else {
+      toast.error("Failed to update ratings");
     }
-  };
 
-  if (hopesAndDreams == null) {
-    return;
-  }
+    console.log(JSON.stringify(updatedHopesAndDreams, null, 2));
+  };
 
   return (
     <div className="max-w-2xl">

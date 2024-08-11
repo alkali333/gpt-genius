@@ -8,7 +8,8 @@ import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
 import { ZodError } from "zod";
 import { revalidatePath } from "next/cache";
 import { marked } from "marked";
-import { messageToOpenAIRole } from "@langchain/openai";
+
+import { clerkClient } from "@clerk/nextjs/server";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -96,6 +97,11 @@ export const updateMindState = async (column, data) => {
         "/evening-practice",
       ];
       pathsToRevalidate.forEach((path) => revalidatePath(path));
+
+      // Update Clerk metadata
+      await clerkClient.users.updateUserMetadata(user.id, {
+        publicMetadata: { [`has_${column}`]: true },
+      });
     }
 
     return { message: "Mind state updated", data: returnData };
@@ -385,4 +391,39 @@ export const generateEveningPracticeMessage = async () => {
   const response = await fetchCoachingContent(prompt);
 
   return { message: "Evening Practice Generated", data: response.data };
+};
+
+export const summarizeAndUpdateMindState = async (type, userInput) => {
+  try {
+    // Convert type to column name by replacing spaces with underscores
+    const column = type.replace(/ /g, "_").toLowerCase();
+
+    // First, summarize the info
+    const summaryResult = await summarizeInfo(userInput, type);
+
+    if (!summaryResult.data) {
+      return {
+        message: `Error summarizing ${type}: ${summaryResult.message}`,
+        data: null,
+      };
+    }
+
+    // Then, update the mind state with the summarized data
+    const updateResult = await updateMindState(column, summaryResult.data);
+
+    if (!updateResult.data) {
+      return {
+        message: `Error updating ${type}: ${updateResult.message}`,
+        data: null,
+      };
+    }
+
+    return {
+      message: `Successfully summarized and updated ${type}`,
+      data: updateResult.data,
+    };
+  } catch (error) {
+    console.error(`Error in summarizeAndUpdateMindState for ${type}:`, error);
+    return { message: `Unexpected error: ${error.message}`, data: null };
+  }
 };

@@ -26,7 +26,9 @@ export default clerkMiddleware(async (auth, req) => {
 
     // if the user does not have a profile, send them to the about-me page
     if (
-      !user?.publicMetadata.hasProfile &&
+      !user?.publicMetadata.has_hopes_and_dreams &&
+      !user?.publicMetadata.has_skills_and_achievements &&
+      !user?.publicMetadata.has_obstacles_and_challenges &&
       req.nextUrl.pathname !== "/about-me"
     ) {
       console.log("User does not have profile, redirecting to /about-me");
