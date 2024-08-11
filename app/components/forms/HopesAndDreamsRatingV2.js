@@ -8,13 +8,9 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
   const [hopesAndDreams, setHopesAndDreams] = useState(null);
 
   useEffect(() => {
-    console.log("useEffect triggered");
     const fetchUserData = async () => {
       const userHopesAndDreams = await getMindStateColumn("hopes_and_dreams");
-      console.log(
-        "userHopesAndDreams",
-        JSON.stringify(userHopesAndDreams.data)
-      );
+
       if (
         userHopesAndDreams.data &&
         userHopesAndDreams.data["hopes and dreams"]
@@ -58,23 +54,25 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
       }),
     };
 
-    const update = await updateMindState(
-      "hopes_and_dreams",
-      updatedHopesAndDreams
-    );
-    if (update) {
-      toast.success("Ratings updated successfully", { icon: "🚀" });
-      fetchUserData();
-      setIsFinished(true);
-    } else {
-      toast.error("Failed to update ratings");
-    }
+    try {
+      const response = await updateMindState(
+        "hopes_and_dreams",
+        updatedHopesAndDreams
+      );
 
-    console.log(JSON.stringify(updatedHopesAndDreams, null, 2));
+      if (response.data) {
+        toast.success("Ratings updated successfully", { icon: "🚀" });
+        setIsFinished(true);
+      } else {
+        toast.error(`Failed to update ratings: ${response.message}`);
+      }
+    } catch (error) {
+      toast.error(`Failed to update ratings: ${error.message}`);
+    }
   };
 
   if (hopesAndDreams == null) {
-    return <span>Loading Hopes And Dreams Rating System .... </span>;
+    return;
   }
 
   return (

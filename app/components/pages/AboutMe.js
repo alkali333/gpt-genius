@@ -29,8 +29,8 @@ const AboutMe = () => {
       }
       // console.log(`Info recieved from LLM: ${summaryResponse.data}`);
       const update = await updateMindState(column, summaryResponse.data);
-      if (!update) {
-        toast.error("Error updating mind state");
+      if (!update.data && update.message) {
+        toast.error("Error updating mind state: ", update.message);
         return;
       }
 

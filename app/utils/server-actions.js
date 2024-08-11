@@ -56,30 +56,52 @@ export const fetchUserJson = async () => {
 };
 
 export const updateMindState = async (column, data) => {
-  const user = await fetchAuthUser();
-  let returnData = null;
+  try {
+    const user = await fetchAuthUser();
+    console.log("User:", user);
 
-  const existingUser = await prisma.mindState.findUnique({
-    where: { clerkId: user.id },
-  });
-  if (existingUser) {
-    returnData = prisma.mindState.update({
+    if (!user || !user.id) {
+      console.error("No user found or user has no id");
+      return { message: "User not authenticated", data: null };
+    }
+
+    console.log(`Updating column: ${column}`);
+    console.log("Data to update:", JSON.stringify(data, null, 2));
+
+    const existingUser = await prisma.mindState.findUnique({
       where: { clerkId: user.id },
-      data: { [column]: data },
     });
-  } else {
-    returnData = prisma.mindState.create({
-      data: { clerkId: user.id, [column]: data },
-    });
+
+    console.log("Existing user:", existingUser);
+
+    let returnData;
+    if (existingUser) {
+      returnData = await prisma.mindState.update({
+        where: { clerkId: user.id },
+        data: { [column]: data },
+      });
+    } else {
+      returnData = await prisma.mindState.create({
+        data: { clerkId: user.id, [column]: data },
+      });
+    }
+
+    console.log("Return data:", returnData);
 
     if (returnData) {
-      revalidatePath("/my-info/[details]", "page");
-      revalidatePath("/welcome");
-      revalidatePath("/morning-practice");
-      revalidatePath("/evening-practice");
+      const pathsToRevalidate = [
+        "/my-info/[details]",
+        "/welcome",
+        "/morning-practice",
+        "/evening-practice",
+      ];
+      pathsToRevalidate.forEach((path) => revalidatePath(path));
     }
 
     return { message: "Mind state updated", data: returnData };
+  } catch (error) {
+    console.error("Error in updateMindState:", error);
+    return { message: error.message, data: null };
   }
 };
 
