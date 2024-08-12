@@ -411,7 +411,7 @@ export const generateChatResponse = async (systemMessage, chatMessages) => {
 
     const reply = response.choices[0].message.content;
 
-    return { reply };
+    return reply;
   } catch (error) {
     console.error("Error generating chat response:", error);
     return null;

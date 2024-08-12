@@ -50,6 +50,7 @@ const CoachChat = () => {
       console.log(error);
     },
     onSuccess: (response) => {
+      console.log(`Response: ${response}`);
       const message = {
         role: "assistant",
         content: response,
