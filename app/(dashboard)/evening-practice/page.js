@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-
+import { FaMoon } from "react-icons/fa";
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
 import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
@@ -34,16 +34,21 @@ const EveningPracticePage = () => {
   return (
     <div className="grid grid-rows-[1fr,auto] max-w-2xl">
       <div>
-        <h2 className="text-2xl font-bold mb-4 text-primary">
-          Rate how well you progressed towards each one today.
-        </h2>
+        <div className="flex items-center mb-3">
+          <FaMoon className="text-white-500 text-2xl" />
+          <h1 className="text-primary text-2xl ml-1">Evening Practice</h1>
+        </div>
+        <p>
+          Rate how well you progressed towards each of your hopes and dreams
+          today.
+        </p>
         <HopesAndDreamsRating setIsFinished={setRatingComplete} />
       </div>
       <div>
         {!formsComplete ? (
           <>
             {encouragementMessage === null ? (
-              <span className="loading loading-spinner loading-lg"></span>
+              <span className="loading loading-spinner loading-lg my-8"></span>
             ) : (
               <div
                 className="my-8 text-secondary prose prose-slate max-w-none text-sm"
@@ -55,11 +60,11 @@ const EveningPracticePage = () => {
               className="flex w-full items-center"
               onComplete={setJournalComplete}
             >
-              <DiaryInput words={150} />
+              <DiaryInput words={100} />
             </FormContainer>
           </>
         ) : (
-          <Meditation /> // Replace with Meditation component
+          <p>Meditation Will Display Here</p>
         )}
       </div>
     </div>

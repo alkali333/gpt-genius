@@ -40,7 +40,8 @@ const MorningPractice = () => {
         await fetchCoachingContent(`Based on the USER INFO. Write a short message
       (100 words) reminding them of their goals and the importance of their morning practice.
       Invite them to record their daily gratitude and task list. ONLY If there are existing task
-      lists invite them to remember these and ask if they are still relevant.`);
+      lists invite them to remember these and ask if they are still relevant.
+      Explain this is an ideas list, not a to-do list, encourage them to be creative and think big.`);
 
       if (!tempEncouragementMessage.data && tempEncouragementMessage.message) {
         console.error(tempEncouragementMessage.message);

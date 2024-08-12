@@ -4,7 +4,12 @@ import OpenAI from "openai";
 
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { gratitudeSchema, todoSchema, aboutMeSchema } from "/app/utils/schemas";
+import {
+  gratitudeSchema,
+  todoSchema,
+  aboutMeSchema,
+  eveningJournalSchema,
+} from "/app/utils/schemas";
 import { ZodError } from "zod";
 import { revalidatePath } from "next/cache";
 import { marked } from "marked";

@@ -14,7 +14,7 @@ const wordCountSchema = (minWords, maxWords) =>
   );
 
 export const eveningJournalSchema = z.object({
-  message: wordCountSchema(150, 1000),
+  entry: wordCountSchema(100, 1000),
 });
 
 export const aboutMeSchema = z.object({
