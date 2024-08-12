@@ -9,6 +9,7 @@ import {
 import FormContainer from "/app/components/forms/FormContainer";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
 import { FaSun } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const MorningPractice = () => {
   const gratitudeItems = [
@@ -35,17 +36,20 @@ const MorningPractice = () => {
 
   useEffect(() => {
     const getEncouragementMessage = async () => {
-      const message =
-        await fetchCoachingContent(`Based on the USER INFO. Write a short message 
-      (100 words) reminding them of their goals and the importance of their morning practice. 
+      const tempEncouragementMessage =
+        await fetchCoachingContent(`Based on the USER INFO. Write a short message
+      (100 words) reminding them of their goals and the importance of their morning practice.
       Invite them to record their daily gratitude and task list. ONLY If there are existing task
       lists invite them to remember these and ask if they are still relevant.`);
 
-      if (message.data) {
-        setEncouragementMessage(message.data);
-        console.log("Encouragement message: ", message.data);
+      if (!tempEncouragementMessage.data && tempEncouragementMessage.message) {
+        console.error(tempEncouragementMessage.message);
+        toast.error(
+          "Failed to load encouragement message: " +
+            tempEncouragementMessage.message
+        );
       } else {
-        console.log("Error fetching encouragement message");
+        setEncouragementMessage(tempEncouragementMessage.data);
       }
     };
     getEncouragementMessage();
@@ -54,21 +58,17 @@ const MorningPractice = () => {
   return (
     <div className="grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
-        <div className="flex">
+        <div className="flex items-center mb-3">
           <FaSun className="text-yellow-500 text-2xl" />
-          <h1 className="text-primary text-2xl mb-3">Morning Practice</h1>
+          <h1 className="text-primary text-2xl ml-1">Morning Practice</h1>
         </div>
         {encouragementMessage === null ? (
           <span className="loading loading-spinner loading-lg"></span>
         ) : (
-          encouragementMessage || (
-            <>
-              <div
-                className="text-secondary prose prose-slate max-w-none text-sm"
-                dangerouslySetInnerHTML={{ __html: encouragementMessage }}
-              />
-            </>
-          )
+          <div
+            className="my-8 text-secondary prose prose-slate max-w-none text-sm"
+            dangerouslySetInnerHTML={{ __html: encouragementMessage }}
+          />
         )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">

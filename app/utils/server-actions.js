@@ -398,7 +398,7 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
     // Convert type to column name by replacing spaces with underscores
     const column = type.replace(/ /g, "_").toLowerCase();
 
-    // First, summarize the info
+    console.log("Summarizing user info for:", type);
     const summaryResult = await summarizeInfo(userInput, type);
 
     if (!summaryResult.data) {
@@ -408,7 +408,7 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
       };
     }
 
-    // Then, update the mind state with the summarized data
+    console.log("Updating mind state for:", type);
     const updateResult = await updateMindState(column, summaryResult.data);
 
     if (!updateResult.data) {
