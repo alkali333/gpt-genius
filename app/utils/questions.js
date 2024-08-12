@@ -9,7 +9,7 @@ export const questions = [
     step: 2,
     title: "skills and achievements",
     content:
-      "Tell me about your skills and achievements. These can be from education, work, hobbies, overcoming life difficulties and so on. What gifts do you have, what nice things to other people say about you?",
+      "Tell me about your skills and achievements. These can be from education, work, hobbies, overcoming life difficulties and so on. What gifts do you have, what nice things to other people say about you? What makes you special? What challenges have you overcome?",
   },
   {
     step: 3,

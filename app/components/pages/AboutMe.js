@@ -46,8 +46,8 @@ const AboutMe = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[auto,1fr,auto]">
-      <div className="max-w-4xl pt-12">
+    <div className="min-h-[calc(100vh-9rem)] grid grid-rows-[auto,1fr,auto] max-w-2xl">
+      <div className=" pt-12">
         <div className="w-full flex items-center">
           <ul className="steps w-full">
             {questions.slice(0, 3).map((question) => (
@@ -70,9 +70,10 @@ const AboutMe = () => {
           <div className="flex flex-col justify-start py-6 leading-loose max-w-4xl">
             {step === 1 && (
               <p className="max-w-4xl bg-base-100 text-m lg:text-xl mb-4">
-                Welcome to Attenshun! Completing this exercise will help me
-                understand your goals, skills, and obstacles. You can do it as
-                often as you like, we recommend once a month at least.
+                Completing this exercise will help me understand your goals,
+                skills, and obstacles. You can do it as often as you like, we
+                recommend once a month at least. Each time you complete this
+                exercise, your goals, skills, and obstacles will be reset.
               </p>
             )}
             <p className="max-w-4xl bg-base-100 text-m lg:text-xl">
@@ -93,11 +94,14 @@ const AboutMe = () => {
             />
           ) : (
             <>
-              <p className="text-xl font-semibold">
+              <p className="text-secondary">
                 You have completed the journalling exercise. Return to this page
                 frequently and repeat the process.
               </p>
-              <Link href="/about-me/details" className="btn btn-primary">
+              <Link
+                href="/my-info/hopes-and-dreams"
+                className="btn btn-primary ml-2"
+              >
                 See my Details
               </Link>
             </>

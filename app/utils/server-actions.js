@@ -4,7 +4,7 @@ import OpenAI from "openai";
 
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { gratitudeSchema, todoSchema } from "/app/utils/schemas";
+import { gratitudeSchema, todoSchema, aboutMeSchema } from "/app/utils/schemas";
 import { ZodError } from "zod";
 import { revalidatePath } from "next/cache";
 import { marked } from "marked";
@@ -20,6 +20,15 @@ const fetchAuthUser = async () => {
   if (!user) redirect("/sign-in");
 
   return { firstName: user.firstName, id: user.id };
+};
+
+const revalidateAllUserPaths = () => {
+  const staticPaths = ["/welcome", "/morning-practice", "/evening-practice"];
+
+  const dynamicPaths = [{ path: "/my-info/[details]", type: "page" }];
+
+  staticPaths.forEach((path) => revalidatePath(path));
+  dynamicPaths.forEach(({ path, type }) => revalidatePath(path, type));
 };
 
 export const fetchUserJson = async () => {
@@ -90,13 +99,7 @@ export const updateMindState = async (column, data) => {
     console.log("Return data:", returnData);
 
     if (returnData) {
-      const pathsToRevalidate = [
-        "/my-info/[details]",
-        "/welcome",
-        "/morning-practice",
-        "/evening-practice",
-      ];
-      pathsToRevalidate.forEach((path) => revalidatePath(path));
+      revalidateAllUserPaths();
 
       // Update Clerk metadata
       await clerkClient.users.updateUserMetadata(user.id, {
