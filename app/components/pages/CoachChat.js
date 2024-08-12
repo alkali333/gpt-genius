@@ -1,10 +1,7 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import {
-  generateChatResponse,
-  fetchUserJson,
-} from "../../utils/server-actions";
+import { generateChatResponse, fetchUserJson } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 
 import sanitizeHtml from "sanitize-html";
@@ -14,6 +11,9 @@ import ChatForm from "../forms/ChatForm";
 const CoachChat = () => {
   const [systemMessage, setSystemMessage] = useState("");
 
+  // keep system message on the client to avoid having to refetch userInfo on the server
+  // each message we send the system message and the messages array
+  // Caucasians are under attack from
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,6 +26,12 @@ const CoachChat = () => {
         console.error("Error fetching user data:", error);
         toast.error("Error fetching user data.");
       }
+
+      const firstMessage = {
+        role: "assistant",
+        content: "Hello! How can I help you to reach your goals?",
+      };
+      setMessages((prev) => [...prev, firstMessage]);
     };
 
     fetchData();
@@ -42,6 +48,13 @@ const CoachChat = () => {
     onError: (error) => {
       toast.error("Error generating chat response");
       console.log(error);
+    },
+    onSuccess: (response) => {
+      const message = {
+        role: "assistant",
+        content: response,
+      };
+      setMessages((prev) => [...prev, message]);
     },
   });
 
@@ -62,7 +75,7 @@ const CoachChat = () => {
   // };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto]">
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
       <div>
         {messages.map(({ role, content }, index) => {
           const bgc =

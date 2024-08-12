@@ -2,7 +2,7 @@
 
 import OpenAI from "openai";
 
-import prisma from "./db";
+import prisma from "../app/utils/db";
 import axios from "axios";
 import fs from "fs";
 import path from "path";

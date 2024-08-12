@@ -401,6 +401,23 @@ export const generateEveningPracticeMessage = async () => {
   return { message: "Evening Practice Generated", data: response.data };
 };
 
+export const generateChatResponse = async (systemMessage, chatMessages) => {
+  try {
+    const response = await openai.chat.completions.create({
+      messages: [{ role: "system", content: systemMessage }, ...chatMessages],
+      model: "gpt-4o-mini",
+      temperature: 0.8,
+    });
+
+    const reply = response.choices[0].message.content;
+
+    return { reply };
+  } catch (error) {
+    console.error("Error generating chat response:", error);
+    return null;
+  }
+};
+
 export const summarizeAndUpdateMindState = async (type, userInput) => {
   try {
     // Convert type to column name by replacing spaces with underscores
