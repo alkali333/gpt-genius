@@ -15,7 +15,7 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
         type="text"
         name="message"
         placeholder="Send message"
-        className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pt-5"
+        className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pt-5 px-2"
         value={text}
         required
         autoFocus
