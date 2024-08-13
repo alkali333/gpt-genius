@@ -4,22 +4,25 @@ import { useState, useEffect } from "react";
 import { FaArrowUp, FaCheck } from "react-icons/fa";
 import toast from "react-hot-toast";
 
-const Settings = ({ systemMessage, setSystemMessage }) => {
-  const [tempSystemMessage, setTempSystemMessage] = useState(systemMessage);
+const Settings = ({ systemMessageIntro, setSystemMessageIntro }) => {
+  const [tempSystemMessageIntro, setTempSystemMessageIntro] =
+    useState(systemMessageIntro);
   const [isUpdated, setIsUpdated] = useState(true);
 
-  // mark as updated once changed
+  const systemMessageOptions = [
+    "You are a wise guru",
+    "You are a life coach",
+    "You are a harsh drill sergeant",
+  ];
+
   useEffect(() => {
     setIsUpdated(true);
-  }, [systemMessage]);
+  }, [systemMessageIntro]);
 
-  // as soon as they start changing the message...
   useEffect(() => {
     setIsUpdated(false);
-  }, [tempSystemMessage]);
+  }, [tempSystemMessageIntro]);
 
-  // this is added to make the modal close when you click out
-  // off it. Maybe overkill.
   useEffect(() => {
     const modal = document.getElementById("my_modal_3");
     const handleClose = (event) => {
@@ -31,10 +34,10 @@ const Settings = ({ systemMessage, setSystemMessage }) => {
     return () => modal.removeEventListener("click", handleClose);
   }, []);
 
-  const changeSystemMessage = (e) => {
-    if (tempSystemMessage === systemMessage) return;
+  const changeSystemMessageIntro = (e) => {
+    if (tempSystemMessageIntro === systemMessageIntro) return;
     e.preventDefault();
-    setSystemMessage(tempSystemMessage);
+    setSystemMessageIntro(tempSystemMessageIntro);
     toast.success("System Message Updated!", { position: "top-center" });
     document.getElementById("my_modal_3").close();
   };
@@ -45,33 +48,30 @@ const Settings = ({ systemMessage, setSystemMessage }) => {
         className="btn"
         onClick={() => document.getElementById("my_modal_3").showModal()}
       >
-        <TbSettingsQuestion
-          className="text-3xl text-primary cursor-pointer"
-          onClick={() => document.getElementById("my_modal_3").showModal()}
-        ></TbSettingsQuestion>
+        <TbSettingsQuestion className="text-3xl text-primary cursor-pointer" />
       </button>
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box">
           <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
             </button>
           </form>
           <h3 className="font-bold text-lg ml-2 mb-2">Change System Message</h3>
           <form className="join w-full" method="post">
-            <input
-              type="text"
-              name="systemMessageInput"
-              placeholder="Type here"
-              className="input input-bordered join-item w-full"
-              onChange={(e) => setTempSystemMessage(e.target.value)}
-              maxLength={1500}
-              value={tempSystemMessage}
-              required
-            />
+            <select
+              className="select select-bordered join-item w-full"
+              value={tempSystemMessageIntro}
+              onChange={(e) => setTempSystemMessageIntro(e.target.value)}
+            >
+              {systemMessageOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
             <button
-              onClick={changeSystemMessage}
+              onClick={changeSystemMessageIntro}
               className={`btn ${
                 isUpdated ? "bg-green-400 hover:bg-green-400 " : "btn-primary "
               } join-item rounded-r-full`}

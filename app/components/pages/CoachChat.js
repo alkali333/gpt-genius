@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import { generateChatResponse, fetchUserJson } from "/app/utils/server-actions";
 import toast from "react-hot-toast";
 
-import sanitizeHtml from "sanitize-html";
-
 import ChatForm from "../forms/ChatForm";
+import { GiBrainstorm } from "react-icons/gi";
 
 const CoachChat = () => {
   const [systemMessage, setSystemMessage] = useState("");
@@ -29,7 +28,8 @@ const CoachChat = () => {
 
       const firstMessage = {
         role: "assistant",
-        content: "Hello! How can I help you to reach your goals?",
+        content:
+          "Hello! I am here to help you reach your goals, remember your strengths, and overcome your challenges. How can I help you today?",
       };
       setMessages((prev) => [...prev, firstMessage]);
     };
@@ -50,7 +50,6 @@ const CoachChat = () => {
       console.log(error);
     },
     onSuccess: (response) => {
-      console.log(`Response: ${response}`);
       const message = {
         role: "assistant",
         content: response,
@@ -73,47 +72,56 @@ const CoachChat = () => {
   //     e.preventDefault();
   //     handleSubmit(e);
   //   }
-  // };
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
-      <div>
-        {messages.map(({ role, content }, index) => {
-          const bgc =
-            role === "user" ? "bg-base-200 p-4 rounded-lg" : "bg-base-100";
-          const justifyContent =
-            role === "user" ? "justify-end" : "justify-start";
-          const width = role === "user" ? "3/4" : "full";
+    <div className="relative min-h-screen">
+      <div className="pb-24">
+        {" "}
+        {/* Adjust 24 to match your chat form height */}
+        <div className="flex items-center mb-3">
+          <h1 className="text-primary text-2xl ml-1">
+            Chat with your life coach
+          </h1>
+        </div>
+        <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
+          <div>
+            {messages.map(({ role, content }, index) => {
+              const bgc =
+                role === "user" ? "bg-base-200 p-4 rounded-lg" : "bg-base-100";
+              const justifyContent =
+                role === "user" ? "justify-end" : "justify-start";
+              const width = role === "user" ? "3/4" : "full";
 
-          const formattedContent = sanitizeHtml(
-            content
-              .replace(/\n/g, "<br />")
-              .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"),
-            { allowedTags: ["br", "strong"] }
-          );
-
-          return (
-            <div
-              key={index}
-              className={`flex ${justifyContent} py-6 px-8 leading-loose max-w-4xl`}
-            >
-              {role === "assistant" && <span className="mr-4">🤖</span>}
-              <p
-                className={`max-w-3xl ${bgc}`}
-                dangerouslySetInnerHTML={{ __html: formattedContent }}
-              />
-            </div>
-          );
-        })}
+              return (
+                <div
+                  key={index}
+                  className={`flex ${justifyContent} py-6 leading-loose max-w-4xl`}
+                >
+                  {role === "assistant" && (
+                    <GiBrainstorm className="w-10 h-10 text-primary" />
+                  )}
+                  <p
+                    className={`${width}} ${bgc}`}
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-      <div className="max-w-4xl pt-12">
-        <div className="w-full flex items-center">
-          <ChatForm
-            handleSubmit={handleSubmit}
-            text={text}
-            setText={setText}
-            isPending={isPending}
-          />
+
+      <div className="fixed bottom-0 left-0 right-0 bg-base-100 p-4 lg:pl-[calc(20rem+1rem)]">
+        <div className="max-w-2xl">
+          <div className="w-full flex items-center">
+            <ChatForm
+              handleSubmit={handleSubmit}
+              text={text}
+              setText={setText}
+              isPending={isPending}
+            />
+            <div className="ml-5"></div>
+          </div>
         </div>
       </div>
     </div>
