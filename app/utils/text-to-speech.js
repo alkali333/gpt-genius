@@ -5,11 +5,6 @@ import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { Readable } from "stream";
-
-console.log("AWS Region:", process.env.AWS_REGION);
-console.log("AWS Access Key ID:", process.env.AWS_ACCESS_KEY_ID);
-console.log("AWS Secret Access Key:", process.env.AWS_SECRET_ACCESS_KEY);
 
 const client = new PollyClient({
   region: process.env.AWS_REGION,
