@@ -460,7 +460,7 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
 export const generateMeditation = async () => {
   try {
     const exercise = getRandomExercise();
-    const meditation = await fetchCoachingContent(exercise, (htmlMode = false));
+    const meditation = await fetchCoachingContent(exercise, false);
 
     if (!meditation || !meditation.data) {
       console.error("Error: Failed to fetch coaching content");

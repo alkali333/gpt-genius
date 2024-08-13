@@ -29,6 +29,8 @@ export async function synthesizeSpeech(text) {
     Text: text,
     OutputFormat: "mp3",
     VoiceId: "Emma",
+    Engine: "neural",
+    LanguageCode: "en-GB",
   };
 
   // Debug logging for Polly parameters
