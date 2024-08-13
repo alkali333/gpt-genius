@@ -57,6 +57,10 @@ const MorningPractice = () => {
     getEncouragementMessage();
   }, []);
 
+  if (formsComplete) {
+    return <Meditation />;
+  }
+
   return (
     <div className="grid grid-rows-[auto,1fr,auto] items-center">
       <div className="max-w-2xl">
@@ -74,38 +78,32 @@ const MorningPractice = () => {
         )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
-        {formsComplete ? (
-          <Meditation />
-        ) : (
-          <>
-            <div className="w-1/2">
-              <h1 className="text-secondary text-xl mb-3">
-                Things I&apos;m grateful for...{" "}
-              </h1>
-              <FormContainer
-                action={updateMorningJournal}
-                onComplete={setGratitudeComplete}
-              >
-                <DailyInputForm title="grateful for" inputs={gratitudeItems} />
-              </FormContainer>
-              {gratitudeComplete && (
-                <FaCheckCircle className="text-green-500 text-2xl" />
-              )}
-            </div>
-            <div className="w-1/2">
-              <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
-              <FormContainer
-                action={updateMorningJournal}
-                onComplete={setToDoComplete}
-              >
-                <DailyInputForm inputs={toDoItems} />
-              </FormContainer>
-              {toDoComplete && (
-                <FaCheckCircle className="text-green-500 text-2xl" />
-              )}
-            </div>
-          </>
-        )}
+        <div className="w-1/2">
+          <h1 className="text-secondary text-xl mb-3">
+            Things I&apos;m grateful for...{" "}
+          </h1>
+          <FormContainer
+            action={updateMorningJournal}
+            onComplete={setGratitudeComplete}
+          >
+            <DailyInputForm title="grateful for" inputs={gratitudeItems} />
+          </FormContainer>
+          {gratitudeComplete && (
+            <FaCheckCircle className="text-green-500 text-2xl" />
+          )}
+        </div>
+        <div className="w-1/2">
+          <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
+          <FormContainer
+            action={updateMorningJournal}
+            onComplete={setToDoComplete}
+          >
+            <DailyInputForm inputs={toDoItems} />
+          </FormContainer>
+          {toDoComplete && (
+            <FaCheckCircle className="text-green-500 text-2xl" />
+          )}
+        </div>
       </div>
     </div>
   );

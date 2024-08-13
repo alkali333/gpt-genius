@@ -31,6 +31,10 @@ const EveningPracticePage = () => {
     getEncouragementMessage();
   }, []);
 
+  if (formsComplete) {
+    return <Meditation />;
+  }
+
   return (
     <div className="grid grid-rows-[1fr,auto] max-w-2xl">
       <div>
@@ -45,27 +49,21 @@ const EveningPracticePage = () => {
         <HopesAndDreamsRating setIsFinished={setRatingComplete} />
       </div>
       <div>
-        {!formsComplete ? (
-          <>
-            {encouragementMessage === null ? (
-              <span className="loading loading-spinner loading-lg my-8"></span>
-            ) : (
-              <div
-                className="my-8 text-secondary prose prose-slate max-w-none text-sm"
-                dangerouslySetInnerHTML={{ __html: encouragementMessage }}
-              />
-            )}
-            <FormContainer
-              action={insertDiaryEntry}
-              className="flex w-full items-center"
-              onComplete={setJournalComplete}
-            >
-              <DiaryInput words={100} />
-            </FormContainer>
-          </>
+        {encouragementMessage === null ? (
+          <span className="loading loading-spinner loading-lg my-8"></span>
         ) : (
-          <Meditation />
+          <div
+            className="my-8 text-secondary prose prose-slate max-w-none text-sm"
+            dangerouslySetInnerHTML={{ __html: encouragementMessage }}
+          />
         )}
+        <FormContainer
+          action={insertDiaryEntry}
+          className="flex w-full items-center"
+          onComplete={setJournalComplete}
+        >
+          <DiaryInput words={100} />
+        </FormContainer>
       </div>
     </div>
   );

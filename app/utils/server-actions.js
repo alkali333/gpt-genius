@@ -460,7 +460,7 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
 
 export const generateMeditation = async (useDiary = false) => {
   try {
-    const exercise = getRandomExercise();
+    let exercise = getRandomExercise();
 
     if (useDiary) {
       const diaryEntry = await getLatestDiaryEntry();

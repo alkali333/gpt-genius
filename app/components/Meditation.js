@@ -26,7 +26,7 @@ const Meditation = () => {
 
   if (meditation == null) {
     return (
-      <span className="loading loading-spinner loading-lg text-primary"></span>
+      <span className="loading loading-spinner loading-lg text-primary my-5"></span>
     );
   }
 

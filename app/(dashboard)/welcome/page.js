@@ -1,5 +1,6 @@
 import { fetchCoachingContent } from "/app/utils/server-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
+import BottomNav from "/app/components/BottomNav";
 
 const welcomeMessages = [
   "an encouraging message, 10 powerful affirmations, and 1 inspiring quote.",
@@ -33,6 +34,7 @@ const WelcomePage = async () => {
         className="text-secondary prose prose-slate max-w-none text-sm"
         dangerouslySetInnerHTML={{ __html: welcomeMessage.data }}
       />
+      <BottomNav />
     </div>
   );
 };
