@@ -11,7 +11,7 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await synthesizeSpeech(text);
-    setAudioUrl(result);
+    setAudioUrl(result.data);
   };
 
   return (

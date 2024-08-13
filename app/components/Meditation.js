@@ -3,20 +3,23 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { marked } from "marked";
 
-import { fetchCoachingContent } from "../utils/server-actions";
+import { generateMeditation } from "../utils/server-actions";
 
 import MissingDetails from "./messages/MissingDetails";
-import { getRandomExercise } from "../utils/exercises";
+import AudioPlayer from "./AudioPlayer";
 
 const Meditation = () => {
   const [meditation, setMeditation] = useState(null);
 
   useEffect(() => {
     const loadMeditation = async () => {
-      const meditation = await fetchCoachingContent(getRandomExercise());
+      const meditation = await generateMeditation();
 
+      if (!meditation || !meditation.data) {
+        toast.error("Failed to load meditation");
+        return;
+      }
       setMeditation(meditation.data);
-      setIsLoading(false);
     };
 
     loadMeditation();
@@ -31,20 +34,13 @@ const Meditation = () => {
     );
   }
 
-  const htmlMessage = marked(meditation);
+  if (meditation == null) {
+    return (
+      <span className="loading loading-spinner loading-lg text-primary"></span>
+    );
+  }
 
-  return (
-    <p>
-      {meditation == null ? (
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      ) : (
-        <div
-          className="prose prose-slate max-w-none text-sm"
-          dangerouslySetInnerHTML={{ __html: htmlMessage }}
-        />
-      )}
-    </p>
-  );
+  return <AudioPlayer audioSrc={meditation} />;
 };
 
 export default Meditation;

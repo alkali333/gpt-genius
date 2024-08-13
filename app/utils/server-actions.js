@@ -1,6 +1,7 @@
 "use server";
 import prisma from "./db";
 import OpenAI from "openai";
+import { synthesizeSpeech } from "./text-to-speech";
 
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
@@ -15,6 +16,7 @@ import { revalidatePath } from "next/cache";
 import { marked } from "marked";
 
 import { clerkClient } from "@clerk/nextjs/server";
+import { getRandomExercise } from "/app/utils/exercises";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -450,5 +452,39 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
   } catch (error) {
     console.error(`Error in summarizeAndUpdateMindState for ${type}:`, error);
     return { message: `Unexpected error: ${error.message}`, data: null };
+  }
+};
+
+export const generateMeditation = async () => {
+  try {
+    const exercise = getRandomExercise();
+    const meditation = await fetchCoachingContent(exercise);
+
+    if (!meditation || !meditation.data) {
+      console.error("Error: Failed to fetch coaching content");
+      return { message: "Failed to generate meditation content", data: null };
+    }
+
+    const audioResult = await synthesizeSpeech(meditation.data);
+
+    if (!audioResult || !audioResult.data) {
+      console.error("Error synthesizing speech:", audioResult.message);
+      return {
+        message:
+          audioResult.message || "Failed to synthesize speech for meditation",
+        data: null,
+      };
+    }
+
+    return {
+      message: "Meditation generated successfully",
+      data: audioResult.data,
+    };
+  } catch (error) {
+    console.error("Unexpected error in generateMeditation:", error);
+    return {
+      message: "An unexpected error occurred while generating meditation",
+      data: null,
+    };
   }
 };

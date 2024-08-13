@@ -64,10 +64,14 @@ export async function synthesizeSpeech(text) {
     fs.writeFileSync(filePath, audioBuffer);
     console.log("Audio file written to:", filePath);
 
-    return `/${user.id}/${fileName}`;
+    return {
+      message: "Speech synthesized succesfully",
+      data: `/${user.id}/${fileName}`,
+    };
   } catch (error) {
     console.error("Error synthesizing speech:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
     throw new Error("Failed to synthesize speech");
+    return { message: "Failed to synthesize speech", data: null };
   }
 }
