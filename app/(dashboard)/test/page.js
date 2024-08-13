@@ -1,7 +1,7 @@
-import HopesAndDreamsRating from "../../components/forms/HopesAndDreamsRating";
+import Meditation from "../../components/Meditation";
 
 const TestPage = () => {
-  return <HopesAndDreamsRating />;
+  return <Meditation />;
 };
 
 export default TestPage;

@@ -25,15 +25,6 @@ const Meditation = () => {
     loadMeditation();
   }, []);
 
-  if (!userData) {
-    return (
-      <MissingDetails>
-        You need to complete the journaling exercises before you can access the
-        meditations.
-      </MissingDetails>
-    );
-  }
-
   if (meditation == null) {
     return (
       <span className="loading loading-spinner loading-lg text-primary"></span>

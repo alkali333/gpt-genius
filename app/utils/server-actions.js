@@ -1,20 +1,22 @@
 "use server";
 import prisma from "./db";
 import OpenAI from "openai";
-import { synthesizeSpeech } from "./text-to-speech";
 
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+
+import { ZodError } from "zod";
+import { revalidatePath } from "next/cache";
+import { marked } from "marked";
+
 import {
   gratitudeSchema,
   todoSchema,
   aboutMeSchema,
   eveningJournalSchema,
 } from "/app/utils/schemas";
-import { ZodError } from "zod";
-import { revalidatePath } from "next/cache";
-import { marked } from "marked";
 
+import { synthesizeSpeech } from "./text-to-speech";
 import { clerkClient } from "@clerk/nextjs/server";
 import { getRandomExercise } from "/app/utils/exercises";
 
@@ -342,7 +344,7 @@ export const summarizeInfo = async (query, type) => {
   }
 };
 
-export const fetchCoachingContent = async (prompt) => {
+export const fetchCoachingContent = async (prompt, htmlMode = true) => {
   console.log("Fetching coaching content");
   const userJson = await fetchUserJson();
 
@@ -367,7 +369,7 @@ export const fetchCoachingContent = async (prompt) => {
   if (openAIResponse.data) {
     return {
       message: "Successfully retrieved welcome message",
-      data: marked(openAIResponse.data),
+      data: htmlMode ? marked(openAIResponse.data) : openAIResponse.data,
     };
   } else {
     return { message: "Error retrieving welcome message", data: null };
@@ -458,12 +460,14 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
 export const generateMeditation = async () => {
   try {
     const exercise = getRandomExercise();
-    const meditation = await fetchCoachingContent(exercise);
+    const meditation = await fetchCoachingContent(exercise, (htmlMode = false));
 
     if (!meditation || !meditation.data) {
       console.error("Error: Failed to fetch coaching content");
       return { message: "Failed to generate meditation content", data: null };
     }
+
+    console.log(`Meditation content: ${meditation.data}`);
 
     const audioResult = await synthesizeSpeech(meditation.data);
 
