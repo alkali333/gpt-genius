@@ -458,9 +458,18 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
   }
 };
 
-export const generateMeditation = async () => {
+export const generateMeditation = async (useDiary = false) => {
   try {
     const exercise = getRandomExercise();
+
+    if (useDiary) {
+      const diaryEntry = await getLatestDiaryEntry();
+      if (diaryEntry.data) {
+        exercise += ` \n Also use on their latest diary entry: \n\n
+      DIARY ENTRY: ${diaryEntry.data}`;
+      }
+    }
+
     const meditation = await fetchCoachingContent(exercise, false);
 
     if (!meditation || !meditation.data) {
