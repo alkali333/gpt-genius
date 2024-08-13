@@ -274,6 +274,7 @@ const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
       ],
       model: model,
       temperature: 0.8,
+      max_tokens: 750,
     });
 
     const reply = response.choices[0].message.content;

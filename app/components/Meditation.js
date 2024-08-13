@@ -16,7 +16,6 @@ const Meditation = () => {
       const meditation = await generateMeditation();
 
       if (!meditation || !meditation.data) {
-        toast.error("Failed to load meditation");
         return;
       }
       setMeditation(meditation.data);
