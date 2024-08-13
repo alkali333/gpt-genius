@@ -20,7 +20,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const fetchAuthUser = async () => {
+export const fetchAuthUser = async () => {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
 
