@@ -64,7 +64,7 @@ const EveningPracticePage = () => {
             </FormContainer>
           </>
         ) : (
-          <p>Meditation Will Display Here</p>
+          <Meditation />
         )}
       </div>
     </div>

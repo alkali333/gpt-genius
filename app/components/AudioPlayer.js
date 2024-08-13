@@ -22,7 +22,7 @@ const AudioPlayer = ({ audioSrc }) => {
   };
 
   return (
-    <div className="card bg-neutral text-neutral-content w-96">
+    <div className="card bg-neutral text-neutral-content w-96 my-5">
       <div className="card-body items-center text-center">
         <h2 className="card-title">Time To Meditate</h2>
         <p>Find a comfortable, quiet place to sit and begin your meditation.</p>

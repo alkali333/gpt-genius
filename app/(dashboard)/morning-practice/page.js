@@ -1,15 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { FaSun } from "react-icons/fa";
+import toast from "react-hot-toast";
+
 import {
   updateMorningJournal,
-  getLatestDiaryEntry,
   fetchCoachingContent,
 } from "../../utils/server-actions";
 import FormContainer from "/app/components/forms/FormContainer";
 import DailyInputForm from "/app/components/forms/DailyInputForm";
-import { FaSun } from "react-icons/fa";
-import toast from "react-hot-toast";
+import Meditation from "/app/components/Meditation";
 
 const MorningPractice = () => {
   const gratitudeItems = [
@@ -73,32 +74,38 @@ const MorningPractice = () => {
         )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
-        <div className="w-1/2">
-          <h1 className="text-secondary text-xl mb-3">
-            Things I&apos;m grateful for...{" "}
-          </h1>
-          <FormContainer
-            action={updateMorningJournal}
-            onComplete={setGratitudeComplete}
-          >
-            <DailyInputForm title="grateful for" inputs={gratitudeItems} />
-          </FormContainer>
-          {gratitudeComplete && (
-            <FaCheckCircle className="text-green-500 text-2xl" />
-          )}
-        </div>
-        <div className="w-1/2">
-          <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
-          <FormContainer
-            action={updateMorningJournal}
-            onComplete={setToDoComplete}
-          >
-            <DailyInputForm inputs={toDoItems} />
-          </FormContainer>
-          {toDoComplete && (
-            <FaCheckCircle className="text-green-500 text-2xl" />
-          )}
-        </div>
+        {formsComplete ? (
+          <Meditation />
+        ) : (
+          <>
+            <div className="w-1/2">
+              <h1 className="text-secondary text-xl mb-3">
+                Things I&apos;m grateful for...{" "}
+              </h1>
+              <FormContainer
+                action={updateMorningJournal}
+                onComplete={setGratitudeComplete}
+              >
+                <DailyInputForm title="grateful for" inputs={gratitudeItems} />
+              </FormContainer>
+              {gratitudeComplete && (
+                <FaCheckCircle className="text-green-500 text-2xl" />
+              )}
+            </div>
+            <div className="w-1/2">
+              <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
+              <FormContainer
+                action={updateMorningJournal}
+                onComplete={setToDoComplete}
+              >
+                <DailyInputForm inputs={toDoItems} />
+              </FormContainer>
+              {toDoComplete && (
+                <FaCheckCircle className="text-green-500 text-2xl" />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
