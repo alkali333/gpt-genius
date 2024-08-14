@@ -21,6 +21,10 @@ export const aboutMeSchema = z.object({
   message: wordCountSchema(250, 1500),
 });
 
+export const meditationDiarySchema = z.object({
+  message: wordCountSchema(10, 100),
+});
+
 export const gratitudeSchema = z.object({
   gratitude1: z.string().min(3).max(1000),
   gratitude2: z.string().min(3).max(1000),

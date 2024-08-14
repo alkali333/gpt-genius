@@ -31,6 +31,13 @@ model Token {
   tokens Int @default(1000)
 }
 
+model MeditationDiary {
+  id       Int      @id @default(autoincrement())
+  entry    String
+  summary  String?
+  date     DateTime @default(now())
+  clerkId  String
+}
 
 
 

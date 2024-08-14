@@ -14,6 +14,7 @@ import {
   todoSchema,
   aboutMeSchema,
   eveningJournalSchema,
+  meditationDiarySchema,
 } from "/app/utils/schemas";
 
 import { synthesizeSpeech } from "./text-to-speech";
@@ -219,7 +220,7 @@ export async function insertDiaryEntry(prevState, formData) {
 
     const newEntry = await prisma.diary.create({
       data: {
-        clerkId: userId,
+        clerkId: user.id,
         ...validatedFields,
       },
     });
@@ -262,6 +263,28 @@ export const getLatestDiaryEntry = async () => {
   } else {
     console.log("No Diary entry found");
     return { message: "No diary entry found", data: null };
+  }
+};
+
+export const updateMeditationDiary = async (prevState, formData) => {
+  const user = await fetchAuthUser();
+  const rawData = Object.fromEntries(formData);
+  try {
+    const validatedFields = meditationDiarySchema.parse(rawData);
+    const newEntry = await prisma.meditationDiary.create({
+      data: {
+        clerkId: user.id,
+        ...validatedFields,
+      },
+    });
+
+    return { message: "Meditation diary updated", data: newEntry };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessage = error.errors[0]?.message || "Validation error";
+
+      return { message: errorMessage, data: null };
+    }
   }
 };
 
