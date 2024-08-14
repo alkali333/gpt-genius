@@ -31,11 +31,9 @@ export default clerkMiddleware(async (auth, req) => {
       !user?.publicMetadata.has_obstacles_and_challenges &&
       req.nextUrl.pathname !== "/about-me"
     ) {
-      console.log("User does not have profile, redirecting to /about-me");
       return NextResponse.redirect(new URL("/about-me", req.url));
     }
   }
-  console.log("User has profile, continuing to page");
 });
 
 export const config = {
