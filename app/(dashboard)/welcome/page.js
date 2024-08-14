@@ -14,8 +14,14 @@ const randomMessage =
   welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
 
 const WelcomePage = async () => {
+  const today = new Date();
+  const day = today.getDate();
+  const month = today.toLocaleString("default", { month: "long" });
+
+  const currentDate = `Today is the ${day}th of ${month}`;
+
   const welcomeMessage = await fetchCoachingContent(
-    `Based on the user info, ${randomMessage}`
+    `Based on the user info, ${randomMessage} (around 300 words)`
   );
 
   if (!welcomeMessage.data && welcomeMessage.message) {
@@ -28,10 +34,11 @@ const WelcomePage = async () => {
   }
 
   return (
-    <div className="max-w-2xl text-sm leading-loose">
-      <h2 className="text-primary text-xl mb-7">Welcome To Attenshun</h2>
+    <div className="max-w-2xl leading-loose">
+      <h2 className="text-primary text-2xl mb-7">Welcome To Attenshun</h2>
+      <p className="text-info text-xl my-7">{currentDate}</p>
       <div
-        className="text-secondary prose prose-slate max-w-none text-sm"
+        className="text-secondary text-xl  prose prose-slate max-w-none"
         dangerouslySetInnerHTML={{ __html: welcomeMessage.data }}
       />
       <BottomNav />

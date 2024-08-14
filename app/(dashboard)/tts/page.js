@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import { synthesizeSpeech } from "/app/utils/text-to-speech";
+import AudioPlayerV2 from "/app/components/AudioPlayerV2";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -35,9 +36,10 @@ export default function Home() {
         </button>
       </form>
       {audioUrl && (
-        <audio controls src={audioUrl} className="w-full">
-          Your browser does not support the audio element.
-        </audio>
+        <AudioPlayerV2
+          meditationAudio={audioUrl}
+          backgroundAudio={"/user-audio/background.mp3"}
+        />
       )}
     </div>
   );

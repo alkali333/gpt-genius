@@ -16,7 +16,7 @@ export const DiaryInput = ({ words }) => {
       <textarea
         type="text"
         name="entry"
-        placeholder="Send message"
+        placeholder="Write your diary entry.... "
         className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
         required
         autoFocus

@@ -1,14 +1,14 @@
 // app/actions.js
 "use server";
 
-import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
+import {
+  PollyClient,
+  SynthesizeSpeechCommand,
+  TextType,
+} from "@aws-sdk/client-polly";
 import fs from "fs";
 import path from "path";
 import { fetchAuthUser } from "./server-actions";
-
-console.log("AWS Region:", process.env.AWS_REGION);
-console.log("AWS Access Key ID:", process.env.AWS_ACCESS_KEY_ID);
-console.log("AWS Secret Access Key:", process.env.AWS_SECRET_ACCESS_KEY);
 
 const client = new PollyClient({
   region: process.env.AWS_REGION,
@@ -26,15 +26,13 @@ export async function synthesizeSpeech(text) {
   }
 
   const params = {
-    Text: text,
+    Text: `<speak><prosody rate='80%'>${text}</prosody></speak>`,
     OutputFormat: "mp3",
     VoiceId: "Emma",
     Engine: "neural",
     LanguageCode: "en-GB",
+    TextType: "ssml",
   };
-
-  // Debug logging for Polly parameters
-  console.log("Polly parameters:", JSON.stringify(params, null, 2));
 
   try {
     console.log("Sending request to Amazon Polly...");
@@ -42,7 +40,6 @@ export async function synthesizeSpeech(text) {
     const data = await client.send(command);
 
     console.log("Response received from Amazon Polly");
-    console.log("AudioStream type:", typeof data.AudioStream);
 
     // Convert the readable stream to a buffer
     const chunks = [];
@@ -54,8 +51,14 @@ export async function synthesizeSpeech(text) {
     console.log("AudioStream converted to buffer");
     console.log("Buffer length:", audioBuffer.length);
 
-    // Create user directory if it doesn't exist
-    const userDir = path.join(process.cwd(), "public", user.id);
+    // Create user-audio directory if it doesn't exist
+    const userAudioDir = path.join(process.cwd(), "user-audio");
+    if (!fs.existsSync(userAudioDir)) {
+      fs.mkdirSync(userAudioDir, { recursive: true });
+    }
+
+    // Create user directory within user-audio if it doesn't exist
+    const userDir = path.join(userAudioDir, user.id);
     if (!fs.existsSync(userDir)) {
       fs.mkdirSync(userDir, { recursive: true });
     }
@@ -66,14 +69,16 @@ export async function synthesizeSpeech(text) {
     fs.writeFileSync(filePath, audioBuffer);
     console.log("Audio file written to:", filePath);
 
+    // Return a relative path that can be used in your application
+    const relativePath = path.join("user-audio", user.id, fileName);
+
     return {
-      message: "Speech synthesized succesfully",
-      data: `/${user.id}/${fileName}`,
+      message: "Speech synthesized successfully",
+      data: relativePath,
     };
   } catch (error) {
     console.error("Error synthesizing speech:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
-    throw new Error("Failed to synthesize speech");
     return { message: "Failed to synthesize speech", data: null };
   }
 }

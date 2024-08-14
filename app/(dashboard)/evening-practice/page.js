@@ -40,9 +40,11 @@ const EveningPracticePage = () => {
       <div>
         <div className="flex items-center mb-3">
           <FaMoon className="text-white-500 text-2xl" />
-          <h1 className="text-primary text-2xl ml-1">Evening Practice</h1>
+          <h1 className="text-primary text-2xl ml-1">
+            Evening Practice: Complete To Unlock Meditation
+          </h1>
         </div>
-        <p>
+        <p className="text-secondary text-xl my-8">
           Rate how well you progressed towards each of your hopes and dreams
           today.
         </p>
@@ -53,10 +55,15 @@ const EveningPracticePage = () => {
           <span className="loading loading-spinner loading-lg my-8"></span>
         ) : (
           <div
-            className="my-8 text-secondary prose prose-slate max-w-none text-sm"
+            className="my-8 text-secondary prose prose-slate max-w-none text-xl"
             dangerouslySetInnerHTML={{ __html: encouragementMessage }}
           />
         )}
+        <p className="text-secondary text-xl my-8">
+          Write at least 100 words about your day, in relation to your above
+          goals. What went well? What didn&apos;t go well? What can you do
+          better tomorrow?
+        </p>
         <FormContainer
           action={insertDiaryEntry}
           className="flex w-full items-center"

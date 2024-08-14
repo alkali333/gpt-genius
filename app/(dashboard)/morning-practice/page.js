@@ -66,20 +66,22 @@ const MorningPractice = () => {
       <div className="max-w-2xl">
         <div className="flex items-center mb-3">
           <FaSun className="text-yellow-500 text-2xl" />
-          <h1 className="text-primary text-2xl ml-1">Morning Practice</h1>
+          <h1 className="text-primary text-2xl ml-1">
+            Morning Practice: Complete To Unlock Meditation!
+          </h1>
         </div>
         {encouragementMessage === null ? (
           <span className="loading loading-spinner loading-lg"></span>
         ) : (
           <div
-            className="my-8 text-secondary prose prose-slate max-w-none text-sm"
+            className="my-8 text-secondary prose prose-slate max-w-none text-xl"
             dangerouslySetInnerHTML={{ __html: encouragementMessage }}
           />
         )}
       </div>
       <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">
-          <h1 className="text-secondary text-xl mb-3">
+          <h1 className="text-primary text-xl mb-3">
             Things I&apos;m grateful for...{" "}
           </h1>
           <FormContainer
@@ -93,7 +95,7 @@ const MorningPractice = () => {
           )}
         </div>
         <div className="w-1/2">
-          <h1 className="text-secondary text-xl mb-3">Things to do ...</h1>
+          <h1 className="text-primary text-xl mb-3">Things to do ...</h1>
           <FormContainer
             action={updateMorningJournal}
             onComplete={setToDoComplete}
