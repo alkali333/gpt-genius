@@ -63,7 +63,7 @@ const MorningPractice = () => {
         <h1 className="text-primary text-2xl mb-7">
           Morning meditation unlocked!
         </h1>
-        <Meditation />
+        <Meditation type="This is a meditation done in the morning to prepare the user for the day ahead" />
       </>
     );
   }

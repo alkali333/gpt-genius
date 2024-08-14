@@ -5,12 +5,12 @@ import { generateMeditation } from "../utils/server-actions";
 
 import AudioPlayer from "./AudioPlayer";
 
-const Meditation = () => {
+const Meditation = ({ useDiary = false, type = "" }) => {
   const [audioUrl, setAudioUrl] = useState(null);
 
   useEffect(() => {
     const loadMeditation = async () => {
-      const meditation = await generateMeditation();
+      const meditation = await generateMeditation(useDiary, type);
 
       if (!meditation || !meditation.data) {
         return;
@@ -19,7 +19,7 @@ const Meditation = () => {
     };
 
     loadMeditation();
-  }, []);
+  }, [type, useDiary]);
 
   if (audioUrl == null) {
     return (

@@ -32,7 +32,14 @@ const EveningPracticePage = () => {
   }, []);
 
   if (formsComplete) {
-    return <Meditation />;
+    return (
+      <>
+        <h1 className="text-primary text-2xl mb-7">
+          Evening meditation unlocked!
+        </h1>
+        <Meditation type="This is a meditation done in the evening, to wind down with optimism" />
+      </>
+    );
   }
 
   return (
