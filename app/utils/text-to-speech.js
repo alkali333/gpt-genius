@@ -51,8 +51,9 @@ export async function synthesizeSpeech(text) {
     console.log("AudioStream converted to buffer");
     console.log("Buffer length:", audioBuffer.length);
 
-    // Create user-audio directory if it doesn't exist
-    const userAudioDir = path.join(process.cwd(), "user-audio");
+    // Create user-audio directory in the public folder if it doesn't exist
+    const publicDir = path.join(process.cwd(), "public");
+    const userAudioDir = path.join(publicDir, "user-audio");
     if (!fs.existsSync(userAudioDir)) {
       fs.mkdirSync(userAudioDir, { recursive: true });
     }
@@ -63,6 +64,13 @@ export async function synthesizeSpeech(text) {
       fs.mkdirSync(userDir, { recursive: true });
     }
 
+    // Delete existing files in the user's directory
+    const existingFiles = fs.readdirSync(userDir);
+    for (const file of existingFiles) {
+      fs.unlinkSync(path.join(userDir, file));
+    }
+    console.log("Existing files deleted from user directory");
+
     const fileName = `meditation_${Date.now()}.mp3`;
     const filePath = path.join(userDir, fileName);
 
@@ -70,7 +78,7 @@ export async function synthesizeSpeech(text) {
     console.log("Audio file written to:", filePath);
 
     // Return a relative path that can be used in your application
-    const relativePath = path.join("user-audio", user.id, fileName);
+    const relativePath = path.join("/user-audio", user.id, fileName);
 
     return {
       message: "Speech synthesized successfully",

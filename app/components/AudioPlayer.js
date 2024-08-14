@@ -19,7 +19,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
   const togglePlayPause = () => {
     if (isPlaying) {
       meditationRef.current.pause();
-      fadeOutBackground();
+      backgroundRef.current.pause();
     } else {
       meditationRef.current.play();
       backgroundRef.current.play();
@@ -28,9 +28,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
   };
 
   const handleMeditationEnded = () => {
-    setTimeout(() => {
-      fadeOutBackground();
-    }, 2000);
+    fadeOutBackground();
     setIsPlaying(false);
   };
 
@@ -41,6 +39,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
       } else {
         clearInterval(fadeInterval);
         backgroundRef.current.pause();
+        backgroundRef.current.currentTime = 0;
         backgroundRef.current.volume = 0.8;
       }
     }, 200);
@@ -67,7 +66,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
             src={meditationAudio}
             onEnded={handleMeditationEnded}
           />
-          <audio ref={backgroundRef} src={backgroundAudio} />
+          <audio ref={backgroundRef} src={backgroundAudio} loop />
           <button
             onClick={handleReset}
             className="btn btn-circle btn-outline mr-2"
