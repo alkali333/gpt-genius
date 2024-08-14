@@ -58,7 +58,14 @@ const MorningPractice = () => {
   }, []);
 
   if (formsComplete) {
-    return <Meditation />;
+    return (
+      <>
+        <h1 className="text-primary text-2xl mb-7">
+          Morning meditation unlocked!
+        </h1>
+        <Meditation />
+      </>
+    );
   }
 
   return (

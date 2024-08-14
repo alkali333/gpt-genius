@@ -63,7 +63,7 @@ export async function synthesizeSpeech(text) {
       fs.mkdirSync(userDir, { recursive: true });
     }
 
-    const fileName = "meditation.mp3";
+    const fileName = `meditation_${Date.now()}.mp3`;
     const filePath = path.join(userDir, fileName);
 
     fs.writeFileSync(filePath, audioBuffer);

@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { synthesizeSpeech } from "/app/utils/text-to-speech";
-import AudioPlayerV2 from "/app/components/AudioPlayerV2";
+import AudioPlayer from "/app/components/AudioPlayer";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -36,7 +36,7 @@ export default function Home() {
         </button>
       </form>
       {audioUrl && (
-        <AudioPlayerV2
+        <AudioPlayer
           meditationAudio={audioUrl}
           backgroundAudio={"/user-audio/background.mp3"}
         />
