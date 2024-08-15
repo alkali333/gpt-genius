@@ -48,7 +48,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
   const handleReset = () => {
     meditationRef.current.currentTime = 0;
     backgroundRef.current.currentTime = 0;
-    backgroundRef.current.volume = 0.8;
+    backgroundRef.current.volume = 0.5;
     if (isPlaying) {
       meditationRef.current.play();
       backgroundRef.current.play();
@@ -69,7 +69,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
           <audio ref={backgroundRef} src={backgroundAudio} loop />
           <button
             onClick={handleReset}
-            className="btn btn-circle btn-outline mr-2"
+            className="btn btn-primary btn-circle btn-outline mr-2"
           >
             <VscDebugRestart className="text-xl" />
           </button>

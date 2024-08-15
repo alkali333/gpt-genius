@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import { generateMeditation } from "../utils/server-actions";
-
+import { generateMeditationText } from "../utils/server-actions";
+import { synthesizeSpeech } from "../utils/text-to-speech";
+import toast from "react-hot-toast";
 import { updateMeditationDiary } from "../utils/server-actions";
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
@@ -13,12 +14,19 @@ const Meditation = ({ useDiary = false, type = "" }) => {
 
   useEffect(() => {
     const loadMeditation = async () => {
-      const meditation = await generateMeditation(useDiary, type);
+      const meditationText = await generateMeditationText(useDiary, type);
 
-      if (!meditation || !meditation.data) {
+      if (!meditationText || !meditationText.data) {
+        console.log("Error generating meditation text");
         return;
       }
-      setAudioUrl(meditation.data);
+      toast.success("Just a moment, we're preparing your meditation");
+      const meditationAudio = await synthesizeSpeech(meditationText.data);
+      if (!meditationAudio || !meditationAudio.data) {
+        console.log("Error generating meditation audio");
+        return;
+      }
+      setAudioUrl(meditationAudio.data);
     };
 
     loadMeditation();
@@ -31,22 +39,26 @@ const Meditation = ({ useDiary = false, type = "" }) => {
   }
 
   return (
-    <>
-      <AudioPlayer
-        meditationAudio={audioUrl}
-        backgroundAudio={"/user-audio/background.mp3"}
-      />
-      <h2 className="text-primary text-2xl mb-7">
-        If you like, record any insights from your meditation here
-      </h2>
-      <FormContainer
-        action={updateMeditationDiary}
-        className="flex w-full items-center"
-        onComplete={setJournalComplete}
-      >
-        <DiaryInput words={100} />
-      </FormContainer>
-    </>
+    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
+      <div>
+        <AudioPlayer
+          meditationAudio={audioUrl}
+          backgroundAudio={"/user-audio/background.mp3"}
+        />
+      </div>
+      <div className="max-w-2xl">
+        <h2 className="text-primary text-2xl mb-7">
+          If you like, record any insights from your meditation here
+        </h2>
+
+        <FormContainer
+          action={updateMeditationDiary}
+          className="flex w-full items-center"
+        >
+          <DiaryInput words={20} />
+        </FormContainer>
+      </div>
+    </div>
   );
 };
 

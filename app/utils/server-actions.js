@@ -529,3 +529,43 @@ export const generateMeditation = async (useDiary = false, type = null) => {
     };
   }
 };
+
+// Seperate functions to avoid the timeouts that can happen on free hosting
+
+export const generateMeditationText = async (useDiary = false, type = null) => {
+  try {
+    let exercise = getRandomExercise();
+
+    if (useDiary) {
+      const diaryEntry = await getLatestDiaryEntry();
+      if (diaryEntry.data) {
+        exercise += ` \n Also use on their latest diary entry: \n\n
+      DIARY ENTRY: ${diaryEntry.data}`;
+      }
+    }
+
+    if (type) {
+      exercise += ` \n\n ${type}`;
+    }
+
+    const meditation = await fetchCoachingContent(exercise, false);
+
+    if (!meditation || !meditation.data) {
+      console.error("Error: Failed to fetch coaching content");
+      return { message: "Failed to generate meditation content", data: null };
+    }
+
+    console.log(`Meditation content: ${meditation.data}`);
+
+    return {
+      message: "Meditation generated successfully",
+      data: meditation.data,
+    };
+  } catch (error) {
+    console.error("Unexpected error in generateMeditation:", error);
+    return {
+      message: "An unexpected error occurred while generating meditation",
+      data: null,
+    };
+  }
+};

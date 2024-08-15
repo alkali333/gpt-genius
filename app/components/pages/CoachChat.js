@@ -77,7 +77,6 @@ const CoachChat = () => {
     <div className="relative min-h-screen">
       <div className="pb-24">
         {" "}
-        {/* Adjust 24 to match your chat form height */}
         <div className="flex items-center mb-3">
           <h1 className="text-primary text-2xl ml-1">
             Chat with your life coach
