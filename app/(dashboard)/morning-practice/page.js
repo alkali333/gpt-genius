@@ -93,7 +93,8 @@ const MorningPractice = () => {
       <div className="max-w-2xl flex gap-5 mt-8">
         <div className="w-1/2">
           <h1 className="text-primary text-xl mb-3">
-            Things I&apos;m grateful for...{" "}
+            What are you grateful for today? What is going well? What makes you
+            happy?
           </h1>
           <FormContainer
             action={updateMorningJournal}
@@ -107,7 +108,8 @@ const MorningPractice = () => {
         </div>
         <div className="w-1/2">
           <h1 className="text-primary text-xl mb-3">
-            What do you want to achieve today? Or how do you want to feel?
+            What do you want to achieve today? Or how do you want to feel? Be
+            creative and think big!
           </h1>
           <FormContainer
             action={updateMorningJournal}
