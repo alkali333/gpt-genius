@@ -39,10 +39,14 @@ const MorningPractice = () => {
     const getEncouragementMessage = async () => {
       const tempEncouragementMessage =
         await fetchCoachingContent(`Based on the USER INFO. Write a short message
-      (100 words) reminding them of their goals and the importance of their morning practice.
-      Invite them to record their daily gratitude and task list. ONLY If there are existing task
+      (125 words) reminding them of their goals and the importance of their morning practice.
+      Invite them to record their "daily gratitude" and task list (this is not just a
+      regular 'to do' list, it is a list of what they want to achieve, or how they want to feel
+      today - explain and give examples of some feelings). 
+      
+      ONLY If there are existing task & gratitude
       lists invite them to remember these and ask if they are still relevant.
-      Explain this is an ideas list, not a to-do list, encourage them to be creative and think big.`);
+      Encourage them to be creative and think big.`);
 
       if (!tempEncouragementMessage.data && tempEncouragementMessage.message) {
         console.error(tempEncouragementMessage.message);
@@ -102,7 +106,9 @@ const MorningPractice = () => {
           )}
         </div>
         <div className="w-1/2">
-          <h1 className="text-primary text-xl mb-3">Things to do ...</h1>
+          <h1 className="text-primary text-xl mb-3">
+            What do you want to achieve today? Or how do you want to feel?
+          </h1>
           <FormContainer
             action={updateMorningJournal}
             onComplete={setToDoComplete}

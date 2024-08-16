@@ -91,6 +91,7 @@ const AboutMe = () => {
               text={text}
               setText={setText}
               isPending={isPending}
+              minWords={250}
             />
           ) : (
             <>

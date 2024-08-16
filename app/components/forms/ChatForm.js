@@ -1,7 +1,16 @@
 import React from "react";
-import { FaArrowUp } from "react-icons/fa";
+import { FaArrowUp, FaDivide } from "react-icons/fa";
 
-const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
+const ChatForm = ({
+  handleSubmit,
+  text,
+  setText,
+  isPending,
+  minWords = null,
+}) => {
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  const remainingWords = minWords ? Math.max(minWords - wordCount, 0) : null;
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -23,19 +32,32 @@ const ChatForm = ({ handleSubmit, text, setText, isPending }) => {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-
-      <button
-        className="btn btn-circle btn-s btn-primary w-25 -ml-14"
-        type="submit"
-      >
-        {isPending ? (
-          <span className="loading loading-spinner"></span>
-        ) : (
-          <FaArrowUp />
-        )}
-      </button>
+      {remainingWords ? (
+        <div
+          className="tooltip tooltip-open tooltip-top tooltip-secondary mr-8"
+          data-tip={`${remainingWords} words left`}
+        >
+          <ButtonContent isPending={isPending} />
+        </div>
+      ) : (
+        <ButtonContent isPending={isPending} />
+      )}
     </form>
   );
 };
 
+const ButtonContent = ({ isPending }) => {
+  return (
+    <button
+      className="btn btn-circle btn-s btn-primary w-25 -ml-14"
+      type="submit"
+    >
+      {isPending ? (
+        <span className="loading loading-spinner"></span>
+      ) : (
+        <FaArrowUp />
+      )}
+    </button>
+  );
+};
 export default ChatForm;
