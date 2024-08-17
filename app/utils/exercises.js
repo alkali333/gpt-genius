@@ -87,6 +87,6 @@ export const getRandomExercise = (type = null) => {
     const exerciseContent =
       exercises[Math.floor(Math.random() * exercises.length)];
 
-    return `Using the user info, create a 350 word exercise without headings: ${exerciseContent}`;
+    return `Using the user info, create a 300 word exercise without headings: ${exerciseContent}`;
   }
 };

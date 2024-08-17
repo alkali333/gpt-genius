@@ -78,7 +78,7 @@ export async function synthesizeSpeech(text) {
     console.log("Audio file written to:", filePath);
 
     // Return a relative path that can be used in your application
-    const relativePath = path.join("/user-audio", user.id, fileName);
+    const relativePath = `/user-audio/${user.id}/${fileName}`;
 
     return {
       message: "Speech synthesized successfully",

@@ -24,6 +24,10 @@ const Meditation = ({ useDiary = false, type = "" }) => {
       const meditationAudio = await synthesizeSpeech(meditationText.data);
       if (!meditationAudio || !meditationAudio.data) {
         console.log("Error generating meditation audio");
+        if (meditationAudio.message) {
+          console.error(meditationAudio.message);
+          toast.error(meditationAudio.message);
+        }
         return;
       }
       setAudioUrl(meditationAudio.data);

@@ -11,8 +11,7 @@ the new json schema and manually change existing one in the db.
 
 
 
-1) To be list - what do you want to be, how do you want to feel. (could be dropdown)
-2) Fix database before upload
-3) Word counter on AboutMe form is missing. 
+1) Test new audio saving functionality on development, redeploy if it works
 
-4) How do you want to feel? (Add to welcome)
+https://gpt-genius.onrender.com
+
