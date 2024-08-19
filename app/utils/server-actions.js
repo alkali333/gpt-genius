@@ -433,7 +433,7 @@ export const generateChatResponse = async (systemMessage, chatMessages) => {
   try {
     const response = await openai.chat.completions.create({
       messages: [{ role: "system", content: systemMessage }, ...chatMessages],
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       temperature: 0.8,
     });
 

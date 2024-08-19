@@ -77,8 +77,9 @@ export async function synthesizeSpeech(text) {
     fs.writeFileSync(filePath, audioBuffer);
     console.log("Audio file written to:", filePath);
 
-    // Return a relative path that can be used in your application
-    const relativePath = `/user-audio/${user.id}/${fileName}`;
+    // Use my API rather than the file path
+    const relativePath = `/api/audio/${user.id}/${fileName}`;
+    console.log(`Returning path: ${relativePath}`);
 
     return {
       message: "Speech synthesized successfully",
