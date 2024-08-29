@@ -1,5 +1,5 @@
 import { UserButton } from "@clerk/nextjs";
-import { currentUser, auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 const MemberProfile = async () => {
   const user = await currentUser();

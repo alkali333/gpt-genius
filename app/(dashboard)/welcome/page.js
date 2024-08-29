@@ -1,7 +1,6 @@
 import { fetchCoachingContent } from "/app/utils/server-actions";
 import MissingDetails from "/app/components/messages/MissingDetails";
 import BottomNav from "/app/components/BottomNav";
-
 const welcomeMessages = [
   "an encouraging message, 10 powerful affirmations, and 1 inspiring quote.",
   "a list of suggestions of how they can achieve their goals and overcome obstacles and a genuine quote from a famous person.",
@@ -36,7 +35,7 @@ const WelcomePage = async () => {
   return (
     <div className="max-w-2xl leading-loose">
       <h2 className="text-primary text-2xl mb-7">Welcome To Attenshun</h2>
-      <p className="text-info text-xl my-7">{currentDate}</p>
+      <p className="text-xl my-7 text-accent">{currentDate}</p>
       <div
         className="text-secondary text-xl  prose prose-slate max-w-none"
         dangerouslySetInnerHTML={{ __html: welcomeMessage.data }}

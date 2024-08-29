@@ -17,7 +17,8 @@ export const DiaryInput = ({ words }) => {
         type="text"
         name="entry"
         placeholder="Write your entry.... "
-        className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
+        className="textarea-xl text-xl textarea-primary outline-black  no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
+        rows={7}
         required
         autoFocus
         value={text}
@@ -29,7 +30,7 @@ export const DiaryInput = ({ words }) => {
         data-tip={`${remainingWords} words left`}
       >
         <button
-          className={`btn btn-circle btn-s btn-primary w-25 -ml-14 ${
+          className={`btn btn-circle btn-s btn-primary w-25 -ml-14 mt-auto ${
             pending ? "opacity-50" : ""
           }`}
           type="submit"

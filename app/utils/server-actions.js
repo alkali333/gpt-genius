@@ -20,6 +20,7 @@ import {
 import { synthesizeSpeech } from "./text-to-speech";
 import { clerkClient } from "@clerk/nextjs/server";
 import { getRandomExercise } from "/app/utils/exercises";
+import { allowedUsers } from "/app/utils/allowed-users";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -28,6 +29,10 @@ const openai = new OpenAI({
 export const fetchAuthUser = async () => {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
+
+  // if (!allowedUsers.includes(user.email)) {
+  //   redirect("/request-permission");
+  // }
 
   return { firstName: user.firstName, id: user.id };
 };
@@ -206,7 +211,7 @@ export const updateMorningJournal = async (prevState, formData) => {
 
 export async function insertDiaryEntry(prevState, formData) {
   console.log("Insert Diary Entry Triggered");
-  const { userId } = auth();
+  const user = await fetchAuthUser();
   const rawData = Object.fromEntries(formData);
 
   // Debugging: Log the raw data received

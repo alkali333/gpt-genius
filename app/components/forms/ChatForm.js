@@ -7,6 +7,7 @@ const ChatForm = ({
   setText,
   isPending,
   minWords = null,
+  rows = 3,
 }) => {
   const wordCount = text.split(/\s+/).filter(Boolean).length;
   const remainingWords = minWords ? Math.max(minWords - wordCount, 0) : null;
@@ -24,7 +25,8 @@ const ChatForm = ({
         type="text"
         name="message"
         placeholder="Send message"
-        className="textarea-xl textarea-primary no-scrollbar w-full rounded-lg pt-5 px-2"
+        className="textarea-xl text-xl textarea-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
+        rows={rows}
         value={text}
         required
         autoFocus

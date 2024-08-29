@@ -56,7 +56,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
   };
 
   return (
-    <div className="card bg-neutral text-neutral-content w-96 my-5">
+    <div className="card bg-neutral text-neutral-content w-96 my-5 rounded-xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title">Time To Meditate</h2>
         <p>Find a comfortable, quiet place to sit and begin your meditation.</p>
@@ -69,13 +69,13 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
           <audio ref={backgroundRef} src={backgroundAudio} loop />
           <button
             onClick={handleReset}
-            className="btn btn-primary btn-circle btn-outline mr-2"
+            className="btn text-green-600 btn-circle mr-2"
           >
             <VscDebugRestart className="text-xl" />
           </button>
           <button
             onClick={togglePlayPause}
-            className="btn btn-circle btn-primary"
+            className="btn btn-circle text-green-600"
           >
             {isPlaying ? (
               <FaPause className="text-xl" />

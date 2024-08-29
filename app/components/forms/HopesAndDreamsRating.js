@@ -95,7 +95,10 @@ const HopesAndDreamsRating = ({ setIsFinished = () => {} }) => {
           </div>
         </div>
       ))}
-      <button className="mt-4 px-4 py-2 btn btn-primary" onClick={handleSubmit}>
+      <button
+        className="mt-4 px-4 py-2 btn btn-primary rounded-xl"
+        onClick={handleSubmit}
+      >
         Submit Ratings
       </button>
     </div>

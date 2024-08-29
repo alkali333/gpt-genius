@@ -4,7 +4,7 @@ import { useFormStatus } from "react-dom";
 
 import { FaGrinStars } from "react-icons/fa";
 
-const DailyInputForm = ({ inputs, onComplete = () => {} }) => {
+const DailyInputForm = ({ inputs }) => {
   const [formValues, setFormValues] = useState({});
   const { pending } = useFormStatus();
 
@@ -26,7 +26,7 @@ const DailyInputForm = ({ inputs, onComplete = () => {} }) => {
           <input
             type="text"
             name={input.name}
-            className="grow bg-base-300 focus:bg-base-300 active:bg-base-300"
+            className="grow bg-base-300 focus:bg-base-300 active:bg-base-300 rounded-xl"
             value={formValues[input.name] || ""}
             onChange={(e) => handleInputChange(e, input.name)}
           />
@@ -35,7 +35,7 @@ const DailyInputForm = ({ inputs, onComplete = () => {} }) => {
       <div className="flex h-10">
         <button
           type="submit"
-          className="btn btn-active btn-primary"
+          className="btn btn-active btn-primary rounded-xl"
           disabled={pending}
         >
           Submit

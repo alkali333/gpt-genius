@@ -1,4 +1,3 @@
-import React from "react";
 import SideBarHeader from "./SideBarHeader";
 import MemberProfile from "./MemberProfile";
 import NavLinks from "./NavLinks";

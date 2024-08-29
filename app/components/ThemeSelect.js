@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
 
 const themes = {
-  light: { name: "cupcake", icon: BsMoonFill },
-  dark: { name: "synthwave", icon: BsSunFill },
+  light: { name: "lofi", icon: BsMoonFill },
+  dark: { name: "forest", icon: BsSunFill },
 };
 
 const ThemeSelect = () => {
@@ -22,7 +22,10 @@ const ThemeSelect = () => {
   const IconComponent = themes[themeType].icon;
 
   return (
-    <button className="btn btn-sm btn-outline" onClick={toggleTheme}>
+    <button
+      className="btn btn-sm btn-outline rounded-full"
+      onClick={toggleTheme}
+    >
       <IconComponent className="h-4 w-4" />
     </button>
   );

@@ -9,8 +9,8 @@ const SideBarHeader = () => {
       <Link href="/">
         <GiBrainstorm className="w-10 h-10 text-primary" />
       </Link>
-      <Link href="/" className="mr-auto">
-        <h1 className="text-xl font-extrabold mr-auto">Attenshun</h1>
+      <Link href="/" className="">
+        <h1 className="text-2xl uppercase font-extrabold -ml-3">Attenshun</h1>
       </Link>
       <ThemeSelect />
     </div>
