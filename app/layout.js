@@ -10,7 +10,11 @@ const space_grotesk = Space_Grotesk({ subsets: ["latin"] });
 export const metadata = {
   title: "Attenshun",
   description: "Control your mind to manifest your dreams.",
+  icons: {
+    icon: "/icon.png",
+  },
 };
+
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider appearence={{ baseTheme: neobrutalism }}>
