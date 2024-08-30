@@ -18,7 +18,7 @@ export const eveningJournalSchema = z.object({
 });
 
 export const aboutMeSchema = z.object({
-  message: wordCountSchema(250, 1500),
+  message: wordCountSchema(150, 1500),
 });
 
 export const meditationDiarySchema = z.object({
