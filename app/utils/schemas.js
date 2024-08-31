@@ -22,7 +22,7 @@ export const aboutMeSchema = z.object({
 });
 
 export const meditationDiarySchema = z.object({
-  entry: wordCountSchema(5, 100),
+  entry: wordCountSchema(20, 100),
 });
 
 export const gratitudeSchema = z.object({

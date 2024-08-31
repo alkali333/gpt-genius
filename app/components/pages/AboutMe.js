@@ -30,8 +30,8 @@ const AboutMe = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const query = text;
-    if (query.trim().split(/\s+/).length < 250) {
-      toast.error("Please write at least 250 words");
+    if (query.trim().split(/\s+/).length < 150) {
+      toast.error("Please write at least 150 words");
       return;
     }
     mutate({

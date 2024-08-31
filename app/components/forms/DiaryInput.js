@@ -17,7 +17,7 @@ export const DiaryInput = ({ words }) => {
         type="text"
         name="entry"
         placeholder="Write your entry.... "
-        className="textarea-xl text-xl textarea-primary outline-black  no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
+        className="textarea-xl text-xl border border-primary bg-base-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
         rows={7}
         required
         autoFocus
