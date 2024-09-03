@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { FaArrowUp, FaDivide } from "react-icons/fa";
 
 const ChatForm = ({
@@ -7,10 +7,10 @@ const ChatForm = ({
   setText,
   isPending,
   minWords = null,
-  rows = 3,
 }) => {
   const wordCount = text.split(/\s+/).filter(Boolean).length;
   const remainingWords = minWords ? Math.max(minWords - wordCount, 0) : null;
+  const textareaRef = useRef(null);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -19,47 +19,41 @@ const ChatForm = ({
     }
   };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [text]);
+
   return (
     <form onSubmit={handleSubmit} className="flex w-full items-center">
-      <textarea
-        type="text"
-        name="message"
-        placeholder="Send message"
-        className="textarea-xl text-xl border border-primary bg-base-100 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary no-scrollbar w-full rounded-lg pl-3 pr-10 pt-5"
-        rows={rows}
-        value={text}
-        required
-        autoFocus
-        disabled={isPending}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      {remainingWords ? (
-        <div
-          className="tooltip tooltip-open tooltip-top tooltip-secondary mr-8"
-          data-tip={`${remainingWords} words left`}
+      <div className="relative w-full">
+        <textarea
+          ref={textareaRef}
+          className="textarea  text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
+          placeholder="Start writing your diary..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={isPending}
+          name="message"
+        />
+        <button
+          className="btn btn-sm btn-primary rounded-full absolute top-2 right-2"
+          disabled={isPending}
         >
-          <ButtonContent isPending={isPending} />
+          {isPending ? (
+            <span className="loading loading-spinner loading-xs"></span>
+          ) : (
+            <FaArrowUp />
+          )}
+        </button>
+        <div className="text-right text-sm text-gray-500">
+          {remainingWords} words remaining
         </div>
-      ) : (
-        <ButtonContent isPending={isPending} />
-      )}
+      </div>
     </form>
   );
 };
 
-const ButtonContent = ({ isPending }) => {
-  return (
-    <button
-      className="btn btn-circle btn-s btn-primary w-25 -ml-14"
-      type="submit"
-    >
-      {isPending ? (
-        <span className="loading loading-spinner"></span>
-      ) : (
-        <FaArrowUp />
-      )}
-    </button>
-  );
-};
 export default ChatForm;

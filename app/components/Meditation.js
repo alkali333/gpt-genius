@@ -9,7 +9,7 @@ import { FormContainer } from "/app/components/forms/FormContainer";
 import { DiaryInput } from "/app/components/forms/DiaryInput";
 import AudioPlayer from "./AudioPlayer";
 
-const Meditation = ({ useDiary = false, type = "" }) => {
+const Meditation = ({ useDiary = false, type = null }) => {
   const [audioUrl, setAudioUrl] = useState(null);
 
   useEffect(() => {

@@ -486,9 +486,13 @@ export const summarizeAndUpdateMindState = async (type, userInput) => {
   }
 };
 
-export const generateMeditation = async (useDiary = false, type = null) => {
+export const generateMeditation = async (
+  useDiary = false,
+  type = null,
+  custom_exercise = null
+) => {
   try {
-    let exercise = getRandomExercise();
+    let exercise = custom_exercise || getRandomExercise();
 
     if (useDiary) {
       const diaryEntry = await getLatestDiaryEntry();
@@ -505,8 +509,7 @@ export const generateMeditation = async (useDiary = false, type = null) => {
     const meditation = await fetchCoachingContent(exercise, false);
 
     if (!meditation || !meditation.data) {
-      console.error("Error: Failed to fetch coaching content");
-      return { message: "Failed to generate meditation content", data: null };
+      throw new Error("Failed to fetch coaching content");
     }
 
     console.log(`Meditation content: ${meditation.data}`);
@@ -514,12 +517,9 @@ export const generateMeditation = async (useDiary = false, type = null) => {
     const audioResult = await synthesizeSpeech(meditation.data);
 
     if (!audioResult || !audioResult.data) {
-      console.error("Error synthesizing speech:", audioResult.message);
-      return {
-        message:
-          audioResult.message || "Failed to synthesize speech for meditation",
-        data: null,
-      };
+      throw new Error(
+        audioResult.message || "Failed to synthesize speech for meditation"
+      );
     }
 
     return {
@@ -527,9 +527,12 @@ export const generateMeditation = async (useDiary = false, type = null) => {
       data: audioResult.data,
     };
   } catch (error) {
-    console.error("Unexpected error in generateMeditation:", error);
+    console.error("Error in generateMeditation:", error);
     return {
-      message: "An unexpected error occurred while generating meditation",
+      message:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while generating meditation",
       data: null,
     };
   }
@@ -537,9 +540,13 @@ export const generateMeditation = async (useDiary = false, type = null) => {
 
 // Seperate functions to avoid the timeouts that can happen on free hosting
 
-export const generateMeditationText = async (useDiary = false, type = null) => {
+export const generateMeditationText = async (
+  useDiary = false,
+  type = null,
+  custom_exercise = null
+) => {
   try {
-    let exercise = getRandomExercise();
+    let exercise = custom_exercise || getRandomExercise();
 
     if (useDiary) {
       const diaryEntry = await getLatestDiaryEntry();
@@ -556,8 +563,7 @@ export const generateMeditationText = async (useDiary = false, type = null) => {
     const meditation = await fetchCoachingContent(exercise, false);
 
     if (!meditation || !meditation.data) {
-      console.error("Error: Failed to fetch coaching content");
-      return { message: "Failed to generate meditation content", data: null };
+      throw new Error("Failed to fetch coaching content");
     }
 
     console.log(`Meditation content: ${meditation.data}`);
@@ -567,9 +573,12 @@ export const generateMeditationText = async (useDiary = false, type = null) => {
       data: meditation.data,
     };
   } catch (error) {
-    console.error("Unexpected error in generateMeditation:", error);
+    console.error("Error in generateMeditationText:", error);
     return {
-      message: "An unexpected error occurred while generating meditation",
+      message:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while generating meditation",
       data: null,
     };
   }

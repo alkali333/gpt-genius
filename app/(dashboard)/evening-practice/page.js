@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { FaMoon } from "react-icons/fa";
 import { FormContainer } from "/app/components/forms/FormContainer";
-import { DiaryInput } from "/app/components/forms/DiaryInput";
+import DiaryInputV2 from "/app/components/forms/DiaryInputV2";
 import HopesAndDreamsRating from "/app/components/forms/HopesAndDreamsRating";
 import {
   insertDiaryEntry,
@@ -76,7 +76,7 @@ const EveningPracticePage = () => {
           className="flex w-full items-center"
           onComplete={setJournalComplete}
         >
-          <DiaryInput words={100} />
+          <DiaryInputV2 words={100} />
         </FormContainer>
       </div>
     </div>
