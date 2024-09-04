@@ -26,9 +26,10 @@ const DiaryInputV2 = ({ words }) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
         disabled={pending}
+        name="entry"
       />
       <button
-        className="btn btn-sm btn-primary rounded-full absolute top-2 right-2"
+        className="btn btn-sm btn-circle btn-primary rounded-full absolute top-2 right-2"
         disabled={pending}
       >
         {pending ? (

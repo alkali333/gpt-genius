@@ -32,14 +32,14 @@ const ChatForm = ({
         <textarea
           ref={textareaRef}
           className="textarea  text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
-          placeholder="Start writing your diary..."
+          placeholder="Write your entry here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={isPending}
           name="message"
         />
         <button
-          className="btn btn-sm btn-primary rounded-full absolute top-2 right-2"
+          className="btn btn-sm btn-primary btn-circle absolute top-2 right-2"
           disabled={isPending}
         >
           {isPending ? (
