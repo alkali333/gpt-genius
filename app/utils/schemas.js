@@ -17,6 +17,11 @@ export const eveningJournalSchema = z.object({
   entry: wordCountSchema(100, 1000),
 });
 
+export const diarySchema = z.object({
+  entry: wordCountSchema(100, 1000),
+  type: z.enum(["morning", "evening"]),
+});
+
 export const aboutMeSchema = z.object({
   message: wordCountSchema(150, 1500),
 });

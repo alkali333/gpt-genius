@@ -90,3 +90,19 @@ export const getRandomExercise = (type = null) => {
     return `Using the user info, create a 300 word exercise without headings: ${exerciseContent}`;
   }
 };
+
+const morningExercises = [
+  "journal about they can do today to move closer to their hopes and dreams. Encourage and empower them",
+  "write down 3 things they are grateful for, and why. Encourage them to feel the gratitude deeply",
+  "write some affirmations about how they can conquer their obstacles (give an example)",
+  "fill in a journal entry about how they can use their skills and achievements to overcome their challenges",
+  "write about how they will feel when their goals are met, and what they will do to celebrate",
+  "write a diary entry about how they can work towards their hopes and dreams today",
+];
+
+export const getRandomMorningExercise = () => {
+  const selectedExercise =
+    morningExercises[Math.floor(Math.random() * morningExercises.length)];
+
+  return `Write a 150 word exercise, asking the client to ${selectedExercise}`;
+};

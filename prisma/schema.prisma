@@ -13,28 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tour {
-  id String @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  city String
-  country String @default("Not specified")
-  title String
-  description String @db.Text
-  image String? @db.Text
-  stops Json
-  @@unique([city, country])
-}
-
-model Token {
-  clerkId String @id
-  tokens Int @default(1000)
-}
 
 model MeditationDiary {
   id       Int      @id @default(autoincrement())
   entry    String
-  summary  String?
+  summary  String? 
   date     DateTime @default(now())
   clerkId  String
 }
@@ -44,6 +27,7 @@ model MeditationDiary {
 model Diary {
   id       Int      @id @default(autoincrement())
   entry    String
+  type    String @default("evening")
   summary  String?
   date     DateTime @default(now())
   clerkId  String
@@ -54,8 +38,6 @@ model MindState {
   hopes_and_dreams        Json?
   skills_and_achievements Json?
   obstacles_and_challenges Json?
-  grateful_for            Json?
-  current_tasks           Json?
   clerkId                 String   @unique
   timestamp               DateTime @default(now())
   // This field uniquely links each MindState to a Clerk user

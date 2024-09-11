@@ -14,12 +14,16 @@ import {
   todoSchema,
   aboutMeSchema,
   eveningJournalSchema,
+  diarySchema,
   meditationDiarySchema,
 } from "/app/utils/schemas";
 
 import { synthesizeSpeech } from "./text-to-speech";
 import { clerkClient } from "@clerk/nextjs/server";
-import { getRandomExercise } from "/app/utils/exercises";
+import {
+  getRandomExercise,
+  getRandomMorningExercise,
+} from "/app/utils/exercises";
 import { allowedUsers } from "/app/utils/allowed-users";
 
 const openai = new OpenAI({
@@ -55,9 +59,14 @@ export const fetchUserJson = async () => {
       hopes_and_dreams: true,
       skills_and_achievements: true,
       obstacles_and_challenges: true,
-      grateful_for: true,
-      current_tasks: true,
     },
+  });
+
+  // Fetch only the latest diary entry text
+  const latestDiaryEntry = await prisma.diary.findFirst({
+    where: { clerkId: user.id },
+    orderBy: { date: "desc" },
+    select: { entry: true },
   });
 
   if (
@@ -72,6 +81,11 @@ export const fetchUserJson = async () => {
       }
       return acc;
     }, {});
+
+    // Add the simplified latest diary entry to the combined data
+    combinedData.latest_diary_entry = latestDiaryEntry
+      ? latestDiaryEntry.entry
+      : "none available";
 
     return { [user.firstName]: combinedData };
   }
@@ -218,7 +232,7 @@ export async function insertDiaryEntry(prevState, formData) {
   console.log("Raw Data:", rawData);
 
   try {
-    const validatedFields = eveningJournalSchema.parse(rawData);
+    const validatedFields = diarySchema.parse(rawData);
 
     // Debugging: Log the validated fields
     console.log("Validated Fields:", validatedFields);
@@ -236,21 +250,24 @@ export async function insertDiaryEntry(prevState, formData) {
 
     return { message: "Diary entry successfully created", data: newEntry };
   } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors[0]?.message || "Validation error";
-
-      // Debugging: Log the validation error
-      console.log("Validation Error:", errorMessage);
-
-      return { message: errorMessage, data: null };
-    }
-
-    // Debugging: Log any unexpected errors
-    console.log("Unexpected Error:", error);
-
-    return { message: "An unexpected error occurred", data: null };
+    return handleError(error);
   }
 }
+
+const handleError = (error) => {
+  if (error instanceof ZodError) {
+    const errorMessage = error.errors[0]?.message || "Validation error";
+
+    console.log("Validation Error:", errorMessage);
+
+    return { message: errorMessage, data: null };
+  }
+
+  // Debugging: Log any unexpected errors
+  console.log("Unexpected Error:", error);
+
+  return { message: "An unexpected error occurred", data: null };
+};
 
 export const getLatestDiaryEntry = async () => {
   const user = fetchAuthUser();
@@ -430,8 +447,32 @@ export const generateEveningPracticeMessage = async () => {
   console.log("Prompt for evening practice:", prompt);
 
   const response = await fetchCoachingContent(prompt);
+  if (!response.data) {
+    return {
+      message: `Error generating evening practice message. ${
+        response.message || "An unexpected error occurred"
+      }`,
+      data: null,
+    };
+  }
 
   return { message: "Evening Practice Generated", data: response.data };
+};
+
+export const generateMorningPracticeMessage = async () => {
+  const prompt = getRandomMorningExercise();
+
+  const response = await fetchCoachingContent(prompt);
+  if (!response.data) {
+    return {
+      message: `Error generating morning practice message. ${
+        response.message || "An unexpected error occurred"
+      }`,
+      data: null,
+    };
+  }
+
+  return { message: "Morning Practice Generated", data: response.data };
 };
 
 export const generateChatResponse = async (systemMessage, chatMessages) => {

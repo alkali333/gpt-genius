@@ -1,9 +1,8 @@
-"use client";
 import React, { useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { FaArrowUp } from "react-icons/fa";
 
-const DiaryInputV2 = ({ words }) => {
+const DiaryInputV2 = ({ words, type = "unspecified" }) => {
   const [text, setText] = React.useState("");
   const { pending } = useFormStatus();
   const wordCount = text.split(/\s+/).filter(Boolean).length;
@@ -28,6 +27,7 @@ const DiaryInputV2 = ({ words }) => {
         disabled={pending}
         name="entry"
       />
+      <input type="hidden" name="entryType" value={type} />
       <button
         className="btn btn-sm btn-circle btn-primary rounded-full absolute top-2 right-2"
         disabled={pending}
