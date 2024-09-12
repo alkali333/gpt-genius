@@ -92,17 +92,49 @@ export const getRandomExercise = (type = null) => {
 };
 
 const morningExercises = [
-  "journal about they can do today to move closer to their hopes and dreams. Encourage and empower them",
-  "write down 3 things they are grateful for, and why. Encourage them to feel the gratitude deeply",
-  "write some affirmations about how they can conquer their obstacles (give an example)",
-  "fill in a journal entry about how they can use their skills and achievements to overcome their challenges",
-  "write about how they will feel when their goals are met, and what they will do to celebrate",
-  "write a diary entry about how they can work towards their hopes and dreams today",
+  {
+    title: "Sunday Reflection: Weekly Wins",
+    description:
+      "reflect on their achievements from the past week and how they can build on them in the coming week",
+  },
+  {
+    title: "Monday Motivation: Dream Chaser",
+    description:
+      "journal about what they can do today to move closer to their hopes and dreams. Encourage and empower them",
+  },
+  {
+    title: "Tuesday Thanks: Gratitude Journal",
+    description:
+      "write down 3 things they are grateful for, and why. Encourage them to feel the gratitude deeply",
+  },
+  {
+    title: "Wednesday Warrior: Affirmation Power",
+    description:
+      "write some affirmations about how they can conquer their obstacles (give an example)",
+  },
+  {
+    title: "Thursday Triumph: Skill Spotlight",
+    description:
+      "fill in a journal entry about how they can use their skills and achievements to overcome their challenges",
+  },
+  {
+    title: "Friday Future: Goal Celebration",
+    description:
+      "write about how they will feel when their goals are met, and what they will do to celebrate",
+  },
+  {
+    title: "Saturday Strategy: Dream Planner",
+    description:
+      "write a diary entry about how they can work towards their hopes and dreams today",
+  },
 ];
 
-export const getRandomMorningExercise = () => {
-  const selectedExercise =
-    morningExercises[Math.floor(Math.random() * morningExercises.length)];
+export const getMorningExercise = () => {
+  const today = new Date();
+  const dayIndex = today.getDay(); // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+  const selectedExercise = morningExercises[dayIndex];
 
-  return `Write a 150 word exercise, asking the client to ${selectedExercise}`;
+  return `
+
+Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}. Use the user info to personalize the exercise.`;
 };

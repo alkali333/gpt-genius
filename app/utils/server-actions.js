@@ -20,10 +20,7 @@ import {
 
 import { synthesizeSpeech } from "./text-to-speech";
 import { clerkClient } from "@clerk/nextjs/server";
-import {
-  getRandomExercise,
-  getRandomMorningExercise,
-} from "/app/utils/exercises";
+import { getRandomExercise, getMorningExercise } from "/app/utils/exercises";
 import { allowedUsers } from "/app/utils/allowed-users";
 
 const openai = new OpenAI({
@@ -462,7 +459,7 @@ export const generateEveningPracticeMessage = async () => {
 };
 
 export const generateMorningPracticeMessage = async () => {
-  const prompt = getRandomMorningExercise();
+  const prompt = getMorningExercise();
 
   const response = await fetchCoachingContent(prompt);
   if (!response.data) {
