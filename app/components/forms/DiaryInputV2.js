@@ -21,13 +21,13 @@ const DiaryInputV2 = ({ words, type = "unspecified" }) => {
       <textarea
         ref={textareaRef}
         className="textarea text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
-        placeholder="Start writing your diary..."
+        placeholder="Write your entry here..."
         value={text}
         onChange={(e) => setText(e.target.value)}
         disabled={pending}
         name="entry"
       />
-      <input type="hidden" name="entryType" value={type} />
+      <input type="hidden" name="type" value={type} />
       <button
         className="btn btn-sm btn-circle btn-primary rounded-full absolute top-2 right-2"
         disabled={pending}

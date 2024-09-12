@@ -20,7 +20,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
         console.log("Error generating meditation text");
         return;
       }
-      toast.success("Just a moment, we're preparing your meditation");
+      toast.success("Just a moment, I am preparing your meditation");
       const meditationAudio = await synthesizeSpeech(meditationText.data);
       if (!meditationAudio || !meditationAudio.data) {
         console.log("Error generating meditation audio");
@@ -51,7 +51,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
         />
       </div>
       <div className="max-w-2xl">
-        <h2 className="text-primary text-2xl mb-7">
+        <h2 className="text-primary text-xl mb-7">
           If you like, record any insights from your meditation here
         </h2>
 
