@@ -87,7 +87,9 @@ export const fetchUserJson = async () => {
       ? latestDiaryEntry.entry
       : "none available";
 
-    return { [user.firstName]: combinedData };
+    const userInfo = { [user.firstName]: combinedData };
+    //   console.log("User Info:", userInfo);
+    return userInfo;
   }
 
   // If no user is found or any of the required fields are missing, return null

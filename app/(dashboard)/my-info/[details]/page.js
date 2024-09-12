@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { fetchUserJson } from "../../../utils/server-actions";
-import DetailDisplay from "./DetailDisplay";
-
+import DetailDisplay from "../../../components/DetailDisplay";
 const MyInfoPage = async ({ params }) => {
   const validPaths = [
     "hopes-and-dreams",
@@ -19,7 +18,7 @@ const MyInfoPage = async ({ params }) => {
   const typeJson = userJson[firstName];
   const type = params.details.replace(/-/g, " ");
 
-  return <DetailDisplay type={type} data={userJson[type]} />;
+  return <DetailDisplay type={type} data={typeJson[type]} />;
 };
 
 export default MyInfoPage;

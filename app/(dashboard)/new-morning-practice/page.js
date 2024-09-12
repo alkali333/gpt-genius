@@ -4,7 +4,7 @@ import { FaMoon } from "react-icons/fa";
 import { FormContainer } from "/app/components/forms/FormContainer";
 import { fetchUserJson } from "../../utils/server-actions";
 import DiaryInputV2 from "/app/components/forms/DiaryInputV2";
-import DetailDisplay from "../../components/DetailsDisplay";
+import DetailDisplay from "../../components/DetailDisplay";
 
 import {
   insertDiaryEntry,
@@ -15,20 +15,22 @@ import Meditation from "/app/components/Meditation";
 
 const EveningPracticePage = () => {
   const [journalComplete, setJournalComplete] = useState(false);
-  const [userJson, setUserJson] = useState(null);
+  // const [userJson, setUserJson] = useState(null);
   const [encouragementMessage, setEncouragementMessage] = useState(null);
 
   const formsComplete = journalComplete;
 
   useEffect(() => {
-    const getUserJson = async () => {
-      const userJson = await fetchUserJson();
-      setUserJson(userJson);
-    };
+    // const getUserJson = async () => {
+    //   const userJson = await fetchUserJson();
+    //   const firstName = Object.keys(userJson)[0];
+    //   const typeJson = userJson[firstName];
+    //   setUserJson(typeJson);
+    // };
 
     const getEncouragementMessage = async () => {
-      //const message = await generateMorningPracticeMessage();
-      const message = { data: "Message will go here... " };
+      const message = await generateMorningPracticeMessage();
+      // const message = { data: "Message will go here... " };
       if (message.data) {
         setEncouragementMessage(message.data);
       } else {
@@ -37,7 +39,7 @@ const EveningPracticePage = () => {
       }
     };
     getEncouragementMessage();
-    getUserJson();
+    //  getUserJson();
   }, []);
 
   if (formsComplete) {
@@ -52,21 +54,12 @@ const EveningPracticePage = () => {
   }
 
   return (
-    <div className="grid grid-rows-[1fr,auto] max-w-2xl">
+    <div className="grid grid-rows-[auto] max-w-2xl">
       <div>
         <div className="flex items-center mb-3">
           <FaMoon className="text-white-500 text-2xl" />
           <h1 className="text-primary text-2xl ml-1">Morning Practice</h1>
         </div>
-        <p className="text-secondary text-xl my-8">
-          {userJson === null ? (
-            <span className="loading loading-spinner loading-lg my-8"></span>
-          ) : (
-            <DetailDisplay type={type} data={typeJson["hopes and dreams"]} />
-          )}
-        </p>
-      </div>
-      <div>
         {encouragementMessage === null ? (
           <span className="loading loading-spinner loading-lg my-8"></span>
         ) : (

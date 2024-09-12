@@ -29,12 +29,20 @@ const DetailDisplay = ({ type, data, basic = false }) => {
                   </p>
                 </div>
                 {item.rating && (
-                  <div className="flex">
-                    {Array(item.rating)
-                      .fill(null)
-                      .map((_, index) => (
-                        <FaStar key={index} className="text-yellow-500 mr-1" />
-                      ))}
+                  <div
+                    className="tooltip tooltip-right"
+                    data-tip="Complete the evening journalling practice to rate your goals. "
+                  >
+                    <div className="flex">
+                      {Array(item.rating)
+                        .fill(null)
+                        .map((_, index) => (
+                          <FaStar
+                            key={index}
+                            className="text-yellow-500 mr-1"
+                          />
+                        ))}
+                    </div>
                   </div>
                 )}
               </>
