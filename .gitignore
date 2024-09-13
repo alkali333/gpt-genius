@@ -4,10 +4,6 @@ start.sh
 # dependencies
 /node_modules
 
-# But don't ignore the Prisma client
-!node_modules/.prisma
-!node_modules/@prisma/client
-
 /.pnp
 .pnp.js
 .yarn/install-state.gz
