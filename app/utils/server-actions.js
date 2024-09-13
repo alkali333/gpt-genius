@@ -227,23 +227,26 @@ export async function insertDiaryEntry(prevState, formData) {
   const user = await fetchAuthUser();
   const rawData = Object.fromEntries(formData);
 
-  // Debugging: Log the raw data received
   console.log("Raw Data:", rawData);
 
   try {
-    const validatedFields = diarySchema.parse(rawData);
+    const validatedFields = diarySchema.parse({
+      ...rawData,
+      date: rawData.date ? new Date(rawData.date) : undefined,
+    });
 
-    // Debugging: Log the validated fields
     console.log("Validated Fields:", validatedFields);
 
     const newEntry = await prisma.diary.create({
       data: {
         clerkId: user.id,
-        ...validatedFields,
+        entry: validatedFields.entry,
+        type: validatedFields.type,
+        summary: validatedFields.summary,
+        date: validatedFields.date,
       },
     });
 
-    // Debugging: Log the new entry created
     console.log("New Entry:", newEntry);
     revalidatePath("/evening-practice");
 

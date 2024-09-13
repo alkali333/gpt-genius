@@ -18,8 +18,13 @@ export const eveningJournalSchema = z.object({
 });
 
 export const diarySchema = z.object({
-  entry: wordCountSchema(100, 1000),
-  type: z.enum(["morning", "evening"]),
+  entry: z.string(),
+  type: z.string().default("evening"),
+  summary: z.string().optional(),
+  date: z
+    .date()
+    .optional()
+    .default(() => new Date()),
 });
 
 export const aboutMeSchema = z.object({

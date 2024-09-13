@@ -105,12 +105,12 @@ const morningExercises = [
   {
     title: "Tuesday Thanks: Gratitude Journal",
     description:
-      "write down 3 things they are grateful for, and why. Encourage them to feel the gratitude deeply",
+      "write in their journal 3 things they are grateful for, and why. Encourage them to feel the gratitude deeply",
   },
   {
     title: "Wednesday Warrior: Affirmation Power",
     description:
-      "write some affirmations about how they can conquer their obstacles (give an example)",
+      "write some affirmations in their journal about how they can conquer their obstacles (give an example)",
   },
   {
     title: "Thursday Triumph: Skill Spotlight",
@@ -120,12 +120,12 @@ const morningExercises = [
   {
     title: "Friday Future: Goal Celebration",
     description:
-      "write about how they will feel when their goals are met, and what they will do to celebrate",
+      "write in their journal about how they will feel when their goals are met, and what they will do to celebrate",
   },
   {
     title: "Saturday Strategy: Dream Planner",
     description:
-      "write a diary entry about how they can work towards their hopes and dreams today",
+      "write a journal entry about how they can work towards their hopes and dreams today",
   },
 ];
 
@@ -136,5 +136,5 @@ export const getMorningExercise = () => {
 
   return `
 
-Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}. Use the user info to personalize the exercise.`;
+Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}.  Use the user info to personalize the exercise.`;
 };
