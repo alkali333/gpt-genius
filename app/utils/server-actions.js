@@ -163,64 +163,64 @@ export const getMindStateColumn = async (column) => {
   }
 };
 
-export const updateMorningJournal = async (prevState, formData) => {
-  const user = await fetchAuthUser();
-  const rawData = Object.fromEntries(formData);
+// export const updateMorningJournal = async (prevState, formData) => {
+//   const user = await fetchAuthUser();
+//   const rawData = Object.fromEntries(formData);
 
-  try {
-    const isGratitudeForm = "gratitude1" in rawData;
-    const isTodoForm = "todo1" in rawData;
+//   try {
+//     const isGratitudeForm = "gratitude1" in rawData;
+//     const isTodoForm = "todo1" in rawData;
 
-    let validatedFields, updateObject, columnName;
+//     let validatedFields, updateObject, columnName;
 
-    if (isGratitudeForm) {
-      validatedFields = gratitudeSchema.parse(rawData);
-      updateObject = {
-        "grateful for": {
-          1: validatedFields.gratitude1,
-          2: validatedFields.gratitude2,
-          3: validatedFields.gratitude3,
-          4: validatedFields.gratitude4,
-          5: validatedFields.gratitude5,
-        },
-      };
-      columnName = "grateful_for";
-    } else if (isTodoForm) {
-      validatedFields = todoSchema.parse(rawData);
-      updateObject = {
-        "current tasks": {
-          1: validatedFields.todo1,
-          2: validatedFields.todo2,
-          3: validatedFields.todo3,
-          4: validatedFields.todo4,
-          5: validatedFields.todo5,
-        },
-      };
-      columnName = "current_tasks";
-    }
+//     if (isGratitudeForm) {
+//       validatedFields = gratitudeSchema.parse(rawData);
+//       updateObject = {
+//         "grateful for": {
+//           1: validatedFields.gratitude1,
+//           2: validatedFields.gratitude2,
+//           3: validatedFields.gratitude3,
+//           4: validatedFields.gratitude4,
+//           5: validatedFields.gratitude5,
+//         },
+//       };
+//       columnName = "grateful_for";
+//     } else if (isTodoForm) {
+//       validatedFields = todoSchema.parse(rawData);
+//       updateObject = {
+//         "current tasks": {
+//           1: validatedFields.todo1,
+//           2: validatedFields.todo2,
+//           3: validatedFields.todo3,
+//           4: validatedFields.todo4,
+//           5: validatedFields.todo5,
+//         },
+//       };
+//       columnName = "current_tasks";
+//     }
 
-    await prisma.mindState.update({
-      where: { clerkId: user.id },
-      data: { [columnName]: updateObject },
-    });
+//     await prisma.mindState.update({
+//       where: { clerkId: user.id },
+//       data: { [columnName]: updateObject },
+//     });
 
-    return {
-      message: `${isGratitudeForm ? "Gratitude" : "Todo"} updated`,
-      data: updateObject,
-    };
-  } catch (error) {
-    console.error("Error in updateMindState:", error);
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors[0]?.message || "Validation error";
-      return { message: errorMessage, data: null };
-    } else {
-      return {
-        message: error.message || "An unexpected error occurred",
-        data: null,
-      };
-    }
-  }
-};
+//     return {
+//       message: `${isGratitudeForm ? "Gratitude" : "Todo"} updated`,
+//       data: updateObject,
+//     };
+//   } catch (error) {
+//     console.error("Error in updateMindState:", error);
+//     if (error instanceof ZodError) {
+//       const errorMessage = error.errors[0]?.message || "Validation error";
+//       return { message: errorMessage, data: null };
+//     } else {
+//       return {
+//         message: error.message || "An unexpected error occurred",
+//         data: null,
+//       };
+//     }
+//   }
+// };
 
 export async function insertDiaryEntry(prevState, formData) {
   console.log("Insert Diary Entry Triggered");

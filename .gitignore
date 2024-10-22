@@ -23,6 +23,10 @@ start.sh
 *.pem
 *.mp3
 
+# docker
+*.yml
+
+
 # debug
 npm-debug.log*
 yarn-debug.log*
