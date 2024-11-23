@@ -13,6 +13,8 @@ const DiaryInputV2 = ({ words, type = "unspecified" }) => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      // Add this line to ensure the cursor stays in view
+      textareaRef.current.scrollIntoView({ block: "end" });
     }
   }, [text]);
 

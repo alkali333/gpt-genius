@@ -18,9 +18,11 @@ const DetailDisplay = ({ type, data, basic = false }) => {
               basic ? "bg-base-200" : "first:bg-base-100"
             } rounded-xl shadow-md space-y-2`}
           >
-            <div className="text-xl font-medium text-accent">{item.name}</div>
+            <div className="text-xl font-medium text-accent mt-2">
+              {item.name}
+            </div>
             {!basic && (
-              <>
+              <div>
                 <p className="text-secondary text-lg">{item.description}</p>
                 <div className="flex items-center">
                   <IoIosRocket className="text-primary mr-2 text-2xl" />
@@ -45,7 +47,7 @@ const DetailDisplay = ({ type, data, basic = false }) => {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
         ))}

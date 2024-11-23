@@ -44,12 +44,15 @@ const EveningPracticePage = () => {
 
   if (formsComplete) {
     return (
-      <>
+      <div>
         <h1 className="text-primary text-2xl mb-7">
           Morning meditation unlocked!
         </h1>
-        <Meditation type="This is a meditation done in the morning to prepare the user for the day" />
-      </>
+        <Meditation
+          type="This is a meditation done in the morning to prepare the user for the day."
+          useDiary
+        />
+      </div>
     );
   }
 
