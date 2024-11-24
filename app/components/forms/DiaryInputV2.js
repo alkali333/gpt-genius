@@ -13,35 +13,35 @@ const DiaryInputV2 = ({ words, type = "unspecified" }) => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-      // Add this line to ensure the cursor stays in view
-      textareaRef.current.scrollIntoView({ block: "end" });
     }
   }, [text]);
 
   return (
-    <div className="relative w-full">
-      <textarea
-        ref={textareaRef}
-        className="textarea text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
-        placeholder="Write your entry here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        disabled={pending}
-        name="entry"
-      />
-      <input type="hidden" name="type" value={type} />
-      <button
-        className="btn btn-sm btn-circle btn-primary rounded-full absolute top-2 right-2"
-        disabled={pending}
-      >
-        {pending ? (
-          <span className="loading loading-spinner loading-xs"></span>
-        ) : (
-          <FaArrowUp />
-        )}
-      </button>
-      <div className="text-right text-sm text-gray-500">
+    <div className="w-full mb-8">
+      <div className="text-sm text-gray-500 mb-2 text-right">
         {remainingWords} words remaining
+      </div>
+      <div className="relative">
+        <textarea
+          ref={textareaRef}
+          className="textarea text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
+          placeholder="Write your entry here..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={pending}
+          name="entry"
+        />
+        <input type="hidden" name="type" value={type} />
+        <button
+          className="btn btn-sm btn-circle btn-primary rounded-full absolute top-2 right-2"
+          disabled={pending}
+        >
+          {pending ? (
+            <span className="loading loading-spinner loading-xs"></span>
+          ) : (
+            <FaArrowUp />
+          )}
+        </button>
       </div>
     </div>
   );
