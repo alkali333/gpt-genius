@@ -66,11 +66,6 @@ const EveningPracticePage = () => {
             dangerouslySetInnerHTML={{ __html: encouragementMessage }}
           />
         )}
-        <p className="text-secondary text-xl my-8">
-          Write at least 100 words about your day, in relation to your above
-          goals. What went well? What didn&apos;t go well? What can you do
-          better tomorrow?
-        </p>
         <FormContainer
           action={insertDiaryEntry}
           className="flex w-full items-center"

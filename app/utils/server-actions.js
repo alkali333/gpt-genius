@@ -439,11 +439,13 @@ export const generateEveningPracticeMessage = async () => {
   }
 
   const prompt = `Analyze the users last diary entry in relation to the 
-  users goals and other info. Ask them if they managed to do the tasks they had planned.
-   Offer encouragement and suggestions for improvement 
-  and task ideas. Invite them to write their evening diary entry, reflecting
-   on how they did today in relation to their goals. 
-  150 words max. \n\n
+  users goals and other info. Ask them them to reflect on whether they managed the 
+  tasks planned. 
+   Offer encouragement and suggestions. 
+   Invite them to write their evening diary entry, ask them to record how the day went,
+   especially with relation to their goals. Encourage them to write 100 words in their diary.
+  
+  This encouragement message should be 150 words max. \n\n
   Last Diary Entry: ${diaryEntry.data}`;
 
   console.log("Prompt for evening practice:", prompt);
