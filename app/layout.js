@@ -8,10 +8,10 @@ import Providers from "./providers";
 const space_grotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Attenshun",
+  title: "The Yoga Palace Journalling App",
   description: "Control your mind to manifest your dreams.",
   icons: {
-    icon: "/icon.png",
+    icon: "/logo.png",
   },
 };
 

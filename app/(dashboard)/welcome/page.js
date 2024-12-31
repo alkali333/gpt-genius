@@ -17,7 +17,14 @@ const WelcomePage = async () => {
   const day = today.getDate();
   const month = today.toLocaleString("default", { month: "long" });
 
-  const currentDate = `Today is the ${day}th of ${month}`;
+  const getOrdinalSuffix = (day) => {
+    const suffixes = { 1: "st", 2: "nd", 3: "rd" };
+    return (day > 3 && day < 21) || !suffixes[day % 10]
+      ? "th"
+      : suffixes[day % 10];
+  };
+
+  const currentDate = `Today is the ${day}${getOrdinalSuffix(day)} of ${month}`;
 
   const welcomeMessage = await fetchCoachingContent(
     `Based on the user info, ${randomMessage} (around 300 words)`
