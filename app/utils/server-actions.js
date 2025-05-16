@@ -282,7 +282,7 @@ const handleError = (error) => {
 };
 
 // Add this function to implement a more secure version of diary access
-export const getLatestDiaryEntrySafe = async () => {
+export const getLatestDiaryEntry = async () => {
   try {
     const user = await fetchAuthUser();
 
