@@ -2,7 +2,7 @@
 import prisma from "./db";
 import OpenAI from "openai";
 
-import { currentUser, auth } from "@clerk/nextjs/server";
+import { currentUser, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { ZodError } from "zod";
@@ -19,7 +19,6 @@ import {
 } from "/app/utils/schemas";
 
 import { synthesizeSpeech } from "./text-to-speech";
-import { clerkClient } from "@clerk/nextjs/server";
 import { getRandomExercise, getMorningExercise } from "/app/utils/exercises";
 import { allowedUsers } from "/app/utils/allowed-users";
 
@@ -34,6 +33,17 @@ export const fetchAuthUser = async () => {
   // if (!allowedUsers.includes(user.email)) {
   //   redirect("/request-permission");
   // }
+
+  // Check if user has completed their profile
+  const userDetails = await clerkClient.users.getUser(user.id);
+
+  if (
+    !userDetails?.publicMetadata.has_hopes_and_dreams &&
+    !userDetails?.publicMetadata.has_skills_and_achievements &&
+    !userDetails?.publicMetadata.has_obstacles_and_challenges
+  ) {
+    redirect("/about-me");
+  }
 
   return { firstName: user.firstName, id: user.id };
 };
