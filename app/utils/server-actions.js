@@ -281,44 +281,40 @@ const handleError = (error) => {
   return { message: "An unexpected error occurred", data: null };
 };
 
-export const getLatestDiaryEntry = async () => {
-  const user = fetchAuthUser();
-
-  console.log("Fetching latest diary entry");
-  const latestEntry = await prisma.diary.findFirst({
-    where: { clerkId: user.id },
-    orderBy: { date: "desc" },
-    select: { entry: true },
-  });
-
-  if (latestEntry) {
-    console.log("Diary entry found");
-    return { message: "Diary entry retrieved", data: latestEntry.entry };
-  } else {
-    console.log("No Diary entry found");
-    return { message: "No diary entry found", data: null };
-  }
-};
-
-export const updateMeditationDiary = async (prevState, formData) => {
-  const user = await fetchAuthUser();
-  const rawData = Object.fromEntries(formData);
+// Add this function to implement a more secure version of diary access
+export const getLatestDiaryEntrySafe = async () => {
   try {
-    const validatedFields = meditationDiarySchema.parse(rawData);
-    const newEntry = await prisma.meditationDiary.create({
-      data: {
-        clerkId: user.id,
-        ...validatedFields,
-      },
+    const user = await fetchAuthUser();
+
+    console.log("Fetching latest diary entry for user ID:", user.id);
+
+    const latestEntry = await prisma.diary.findFirst({
+      where: { clerkId: user.id },
+      orderBy: { date: "desc" },
+      select: { entry: true, clerkId: true, id: true },
     });
 
-    return { message: "Meditation diary updated", data: newEntry };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessage = error.errors[0]?.message || "Validation error";
-
-      return { message: errorMessage, data: null };
+    // Safety check: Only return the entry if it belongs to the current user
+    if (latestEntry && latestEntry.clerkId === user.id) {
+      console.log("Diary entry found with ID:", latestEntry.id);
+      return {
+        message: "Diary entry retrieved",
+        data: latestEntry.entry,
+      };
+    } else if (latestEntry) {
+      // This should never happen if the database query is working correctly,
+      // but it's an extra safety measure
+      console.error(
+        "Security warning: Attempted to access diary entry belonging to another user"
+      );
+      return { message: "No diary entry found", data: null };
+    } else {
+      console.log("No diary entry found for user ID:", user.id);
+      return { message: "No diary entry found", data: null };
     }
+  } catch (error) {
+    console.error("Error fetching diary entry:", error);
+    return { message: "Error fetching diary entry", data: null };
   }
 };
 
