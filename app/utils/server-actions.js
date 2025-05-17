@@ -26,18 +26,17 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const fetchAuthUser = async () => {
+export const fetchAuthUser = async (skipRedirect = false) => {
   const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  if (!user && !skipRedirect) redirect("/sign-in");
+  if (!user) return null;
 
-  // if (!allowedUsers.includes(user.email)) {
-  //   redirect("/request-permission");
-  // }
-
-  // Check if user has completed their profile
+  // Get user details from Clerk
   const userDetails = await clerkClient.users.getUser(user.id);
 
+  // Only redirect if skipRedirect is false
   if (
+    !skipRedirect &&
     !userDetails?.publicMetadata.has_hopes_and_dreams &&
     !userDetails?.publicMetadata.has_skills_and_achievements &&
     !userDetails?.publicMetadata.has_obstacles_and_challenges
@@ -105,8 +104,8 @@ export const fetchUserJson = async () => {
 
 export const updateMindState = async (column, data) => {
   try {
-    const user = await fetchAuthUser();
-    console.log("User:", user);
+    // Pass true to skip redirects during database operations
+    const user = await fetchAuthUser(true);
 
     if (!user || !user.id) {
       console.error("No user found or user has no id");
