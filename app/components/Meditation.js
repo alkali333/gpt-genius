@@ -50,6 +50,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
           backgroundAudio={"/user-audio/background.mp3"}
         />
       </div>
+      {/* 
       <div className="max-w-2xl">
         <h2 className="text-primary text-xl mb-7">
           If you like, record any insights from your meditation here
@@ -62,6 +63,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
           <DiaryInput words={20} />
         </FormContainer>
       </div>
+      */}
     </div>
   );
 };

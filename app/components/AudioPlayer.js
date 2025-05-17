@@ -11,7 +11,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
 
   useEffect(() => {
     if (backgroundRef.current) {
-      backgroundRef.current.volume = 0.8;
+      backgroundRef.current.volume = 0.5;
       backgroundRef.current.loop = true;
     }
   }, []);

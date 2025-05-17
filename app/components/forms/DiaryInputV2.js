@@ -1,30 +1,55 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { FaArrowUp } from "react-icons/fa";
 
 const DiaryInputV2 = ({ words, type = "unspecified" }) => {
-  const [text, setText] = React.useState("");
+  const [text, setText] = useState("");
   const { pending } = useFormStatus();
   const wordCount = text.split(/\s+/).filter(Boolean).length;
   const remainingWords = Math.max(words - wordCount, 0);
   const textareaRef = useRef(null);
+  const containerRef = useRef(null);
 
+  // Handle text area resize and ensure it stays in view
   useEffect(() => {
     if (textareaRef.current) {
+      // Reset height to recalculate properly
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+
+      // Set new height based on content (with a max-height)
+      const newHeight = Math.min(
+        textareaRef.current.scrollHeight + 20, // Add padding to prevent cut-off
+        window.innerHeight * 0.6 // Limit to 60% of viewport height
+      );
+      textareaRef.current.style.height = `${newHeight}px`;
+
+      // Scroll into view with a small delay to ensure accurate calculations
+      setTimeout(() => {
+        // Scroll to bottom of textarea if user is typing at the end
+        const cursorAtEnd =
+          textareaRef.current.selectionStart ===
+          textareaRef.current.value.length;
+
+        if (cursorAtEnd) {
+          // Ensure the bottom of the textarea is visible
+          window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 10);
     }
   }, [text]);
 
   return (
-    <div className="w-full mb-8">
+    <div className="w-full mb-16 flex flex-col" ref={containerRef}>
       <div className="text-sm text-gray-500 mb-2 text-right">
         {remainingWords} words remaining
       </div>
-      <div className="relative">
+      <div className="relative w-full">
         <textarea
           ref={textareaRef}
-          className="textarea text-lg lg:text-xl textarea-bordered w-full h-auto min-h-[6rem] focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none no-scrollbar"
+          className="textarea text-lg lg:text-xl textarea-bordered w-full min-h-[6rem] pb-8 focus:outline-none focus:ring-2 focus:ring-primary pr-9 resize-none"
           placeholder="Write your entry here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
