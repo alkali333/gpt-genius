@@ -1,38 +1,31 @@
-"use server";
-import prisma from "./db";
-import OpenAI from "openai";
+'use server'
+import prisma from './db'
+import OpenAI from 'openai'
 
-import { currentUser, clerkClient } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { currentUser, clerkClient } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 
-import { ZodError } from "zod";
-import { revalidatePath } from "next/cache";
-import { marked } from "marked";
+import { ZodError } from 'zod'
+import { revalidatePath } from 'next/cache'
+import { marked } from 'marked'
 
-import {
-  gratitudeSchema,
-  todoSchema,
-  aboutMeSchema,
-  eveningJournalSchema,
-  diarySchema,
-  meditationDiarySchema,
-} from "/app/utils/schemas";
+import { aboutMeSchema, diarySchema } from '/app/utils/schemas'
 
-import { synthesizeSpeech } from "./text-to-speech";
-import { getRandomExercise, getMorningExercise } from "/app/utils/exercises";
-import { allowedUsers } from "/app/utils/allowed-users";
+import { synthesizeSpeech } from './text-to-speech'
+import { getRandomExercise, getMorningExercise } from '/app/utils/exercises'
+import { allowedUsers } from '/app/utils/allowed-users'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+})
 
 export const fetchAuthUser = async (skipRedirect = false) => {
-  const user = await currentUser();
-  if (!user && !skipRedirect) redirect("/sign-in");
-  if (!user) return null;
+  const user = await currentUser()
+  if (!user && !skipRedirect) redirect('/sign-in')
+  if (!user) return null
 
   // Get user details from Clerk
-  const userDetails = await clerkClient.users.getUser(user.id);
+  const userDetails = await clerkClient.users.getUser(user.id)
 
   // Only redirect if skipRedirect is false
   if (
@@ -41,23 +34,23 @@ export const fetchAuthUser = async (skipRedirect = false) => {
     !userDetails?.publicMetadata.has_skills_and_achievements &&
     !userDetails?.publicMetadata.has_obstacles_and_challenges
   ) {
-    redirect("/about-me");
+    redirect('/about-me')
   }
 
-  return { firstName: user.firstName, id: user.id };
-};
+  return { firstName: user.firstName, id: user.id }
+}
 
 const revalidateAllUserPaths = () => {
-  const staticPaths = ["/welcome", "/morning-practice", "/evening-practice"];
+  const staticPaths = ['/welcome', '/morning-practice', '/evening-practice']
 
-  const dynamicPaths = [{ path: "/my-info/[details]", type: "page" }];
+  const dynamicPaths = [{ path: '/my-info/[details]', type: 'page' }]
 
-  staticPaths.forEach((path) => revalidatePath(path));
-  dynamicPaths.forEach(({ path, type }) => revalidatePath(path, type));
-};
+  staticPaths.forEach((path) => revalidatePath(path))
+  dynamicPaths.forEach(({ path, type }) => revalidatePath(path, type))
+}
 
 export const fetchUserJson = async () => {
-  const user = await fetchAuthUser();
+  const user = await fetchAuthUser()
 
   const details = await prisma.mindState.findUnique({
     where: { clerkId: user.id },
@@ -66,14 +59,14 @@ export const fetchUserJson = async () => {
       skills_and_achievements: true,
       obstacles_and_challenges: true,
     },
-  });
+  })
 
   // Fetch only the latest diary entry text
   const latestDiaryEntry = await prisma.diary.findFirst({
     where: { clerkId: user.id },
-    orderBy: { date: "desc" },
+    orderBy: { date: 'desc' },
     select: { entry: true },
-  });
+  })
 
   if (
     details &&
@@ -82,95 +75,95 @@ export const fetchUserJson = async () => {
     details.obstacles_and_challenges
   ) {
     const combinedData = Object.entries(details).reduce((acc, [key, value]) => {
-      if (value && typeof value === "object") {
-        return { ...acc, ...value };
+      if (value && typeof value === 'object') {
+        return { ...acc, ...value }
       }
-      return acc;
-    }, {});
+      return acc
+    }, {})
 
     // Add the simplified latest diary entry to the combined data
     combinedData.latest_diary_entry = latestDiaryEntry
       ? latestDiaryEntry.entry
-      : "none available";
+      : 'none available'
 
-    const userInfo = { [user.firstName]: combinedData };
+    const userInfo = { [user.firstName]: combinedData }
     //   console.log("User Info:", userInfo);
-    return userInfo;
+    return userInfo
   }
 
   // If no user is found or any of the required fields are missing, return null
-  return null;
-};
+  return null
+}
 
 export const updateMindState = async (column, data) => {
   try {
     // Pass true to skip redirects during database operations
-    const user = await fetchAuthUser(true);
+    const user = await fetchAuthUser(true)
 
     if (!user || !user.id) {
-      console.error("No user found or user has no id");
-      return { message: "User not authenticated", data: null };
+      console.error('No user found or user has no id')
+      return { message: 'User not authenticated', data: null }
     }
 
-    console.log(`Updating column: ${column}`);
-    console.log("Data to update:", JSON.stringify(data, null, 2));
+    console.log(`Updating column: ${column}`)
+    console.log('Data to update:', JSON.stringify(data, null, 2))
 
     const existingUser = await prisma.mindState.findUnique({
       where: { clerkId: user.id },
-    });
+    })
 
-    console.log("Existing user:", existingUser);
+    console.log('Existing user:', existingUser)
 
-    let returnData;
+    let returnData
     if (existingUser) {
       returnData = await prisma.mindState.update({
         where: { clerkId: user.id },
         data: { [column]: data },
-      });
+      })
     } else {
       returnData = await prisma.mindState.create({
         data: { clerkId: user.id, [column]: data },
-      });
+      })
     }
 
-    console.log("Return data:", returnData);
+    console.log('Return data:', returnData)
 
     if (returnData) {
-      revalidateAllUserPaths();
+      revalidateAllUserPaths()
 
       // Update Clerk metadata
       await clerkClient.users.updateUserMetadata(user.id, {
         publicMetadata: { [`has_${column}`]: true },
-      });
+      })
     }
 
-    return { message: "Mind state updated", data: returnData };
+    return { message: 'Mind state updated', data: returnData }
   } catch (error) {
-    console.error("Error in updateMindState:", error);
-    return { message: error.message, data: null };
+    console.error('Error in updateMindState:', error)
+    return { message: error.message, data: null }
   }
-};
+}
 
 export const getMindStateColumn = async (column) => {
-  const user = await fetchAuthUser();
+  const user = await fetchAuthUser()
 
   const data = await prisma.mindState.findUnique({
     where: { clerkId: user.id },
     select: { [column]: true },
-  });
+  })
 
   if (data && data[column] !== undefined) {
     return {
       message: `Mind state retrieved for ${user.firstName}, column: ${column}`,
       data: data[column],
-    };
+    }
   } else {
     return {
       message: `Cannot find data for ${user.firstName}, column: ${column}`,
       data: null,
-    };
+    }
   }
-};
+}
 
 // export const updateMorningJournal = async (prevState, formData) => {
 //   const user = await fetchAuthUser();
@@ -232,19 +225,19 @@ export const getMindStateColumn = async (column) => {
 // };
 
 export async function insertDiaryEntry(prevState, formData) {
-  console.log("Insert Diary Entry Triggered");
-  const user = await fetchAuthUser();
-  const rawData = Object.fromEntries(formData);
+  console.log('Insert Diary Entry Triggered')
+  const user = await fetchAuthUser()
+  const rawData = Object.fromEntries(formData)
 
-  console.log("Raw Data:", rawData);
+  console.log('Raw Data:', rawData)
 
   try {
     const validatedFields = diarySchema.parse({
       ...rawData,
       date: rawData.date ? new Date(rawData.date) : undefined,
-    });
+    })
 
-    console.log("Validated Fields:", validatedFields);
+    console.log('Validated Fields:', validatedFields)
 
     const newEntry = await prisma.diary.create({
       data: {
@@ -254,287 +247,288 @@ export async function insertDiaryEntry(prevState, formData) {
         summary: validatedFields.summary,
         date: validatedFields.date,
       },
-    });
+    })
 
-    console.log("New Entry:", newEntry);
-    revalidatePath("/evening-practice");
+    console.log('New Entry:', newEntry)
+    revalidatePath('/evening-practice')
 
-    return { message: "Diary entry successfully created", data: newEntry };
+    return { message: 'Diary entry successfully created', data: newEntry }
   } catch (error) {
-    return handleError(error);
+    return handleError(error)
   }
 }
 
 const handleError = (error) => {
   if (error instanceof ZodError) {
-    const errorMessage = error.errors[0]?.message || "Validation error";
+    const errorMessage = error.errors[0]?.message || 'Validation error'
 
-    console.log("Validation Error:", errorMessage);
+    console.log('Validation Error:', errorMessage)
 
-    return { message: errorMessage, data: null };
+    return { message: errorMessage, data: null }
   }
 
   // Debugging: Log any unexpected errors
-  console.log("Unexpected Error:", error);
+  console.log('Unexpected Error:', error)
 
-  return { message: "An unexpected error occurred", data: null };
-};
+  return { message: 'An unexpected error occurred', data: null }
+}
 
 // Add this function to implement a more secure version of diary access
 export const getLatestDiaryEntry = async () => {
   try {
-    const user = await fetchAuthUser();
+    const user = await fetchAuthUser()
 
-    console.log("Fetching latest diary entry for user ID:", user.id);
+    console.log('Fetching latest diary entry for user ID:', user.id)
 
     const latestEntry = await prisma.diary.findFirst({
       where: { clerkId: user.id },
-      orderBy: { date: "desc" },
+      orderBy: { date: 'desc' },
       select: { entry: true, clerkId: true, id: true },
-    });
+    })
 
     // Safety check: Only return the entry if it belongs to the current user
     if (latestEntry && latestEntry.clerkId === user.id) {
-      console.log("Diary entry found with ID:", latestEntry.id);
+      console.log('Diary entry found with ID:', latestEntry.id)
       return {
-        message: "Diary entry retrieved",
+        message: 'Diary entry retrieved',
         data: latestEntry.entry,
-      };
+      }
     } else if (latestEntry) {
       // This should never happen if the database query is working correctly,
       // but it's an extra safety measure
       console.error(
-        "Security warning: Attempted to access diary entry belonging to another user"
-      );
-      return { message: "No diary entry found", data: null };
+        'Security warning: Attempted to access diary entry belonging to another user'
+      )
+      return { message: 'No diary entry found', data: null }
     } else {
-      console.log("No diary entry found for user ID:", user.id);
-      return { message: "No diary entry found", data: null };
+      console.log('No diary entry found for user ID:', user.id)
+      return { message: 'No diary entry found', data: null }
     }
   } catch (error) {
-    console.error("Error fetching diary entry:", error);
-    return { message: "Error fetching diary entry", data: null };
+    console.error('Error fetching diary entry:', error)
+    return { message: 'Error fetching diary entry', data: null }
   }
-};
+}
 
 const fetchOpenAiResponse = async (model, systemMessage, userMessage) => {
   try {
     const response = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: systemMessage },
-        { role: "user", content: userMessage },
+        { role: 'system', content: systemMessage },
+        { role: 'user', content: userMessage },
       ],
       model: model,
       temperature: 0.8,
       max_tokens: 750,
-    });
+    })
 
-    const reply = response.choices[0].message.content;
+    const reply = response.choices[0].message.content
 
-    return { message: "Received OpenAI response", data: reply };
+    return { message: 'Received OpenAI response', data: reply }
   } catch (error) {
-    console.error("Error generating chat response:", error);
-    return { message: `Error generating chat response: ${error}`, data: null };
+    console.error('Error generating chat response:', error)
+    return { message: `Error generating chat response: ${error}`, data: null }
   }
-};
+}
 
 export const summarizeInfo = async (query, type) => {
   // Validate input
-  const result = aboutMeSchema.shape.message.safeParse(query);
+  const result = aboutMeSchema.shape.message.safeParse(query)
   if (!result.success) {
     if (result.error instanceof ZodError) {
-      const errorMessage = error.errors[0]?.message || "Validation error";
-      return { message: errorMessage };
+      const errorMessage = error.errors[0]?.message || 'Validation error'
+      return { message: errorMessage }
     }
   }
 
-  const validatedQuery = result.data;
+  const validatedQuery = result.data
 
   const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with maxiumum 8 ${type}. Each ${type} should have a name, description, and ${
-    type === "skills and achievements"
-      ? "result (the benefits it gives them)"
+    type === 'skills and achievements'
+      ? 'result (the benefits it gives them)'
       : "result (e.g.  'Solving this will mean...')"
   }.
-  Give each one a default rating of 3. Respond purely with correctly formatted JSON, no commentary or code.`;
+  Give each one a default rating of 3. Respond purely with correctly formatted JSON, no commentary or code.`
 
   const responseJson = {
     [type]: [
       {
-        name: "name goes here",
-        description: "description goes here",
-        result: "value goes here",
+        name: 'name goes here',
+        description: 'description goes here',
+        result: 'value goes here',
         rating: 3,
       },
     ],
-  };
+  }
 
-  const responseString = JSON.stringify(responseJson);
-  const systemMessageWithResponse = `${systemMessage}\n${responseString}`;
+  const responseString = JSON.stringify(responseJson)
+  const systemMessageWithResponse = `${systemMessage}\n${responseString}`
 
   const openAiResponse = await fetchOpenAiResponse(
-    "gpt-4o",
+    'gpt-4o',
     systemMessageWithResponse,
     validatedQuery
-  );
+  )
 
   if (openAiResponse.data) {
-    const summary = openAiResponse.data;
+    const summary = openAiResponse.data
 
     // Clean and parse the response
     const cleanedSummary = summary
-      .replace(/^```json\n?/, "")
-      .replace(/```$/, "")
-      .trim();
+      .replace(/^```json\n?/, '')
+      .replace(/```$/, '')
+      .trim()
     //  console.log("Summary from LLM:", cleanedSummary);
 
-    const userData = JSON.parse(cleanedSummary);
-    return { message: "User data created", data: userData };
+    const userData = JSON.parse(cleanedSummary)
+    return { message: 'User data created', data: userData }
   } else {
     return {
-      message: "Error generating user data: " + openAiResponse.message,
+      message: 'Error generating user data: ' + openAiResponse.message,
       data: null,
-    };
+    }
   }
-};
+}
 
 export const fetchCoachingContent = async (prompt, htmlMode = true) => {
-  console.log("Fetching coaching content");
-  const userJson = await fetchUserJson();
+  console.log('Fetching coaching content')
+  const userJson = await fetchUserJson()
 
   // if there is no userData, it must be a new user
-  if (!userJson) redirect("/about-me");
+  if (!userJson) redirect('/about-me')
 
-  const userStr = JSON.stringify(userJson);
+  const userStr = JSON.stringify(userJson)
 
-  const systemMessage = `You are Attenshun, a powerful AI wellness app, your job is to make sure the user focuses their attention on what is important. Use the user
+  const systemMessage = `You are The Yoga Palace App, a powerful AI wellness and mental manifestation app, your job is to make sure the user focuses their attention on what is important. Use the user
     information below to generate personalised messages and exercises addressing the user by name. Encourage and empower the user. You are optimistic and passionately 
-    believe in their abilities. \n\n
-    USER INFO: ${userStr}\n\n`;
+    believe in their abilities. Remind them that the ability to focus their attention and have thoughts related to their hopes and dreams is key  - that nothing can be made into reality without focused attention.  \n\n
+    USER INFO: ${userStr}\n\n`
 
-  const userMessage = prompt;
+  const userMessage = prompt
 
   const openAIResponse = await fetchOpenAiResponse(
-    "gpt-4o",
+    'gpt-4o',
     systemMessage,
     userMessage
-  );
+  )
 
   if (openAIResponse.data) {
     return {
-      message: "Successfully retrieved welcome message",
+      message: 'Successfully retrieved welcome message',
       data: htmlMode ? marked(openAIResponse.data) : openAIResponse.data,
-    };
+    }
   } else {
-    return { message: "Error retrieving welcome message", data: null };
+    return { message: 'Error retrieving welcome message', data: null }
   }
-};
+}
 
 export const generateEveningPracticeMessage = async () => {
-  console.log("Generating evening practice message");
-  const diaryEntry = await getLatestDiaryEntry();
+  console.log('Generating evening practice message')
+  const diaryEntry = await getLatestDiaryEntry()
 
   if (!diaryEntry.data) {
     return {
-      message: "User has no diary yet, returning default message",
+      message: 'User has no diary yet, returning default message',
       data: `Write at least 150 words about what you did today in relation
-    to your hopes and dreams. Did you make progress towards all or
-    some of them? Or did you procrastinate? Is there anything you
-    could have done differently?`,
-    };
+    to your hopes and dreams. More importantly, how much of your mental energy was directed to them? Was your mind focused where it needed to be? If not, how can you improve this?`,
+    }
   }
 
   const prompt = `Analyze the users last diary entry in relation to the 
   users goals and other info. Ask them them to reflect on whether they managed the 
   tasks planned. 
-   Offer encouragement and suggestions. 
-   Invite them to write their evening diary entry, ask them to record how the day went,
-   especially with relation to their goals. Encourage them to write 100 words in their diary.
+  Offer encouragement and suggestions. 
+  Specifically, invite them to explore how many of their thoughts were related to their goals.
+  Remind them that nothing is possible without focused attention and that more thoughts they
+  have about their goals, the more they will achieve.
+  Invite them to write their evening diary entry, ask them to record how the day went,
+  especially with relation to focus on their goals. Encourage them to write 100 words in their diary.
   
   This encouragement message should be 150 words max. \n\n
-  Last Diary Entry: ${diaryEntry.data}`;
+  Last Diary Entry: ${diaryEntry.data}`
 
-  console.log("Prompt for evening practice:", prompt);
+  console.log('Prompt for evening practice:', prompt)
 
-  const response = await fetchCoachingContent(prompt);
+  const response = await fetchCoachingContent(prompt)
   if (!response.data) {
     return {
       message: `Error generating evening practice message. ${
-        response.message || "An unexpected error occurred"
+        response.message || 'An unexpected error occurred'
       }`,
       data: null,
-    };
+    }
   }
 
-  return { message: "Evening Practice Generated", data: response.data };
-};
+  return { message: 'Evening Practice Generated', data: response.data }
+}
 
 export const generateMorningPracticeMessage = async () => {
-  const prompt = getMorningExercise();
+  const prompt = getMorningExercise()
 
-  const response = await fetchCoachingContent(prompt);
+  const response = await fetchCoachingContent(prompt)
   if (!response.data) {
     return {
       message: `Error generating morning practice message. ${
-        response.message || "An unexpected error occurred"
+        response.message || 'An unexpected error occurred'
       }`,
       data: null,
-    };
+    }
   }
 
-  return { message: "Morning Practice Generated", data: response.data };
-};
+  return { message: 'Morning Practice Generated', data: response.data }
+}
 
 export const generateChatResponse = async (systemMessage, chatMessages) => {
   try {
     const response = await openai.chat.completions.create({
-      messages: [{ role: "system", content: systemMessage }, ...chatMessages],
-      model: "gpt-4o",
+      messages: [{ role: 'system', content: systemMessage }, ...chatMessages],
+      model: 'gpt-4o',
       temperature: 0.8,
-    });
+    })
 
-    const reply = response.choices[0].message.content;
+    const reply = response.choices[0].message.content
 
-    return marked(reply);
+    return marked(reply)
   } catch (error) {
-    console.error("Error generating chat response:", error);
-    return null;
+    console.error('Error generating chat response:', error)
+    return null
   }
-};
+}
 
 export const summarizeAndUpdateMindState = async (type, userInput) => {
   try {
     // Convert type to column name by replacing spaces with underscores
-    const column = type.replace(/ /g, "_").toLowerCase();
+    const column = type.replace(/ /g, '_').toLowerCase()
 
-    console.log("Summarizing user info for:", type);
-    const summaryResult = await summarizeInfo(userInput, type);
+    console.log('Summarizing user info for:', type)
+    const summaryResult = await summarizeInfo(userInput, type)
 
     if (!summaryResult.data) {
       return {
         message: `Error summarizing ${type}: ${summaryResult.message}`,
         data: null,
-      };
+      }
     }
 
-    console.log("Updating mind state for:", type);
-    const updateResult = await updateMindState(column, summaryResult.data);
+    console.log('Updating mind state for:', type)
+    const updateResult = await updateMindState(column, summaryResult.data)
 
     if (!updateResult.data) {
       return {
         message: `Error updating ${type}: ${updateResult.message}`,
         data: null,
-      };
+      }
     }
 
     return {
       message: `Successfully summarized and updated ${type}`,
       data: updateResult.data,
-    };
+    }
   } catch (error) {
-    console.error(`Error in summarizeAndUpdateMindState for ${type}:`, error);
-    return { message: `Unexpected error: ${error.message}`, data: null };
+    console.error(`Error in summarizeAndUpdateMindState for ${type}:`, error)
+    return { message: `Unexpected error: ${error.message}`, data: null }
   }
-};
+}
 
 export const generateMeditation = async (
   useDiary = false,
@@ -542,51 +536,51 @@ export const generateMeditation = async (
   custom_exercise = null
 ) => {
   try {
-    let exercise = custom_exercise || getRandomExercise();
+    let exercise = custom_exercise || getRandomExercise()
 
     if (useDiary) {
-      const diaryEntry = await getLatestDiaryEntry();
+      const diaryEntry = await getLatestDiaryEntry()
       if (diaryEntry.data) {
         exercise += ` \n Also use on their latest diary entry: \n\n
-      DIARY ENTRY: ${diaryEntry.data}`;
+      DIARY ENTRY: ${diaryEntry.data}`
       }
     }
 
     if (type) {
-      exercise += ` \n\n ${type}`;
+      exercise += ` \n\n ${type}`
     }
 
-    const meditation = await fetchCoachingContent(exercise, false);
+    const meditation = await fetchCoachingContent(exercise, false)
 
     if (!meditation || !meditation.data) {
-      throw new Error("Failed to fetch coaching content");
+      throw new Error('Failed to fetch coaching content')
     }
 
-    console.log(`Meditation content: ${meditation.data}`);
+    console.log(`Meditation content: ${meditation.data}`)
 
-    const audioResult = await synthesizeSpeech(meditation.data);
+    const audioResult = await synthesizeSpeech(meditation.data)
 
     if (!audioResult || !audioResult.data) {
       throw new Error(
-        audioResult.message || "Failed to synthesize speech for meditation"
-      );
+        audioResult.message || 'Failed to synthesize speech for meditation'
+      )
     }
 
     return {
-      message: "Meditation generated successfully",
+      message: 'Meditation generated successfully',
       data: audioResult.data,
-    };
+    }
   } catch (error) {
-    console.error("Error in generateMeditation:", error);
+    console.error('Error in generateMeditation:', error)
     return {
       message:
         error instanceof Error
           ? error.message
-          : "An unexpected error occurred while generating meditation",
+          : 'An unexpected error occurred while generating meditation',
       data: null,
-    };
+    }
   }
-};
+}
 
 // Seperate functions to avoid the timeouts that can happen on free hosting
 
@@ -596,40 +590,40 @@ export const generateMeditationText = async (
   custom_exercise = null
 ) => {
   try {
-    let exercise = custom_exercise || getRandomExercise();
+    let exercise = custom_exercise || getRandomExercise()
 
     if (useDiary) {
-      const diaryEntry = await getLatestDiaryEntry();
+      const diaryEntry = await getLatestDiaryEntry()
       if (diaryEntry.data) {
         exercise += ` \n Also use on their latest diary entry: \n\n
-      DIARY ENTRY: ${diaryEntry.data}`;
+      DIARY ENTRY: ${diaryEntry.data}`
       }
     }
 
     if (type) {
-      exercise += ` \n\n ${type}`;
+      exercise += ` \n\n ${type}`
     }
 
-    const meditation = await fetchCoachingContent(exercise, false);
+    const meditation = await fetchCoachingContent(exercise, false)
 
     if (!meditation || !meditation.data) {
-      throw new Error("Failed to fetch coaching content");
+      throw new Error('Failed to fetch coaching content')
     }
 
-    console.log(`Meditation content: ${meditation.data}`);
+    console.log(`Meditation content: ${meditation.data}`)
 
     return {
-      message: "Meditation generated successfully",
+      message: 'Meditation generated successfully',
       data: meditation.data,
-    };
+    }
   } catch (error) {
-    console.error("Error in generateMeditationText:", error);
+    console.error('Error in generateMeditationText:', error)
     return {
       message:
         error instanceof Error
           ? error.message
-          : "An unexpected error occurred while generating meditation",
+          : 'An unexpected error occurred while generating meditation',
       data: null,
-    };
+    }
   }
-};
+}

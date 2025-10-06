@@ -12,13 +12,13 @@ const HomePage = async () => {
           <div className="flex items-center justify-center">
             <Image
               src="/logo.png"
-              alt="Attenshun Logo"
+              alt="The Yoga Palace App"
               width={100}
               height={100}
               className="object-contain"
             />
             <h1 className="text-3xl font-bold text-primary mt-4 -ml-1">
-              The Yoga Palace Journalling App
+              The Yoga Palace App
             </h1>
           </div>
           <p className="py-6 text-lg text-secondary">{quote}</p>

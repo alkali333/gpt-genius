@@ -1,24 +1,22 @@
-"use client";
-import { useState, useEffect } from "react";
-import { FaMoon } from "react-icons/fa";
-import { FormContainer } from "/app/components/forms/FormContainer";
-import { fetchUserJson } from "../../utils/server-actions";
-import DiaryInputV2 from "/app/components/forms/DiaryInputV2";
-import DetailDisplay from "../../components/DetailDisplay";
+'use client'
+import { useState, useEffect } from 'react'
+import { FaMoon } from 'react-icons/fa'
+import { FormContainer } from '/app/components/forms/FormContainer'
+import DiaryInputV2 from '/app/components/forms/DiaryInputV2'
 
 import {
   insertDiaryEntry,
   generateMorningPracticeMessage,
-} from "/app/utils/server-actions";
+} from '/app/utils/server-actions'
 
-import Meditation from "/app/components/Meditation";
+import Meditation from '/app/components/Meditation'
 
 const EveningPracticePage = () => {
-  const [journalComplete, setJournalComplete] = useState(false);
+  const [journalComplete, setJournalComplete] = useState(false)
   // const [userJson, setUserJson] = useState(null);
-  const [encouragementMessage, setEncouragementMessage] = useState(null);
+  const [encouragementMessage, setEncouragementMessage] = useState(null)
 
-  const formsComplete = journalComplete;
+  const formsComplete = journalComplete
 
   useEffect(() => {
     // const getUserJson = async () => {
@@ -29,18 +27,18 @@ const EveningPracticePage = () => {
     // };
 
     const getEncouragementMessage = async () => {
-      const message = await generateMorningPracticeMessage();
+      const message = await generateMorningPracticeMessage()
       // const message = { data: "Message will go here... " };
       if (message.data) {
-        setEncouragementMessage(message.data);
+        setEncouragementMessage(message.data)
       } else {
-        console.log("Error fetching encouragement message");
-        setEncouragementMessage("");
+        console.log('Error fetching encouragement message')
+        setEncouragementMessage('')
       }
-    };
-    getEncouragementMessage();
+    }
+    getEncouragementMessage()
     //  getUserJson();
-  }, []);
+  }, [])
 
   if (formsComplete) {
     return (
@@ -53,7 +51,7 @@ const EveningPracticePage = () => {
           useDiary
         />
       </div>
-    );
+    )
   }
 
   return (
@@ -80,7 +78,7 @@ const EveningPracticePage = () => {
         </FormContainer>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EveningPracticePage;
+export default EveningPracticePage

@@ -1,45 +1,42 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client'
+import { useState, useEffect } from 'react'
 
-import { generateMeditationText } from "../utils/server-actions";
-import { synthesizeSpeech } from "../utils/text-to-speech";
-import toast from "react-hot-toast";
-import { updateMeditationDiary } from "../utils/server-actions";
-import { FormContainer } from "/app/components/forms/FormContainer";
-import { DiaryInput } from "/app/components/forms/DiaryInput";
-import AudioPlayer from "./AudioPlayer";
+import { generateMeditationText } from '../utils/server-actions'
+import { synthesizeSpeech } from '../utils/text-to-speech'
+import toast from 'react-hot-toast'
+import AudioPlayer from './AudioPlayer'
 
 const Meditation = ({ useDiary = false, type = null }) => {
-  const [audioUrl, setAudioUrl] = useState(null);
+  const [audioUrl, setAudioUrl] = useState(null)
 
   useEffect(() => {
     const loadMeditation = async () => {
-      const meditationText = await generateMeditationText(useDiary, type);
+      const meditationText = await generateMeditationText(useDiary, type)
 
       if (!meditationText || !meditationText.data) {
-        console.log("Error generating meditation text");
-        return;
+        console.log('Error generating meditation text')
+        return
       }
-      toast.success("Just a moment, I am preparing your meditation");
-      const meditationAudio = await synthesizeSpeech(meditationText.data);
+      toast.success('Just a moment, I am preparing your meditation')
+      const meditationAudio = await synthesizeSpeech(meditationText.data)
       if (!meditationAudio || !meditationAudio.data) {
-        console.log("Error generating meditation audio");
+        console.log('Error generating meditation audio')
         if (meditationAudio.message) {
-          console.error(meditationAudio.message);
-          toast.error(meditationAudio.message);
+          console.error(meditationAudio.message)
+          toast.error(meditationAudio.message)
         }
-        return;
+        return
       }
-      setAudioUrl(meditationAudio.data);
-    };
+      setAudioUrl(meditationAudio.data)
+    }
 
-    loadMeditation();
-  }, [type, useDiary]);
+    loadMeditation()
+  }, [type, useDiary])
 
   if (audioUrl == null) {
     return (
       <span className="loading loading-spinner loading-lg text-primary my-5"></span>
-    );
+    )
   }
 
   return (
@@ -47,7 +44,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
       <div>
         <AudioPlayer
           meditationAudio={audioUrl}
-          backgroundAudio={"/user-audio/background.mp3"}
+          backgroundAudio={'/user-audio/background.mp3'}
         />
       </div>
       {/* 
@@ -65,7 +62,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
       </div>
       */}
     </div>
-  );
-};
+  )
+}
 
-export default Meditation;
+export default Meditation
