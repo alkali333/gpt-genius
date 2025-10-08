@@ -1,10 +1,10 @@
-import React from "react";
-import { FaStar } from "react-icons/fa";
-import { IoIosRocket } from "react-icons/io";
+import React from 'react'
+import { FaStar } from 'react-icons/fa'
+import { IoIosRocket } from 'react-icons/io'
 
 const DetailDisplay = ({ type, data, basic = false }) => {
   if (!data || !Array.isArray(data)) {
-    return <p>No data found for {type}</p>;
+    return <p>No data found for {type}</p>
   }
 
   return (
@@ -15,7 +15,7 @@ const DetailDisplay = ({ type, data, basic = false }) => {
           <div
             key={index}
             className={`p-4 max-w-3xl ${
-              basic ? "bg-base-200" : "first:bg-base-100"
+              basic ? 'bg-base-200' : 'first:bg-base-100'
             } rounded-xl shadow-md space-y-2`}
           >
             <div className="text-xl font-medium text-accent mt-2">
@@ -30,7 +30,7 @@ const DetailDisplay = ({ type, data, basic = false }) => {
                     {item.outcome || item.benefit || item.result}
                   </p>
                 </div>
-                {item.rating && (
+                {type === 'hopes and dreams' && (
                   <div
                     className="tooltip tooltip-right"
                     data-tip="Complete the evening journalling practice to rate your goals. "
@@ -53,7 +53,7 @@ const DetailDisplay = ({ type, data, basic = false }) => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DetailDisplay;
+export default DetailDisplay

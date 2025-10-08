@@ -343,7 +343,7 @@ export const summarizeInfo = async (query, type) => {
 
   const validatedQuery = result.data
 
-  const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with maxiumum 8 ${type}. Each ${type} should have a name, description, and ${
+  const systemMessage = `You are a life coach summarizing the user's ${type}. You will respond in JSON format, with no more than 3-4 ${type} (combine if necessary). Each ${type} should have a name, description, and ${
     type === 'skills and achievements'
       ? 'result (the benefits it gives them)'
       : "result (e.g.  'Solving this will mean...')"
