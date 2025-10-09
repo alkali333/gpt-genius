@@ -3,7 +3,7 @@ export const questions = [
     step: 1,
     title: 'hopes and dreams',
     content:
-      'Tell me your hopes and dreams. Choose just 3-4 goals that you would like to achieve, and write at least 150 words about each one. Focus on goals you would like to achieve over the few weeks.',
+      'Choose 3 goals you want to achieve over the next 21 days. Focus on things within your control—actions you can take, habits you can build, or skills you can develop. Write at least 150 words about each goal, describing what you will do and why it matters to you. Remember: where your attention goes, energy flows. By keeping your thoughts aligned with these goals, you create the momentum to manifest them.',
   },
   {
     step: 2,
