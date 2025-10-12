@@ -1,62 +1,62 @@
-"use client";
+'use client'
 
-import { useEffect, useRef, useState } from "react";
-import { FaPlay, FaPause } from "react-icons/fa";
-import { VscDebugRestart } from "react-icons/vsc";
+import { useEffect, useRef, useState } from 'react'
+import { FaPlay, FaPause } from 'react-icons/fa'
+import { VscDebugRestart } from 'react-icons/vsc'
 
 const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
-  const meditationRef = useRef(null);
-  const backgroundRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const meditationRef = useRef(null)
+  const backgroundRef = useRef(null)
+  const [isPlaying, setIsPlaying] = useState(false)
 
   useEffect(() => {
     if (backgroundRef.current) {
-      backgroundRef.current.volume = 0.5;
-      backgroundRef.current.loop = true;
+      backgroundRef.current.volume = 0.5
+      backgroundRef.current.loop = true
     }
-  }, []);
+  }, [])
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      meditationRef.current.pause();
-      backgroundRef.current.pause();
+      meditationRef.current.pause()
+      backgroundRef.current.pause()
     } else {
-      meditationRef.current.play();
-      backgroundRef.current.play();
+      meditationRef.current.play()
+      backgroundRef.current.play()
     }
-    setIsPlaying(!isPlaying);
-  };
+    setIsPlaying(!isPlaying)
+  }
 
   const handleMeditationEnded = () => {
-    fadeOutBackground();
-    setIsPlaying(false);
-  };
+    fadeOutBackground()
+    setIsPlaying(false)
+  }
 
   const fadeOutBackground = () => {
     const fadeInterval = setInterval(() => {
       if (backgroundRef.current.volume > 0.02) {
-        backgroundRef.current.volume -= 0.02;
+        backgroundRef.current.volume -= 0.02
       } else {
-        clearInterval(fadeInterval);
-        backgroundRef.current.pause();
-        backgroundRef.current.currentTime = 0;
-        backgroundRef.current.volume = 0.8;
+        clearInterval(fadeInterval)
+        backgroundRef.current.pause()
+        backgroundRef.current.currentTime = 0
+        backgroundRef.current.volume = 0.8
       }
-    }, 200);
-  };
+    }, 200)
+  }
 
   const handleReset = () => {
-    meditationRef.current.currentTime = 0;
-    backgroundRef.current.currentTime = 0;
-    backgroundRef.current.volume = 0.5;
+    meditationRef.current.currentTime = 0
+    backgroundRef.current.currentTime = 0
+    backgroundRef.current.volume = 0.5
     if (isPlaying) {
-      meditationRef.current.play();
-      backgroundRef.current.play();
+      meditationRef.current.play()
+      backgroundRef.current.play()
     }
-  };
+  }
 
   return (
-    <div className="card bg-neutral text-neutral-content w-96 my-5 rounded-xl">
+    <div className="card bg-neutral text-neutral-content w-86 my-5 rounded-xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title">Time To Meditate</h2>
         <p>Find a comfortable, quiet place to sit and begin your meditation.</p>
@@ -86,7 +86,7 @@ const AudioPlayer = ({ meditationAudio, backgroundAudio }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AudioPlayer;
+export default AudioPlayer

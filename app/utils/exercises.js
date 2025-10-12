@@ -135,5 +135,5 @@ export const getMorningExercise = () => {
 
   return `
 
-Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}.  Use the user info to personalize the exercise.`
+Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}.  Use the user info to personalize the exercise. At the end, encourage the user to write at least 100 words for their daily journal entry`
 }

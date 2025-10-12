@@ -1,32 +1,33 @@
-import SideBar from "../components/SideBar";
-import { FaBarsStaggered } from "react-icons/fa6";
-import BottomNav from "../components/BottomNav";
+import SideBar from '../components/SideBar'
+import { FaBarsStaggered } from 'react-icons/fa6'
 
 const layout = async ({ children }) => {
   return (
-    <div className="drawer lg:drawer-open">
-      <input type="checkbox" id="my-drawer-2" className="drawer-toggle" />
-      <div className="drawer-content">
-        <label
-          htmlFor="my-drawer-2"
-          className="drawer-button lg:hidden fixed top-6 right-6"
-        >
-          <FaBarsStaggered className="w-8 h-8 text-primary" />
-        </label>
-        <div className="bg-base-100 px-8 pt-12 pb-28 min-h-screen">
-          {children}
+    <>
+      <div className="drawer lg:drawer-open overflow-x-hidden">
+        <input type="checkbox" id="my-drawer-2" className="drawer-toggle" />
+        <div className="drawer-content">
+          <label
+            htmlFor="my-drawer-2"
+            className="drawer-button lg:hidden fixed top-6 right-6 z-50 cursor-pointer"
+          >
+            <FaBarsStaggered className="w-8 h-8 text-primary" />
+          </label>
+          <div className="bg-base-100 px-8 pt-12 pb-28 min-h-screen">
+            {children}
+          </div>
+        </div>
+        <div className="drawer-side z-50">
+          <label
+            htmlFor="my-drawer-2"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <SideBar />
         </div>
       </div>
-      <div className="drawer-side z-50">
-        <label
-          htmlFor="my-drawer-2"
-          aria-label="close sidebar"
-          className="drawer-overlay"
-        ></label>
-        <SideBar />
-      </div>
-    </div>
-  );
-};
+    </>
+  )
+}
 
-export default layout;
+export default layout

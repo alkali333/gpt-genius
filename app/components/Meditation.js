@@ -40,7 +40,7 @@ const Meditation = ({ useDiary = false, type = null }) => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] grid grid-rows-[1fr,auto] max-w-2xl">
+    <div>
       <div>
         <AudioPlayer
           meditationAudio={audioUrl}

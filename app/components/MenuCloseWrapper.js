@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 
 export function MenuCloseWrapper({ children }) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   useEffect(() => {
     // Function to close the menu
     const closeMenu = () => {
-      const drawer = document.getElementById("my-drawer-2");
+      const drawer = document.getElementById('my-drawer-2')
       if (drawer) {
-        drawer.click();
+        drawer.click()
       }
-    };
-    closeMenu();
-  }, [pathname]);
+    }
+    closeMenu()
+  }, [pathname])
 
-  return <>{children}</>;
+  return <>{children}</>
 }

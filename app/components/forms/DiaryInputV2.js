@@ -1,45 +1,42 @@
-import { useEffect, useRef, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { FaArrowUp } from "react-icons/fa";
+import { useEffect, useRef, useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { FaArrowUp } from 'react-icons/fa'
 
-const DiaryInputV2 = ({ words, type = "unspecified" }) => {
-  const [text, setText] = useState("");
-  const { pending } = useFormStatus();
-  const wordCount = text.split(/\s+/).filter(Boolean).length;
-  const remainingWords = Math.max(words - wordCount, 0);
-  const textareaRef = useRef(null);
-  const containerRef = useRef(null);
+const DiaryInputV2 = ({ words, type = 'unspecified' }) => {
+  const [text, setText] = useState('')
+  const { pending } = useFormStatus()
+  const wordCount = text.split(/\s+/).filter(Boolean).length
+  const remainingWords = Math.max(words - wordCount, 0)
+  const textareaRef = useRef(null)
+  const containerRef = useRef(null)
 
   // Handle text area resize and ensure it stays in view
   useEffect(() => {
     if (textareaRef.current) {
       // Reset height to recalculate properly
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto'
 
       // Set new height based on content (with a max-height)
       const newHeight = Math.min(
-        textareaRef.current.scrollHeight + 20, // Add padding to prevent cut-off
-        window.innerHeight * 0.6 // Limit to 60% of viewport height
-      );
-      textareaRef.current.style.height = `${newHeight}px`;
+        textareaRef.current.scrollHeight + 20,
+        window.innerHeight * 0.6
+      )
+      textareaRef.current.style.height = `${newHeight}px`
 
-      // Scroll into view with a small delay to ensure accurate calculations
-      setTimeout(() => {
-        // Scroll to bottom of textarea if user is typing at the end
-        const cursorAtEnd =
-          textareaRef.current.selectionStart ===
-          textareaRef.current.value.length;
+      // Scroll the textarea into view if cursor is at the end
+      const cursorAtEnd =
+        textareaRef.current.selectionStart === textareaRef.current.value.length
 
-        if (cursorAtEnd) {
-          // Ensure the bottom of the textarea is visible
-          window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: "smooth",
-          });
-        }
-      }, 10);
+      if (cursorAtEnd) {
+        // Use scrollIntoView on the textarea element instead of window.scrollTo
+        textareaRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'nearest',
+        })
+      }
     }
-  }, [text]);
+  }, [text])
 
   return (
     <div className="w-full mb-16 flex flex-col" ref={containerRef}>
@@ -69,7 +66,7 @@ const DiaryInputV2 = ({ words, type = "unspecified" }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DiaryInputV2;
+export default DiaryInputV2
