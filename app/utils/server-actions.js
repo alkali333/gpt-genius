@@ -462,8 +462,9 @@ export const generateEveningPracticeMessage = async () => {
   return { message: 'Evening Practice Generated', data: response.data }
 }
 
-export const generateMorningPracticeMessage = async () => {
-  const prompt = getMorningExercise()
+export const generateMorningPracticeMessage = async (clientDate) => {
+  // Pass the client date to the utility function
+  const prompt = getMorningExercise(clientDate)
 
   const response = await fetchCoachingContent(prompt)
   if (!response.data) {

@@ -128,12 +128,11 @@ const morningExercises = [
   },
 ]
 
-export const getMorningExercise = () => {
-  const today = new Date()
-  const dayIndex = today.getDay() // 0 is Sunday, 1 is Monday, ..., 6 is Saturday
+export const getMorningExercise = (clientDate) => {
+  // Use client date if provided, otherwise fallback to server date
+  const today = clientDate ? new Date(clientDate) : new Date()
+  const dayIndex = today.getDay()
   const selectedExercise = morningExercises[dayIndex]
 
-  return `
-
-Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}.  Use the user info to personalize the exercise. At the end, encourage the user to write at least 100 words for their daily journal entry`
+  return `Write a 150 word exercise called: ${selectedExercise.title}, asking the client to ${selectedExercise.description}. Use the user info to personalize the exercise. At the end, encourage the user to write at least 100 words for their daily journal entry`
 }

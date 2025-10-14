@@ -19,16 +19,11 @@ const EveningPracticePage = () => {
   const formsComplete = journalComplete
 
   useEffect(() => {
-    // const getUserJson = async () => {
-    //   const userJson = await fetchUserJson();
-    //   const firstName = Object.keys(userJson)[0];
-    //   const typeJson = userJson[firstName];
-    //   setUserJson(typeJson);
-    // };
-
     const getEncouragementMessage = async () => {
-      const message = await generateMorningPracticeMessage()
-      // const message = { data: "Message will go here... " };
+      // Get the client's current date in their timezone
+      const clientDate = new Date()
+      const message = await generateMorningPracticeMessage(clientDate)
+
       if (message.data) {
         setEncouragementMessage(message.data)
       } else {
@@ -37,7 +32,6 @@ const EveningPracticePage = () => {
       }
     }
     getEncouragementMessage()
-    //  getUserJson();
   }, [])
 
   if (formsComplete) {
